@@ -1,81 +1,88 @@
 ---
 name: dictionary-pro
-description: 词典增强工具，提供地道美式例句、托福近义词对比、英文释义。专为托福备考和学术写作设计。
-version: 1.0.0
+description: 深度词典工具，专注于提供地道美式俚语与托福学术对标的极简词典模块。输出格式：翻译、俚语、对标、频次、例析 5 维度表格。
+version: 2.0.0
 allowed-tools: Read, Write, Grep, Glob
 ---
 
-# Dictionary Pro
+# 深度词典 (Dictionary Pro)
 
-专业词典工具，提供地道美式表达、托福近义词对比和学术释义。
+专注于提供地道美式俚语与托福学术对标的极简词典模块。
 
-## 功能范围
-- **地道美式例句**: 提供真实语境的美式表达
-- **托福近义词对比**: 同义词等级划分（初级/进阶/高分）
-- **英文释义**: 精准的英英释义
-- **俚语 → 学术桥接**: 口语化表达的学术替代表达
+## When to Use
 
-## 使用场景
-- 用户说 "这个单词什么意思"
-- 用户说 "gonna 的替代表达"
-- 用户说 "给我一个托福高分近义词"
-- 用户说 "big 的所有同义词"
-- 用户说 "生成对比表格"
+- 用户输入单词或短语查询含义
+- 用户请求"俚语转学术"对照
+- 用户要求"托福近义词"
+- 用户需要"生成对比表格"
+- 用户说"这个单词什么意思"或"gonna 的替代表达"
 
-## 输出格式
+## Instructions
 
-### 单词解析
-```markdown
-## [单词]
-**英文释义**: [韦氏/牛津释义]
-**托福等级**: [初级/进阶/高分]
+当用户输入单词或短语时，识别其在当前语境（如有）下的含义，并按照规定的表格格式进行响应。确保内容准确对标托福学术规范与美式地道口语表达。
 
-### 地道美式例句
-> "例句上下文" — 适用场景
+## Output Format
 
-### 托福近义词对比
-| 等级 | 词汇 | 难度 |
-|---|---|---|
-| 初级 | get | ★☆☆ |
-| 进阶 | obtain | ★★☆ |
-| 高分 | acquire | ★★★ |
-```
+请使用 Markdown 表格输出以下五个维度：
 
-### 俚语转换
-```markdown
-##俚语 → 学术对照
-| 俚语表达 | 学术替代表达 | 托福词汇等级 |
-|---|---|---|
-| gonna | intending to | 中级 |
-| kinda | somewhat | 中级 |
-| big | substantial | 高分 |
-```
+| 维度 | 内容说明 |
+| --- | --- |
+| **翻译** | 最符合当前语境的中文含义。 |
+| **俚语** | 对应的美式地道俚语或非正式口语表达。 |
+| **对标** | 对应的托福 (TOEFL) 高阶学术词汇或表达。 |
+| **频次** | 该词在美剧、外刊（如《经济学人》）或新闻中的出现频率（如：高/中/低）及典型出处。 |
+| **例析** | 提供地道例句并进行解析，说明其用法细节。 |
 
-## 核心词汇库
+## Rules
+
+1. **真实对标**：确保"对标"栏目中的词汇符合托福学术写作或阅读的难度要求。
+2. **语境优先**：如果用户提供了上下文，所有的翻译和例析必须紧扣该语境。
+3. **内容详实**：在"例析"部分，除了例句，可以增加对词汇背后细微语感差异的说明。
+
+## 核心词汇速查
 
 ### 高频口语 → 学术转换
-```
-get → obtain, acquire, attain
-big → substantial, significant, considerable
-thing → factor, aspect, element
-good → beneficial, advantageous, favorable
-bad → detrimental, adverse, unfavorable
-get → procure, secure, grasp
-pretty → moderately, considerably
-awesome → remarkable, exceptional
-help → assist, aid, support
-```
+| 口语 | 学术对标 | 托福等级 |
+|---|---|---|
+| get | obtain, acquire, attain | 高分 |
+| big | substantial, significant, considerable | 高分 |
+| thing | factor, aspect, element | 进阶 |
+| good | beneficial, advantageous, favorable | 高分 |
+| bad | detrimental, adverse, unfavorable | 高分 |
+| pretty | moderately, considerably | 进阶 |
+| awesome | remarkable, exceptional | 高分 |
+| help | assist, aid, support | 进阶 |
+| gonna | intending to, about to | 中级 |
+| kinda | somewhat, rather | 中级 |
+| wanna | desire to, wish to | 中级 |
 
 ### 逻辑连接词
-```
-however → nevertheless, nonetheless
-therefore → consequently, hence
-also → furthermore, moreover
-but → however, yet
-so → therefore, thus
-```
+| 基础 | 托福对标 |
+|---|---|
+| however | nevertheless, nonetheless |
+| therefore | consequently, hence |
+| also | furthermore, moreover |
+| but | however, yet |
+| so | therefore, thus |
 
-## 质量标准
-- 所有例句来自真实语料库
-- 托福近义词按官方评分标准分级
-- 学术表达符合 ETS 写作要求
+## 示例输出
+
+**输入**: "big"
+
+| 维度 | 内容 |
+|---|---|
+| **翻译** | 大的、重要的 |
+| **俚语** | huge, massive, "a big deal" |
+| **对标** | substantial, significant, considerable |
+| **频次** | 高（美剧、新闻、学术文章均常见） |
+| **例析** | "This is a **big** decision" — 强调重要性；"The company saw **substantial** growth" — 正式书面语更适合托福写作。 |
+
+**输入**: "gonna"
+
+| 维度 | 内容 |
+|---|---|
+| **翻译** | 将要、打算 |
+| **俚语** | gonna, gonna be, "I'm gonna go" |
+| **对标** | intending to, about to, going to |
+| **频次** | 高（美剧《老友记》《生活大爆炸》极常见） |
+| **例析** | "I'm **gonna** go to the store" — 非正式口语；"The company is **about to** announce the results" — 正式场合使用。托福写作中避免使用 gonna。 |
