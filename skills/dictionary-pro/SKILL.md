@@ -48,6 +48,7 @@ Every recommendation must satisfy all of the following:
 - Treat frequency as qualitative only unless the user provides evidence or asks for a corpus-backed answer.
 - Avoid recommending contractions or slang for TOEFL writing.
 - If the user asks for spoken English, show the casual form and the TOEFL-safe form side by side.
+- If the runtime explicitly asks for structured JSON, return valid JSON only and follow `references/json-contract.md`.
 
 ## Failure Modes To Avoid
 
@@ -65,4 +66,5 @@ Every recommendation must satisfy all of the following:
 ## Resource
 
 - Read `references/output-contract.md` when formatting a response or when the input type is ambiguous.
+- Read `references/json-contract.md` when the runtime asks for structured output or validation-safe JSON.
 - Read `references/evaluation-cases.md` when running prompt regression checks after updates.

@@ -1,5 +1,6 @@
 import { ToeflSlangClient } from "../api/client";
 import { buildDictionaryProPrompts } from "./prompt";
+import { runDictionaryProQuery } from "./runner";
 import { DictionaryProMode, DictionaryProQuery, DictionaryProTarget } from "./types";
 import { PROVIDER_APIS } from "../providers/types";
 
@@ -32,6 +33,7 @@ Options:
   --max-tokens    Optional. Override max output tokens.
   --cloudflare-account-id Optional. Cloudflare AI Gateway account id.
   --cloudflare-gateway-id Optional. Cloudflare AI Gateway gateway id.
+  --json          Optional. Print validated JSON instead of rendered Markdown.
   --list-providers Print supported provider catalog.
   --dry-run       Optional. Print prompt payload without API call.
   --help, -h      Show help.
@@ -69,6 +71,11 @@ export function parseDictionaryProArgs(argv: string[]): DictionaryProQuery {
 
     if (token === "--list-providers") {
       draft.listProviders = true;
+      continue;
+    }
+
+    if (token === "--json") {
+      draft.jsonOutput = true;
       continue;
     }
 
@@ -192,7 +199,7 @@ export async function runDictionaryProCli(argv: string[]): Promise<void> {
     throw new Error("Missing required --text.");
   }
 
-  const prompts = buildDictionaryProPrompts(query);
+  const prompts = buildDictionaryProPrompts(query, { outputMode: "json" });
   const client = new ToeflSlangClient({
     provider: query.provider ?? "openai",
     model: query.model,
@@ -222,5 +229,23 @@ export async function runDictionaryProCli(argv: string[]): Promise<void> {
     return;
   }
 
-  await client.chatStreaming(prompts.systemPrompt, prompts.userPrompt);
+  const result = await runDictionaryProQuery({
+    query,
+    clientOptions: {
+      provider: query.provider ?? "openai",
+      model: query.model,
+      apiKey: query.apiKey,
+      baseUrl: query.baseUrl,
+      protocol: query.protocol,
+      maxTokens: query.maxTokens,
+      accountId: query.cloudflareAccountId,
+      gatewayId: query.cloudflareGatewayId,
+    },
+  });
+
+  process.stdout.write("\n");
+  process.stdout.write(
+    query.jsonOutput ? JSON.stringify(result.structured, null, 2) : result.markdown,
+  );
+  process.stdout.write("\n\n");
 }

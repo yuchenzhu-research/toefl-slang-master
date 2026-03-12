@@ -1,5 +1,9 @@
 # Dictionary Pro Output Contract
 
+Runtime note:
+
+- The framework may first request `references/json-contract.md`, validate the JSON, and then render the final Markdown using this file.
+
 Use the smallest format that answers the user's request clearly.
 
 ## 1. Word Or Phrase Query

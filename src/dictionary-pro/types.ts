@@ -14,6 +14,7 @@ export interface DictionaryProQuery {
   mode?: DictionaryProMode;
   target?: DictionaryProTarget;
   dryRun?: boolean;
+  jsonOutput?: boolean;
   listProviders?: boolean;
   provider?: string;
   model?: string;
