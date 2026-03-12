@@ -171,6 +171,12 @@ npm run dict -- --provider anthropic --model claude-sonnet-4-5 --text "gonna"
 
 # Prompt-only run (no API call)
 npm run dict:dry
+
+# Run evaluation cases (requires a valid API key)
+npm run dict:eval -- --provider openai --limit 3
+
+# Filter by case id and emit JSON report
+npm run dict:eval -- --provider anthropic --case DP-003 --json
 ```
 
 **Or use Claude Code to call skills directly:**

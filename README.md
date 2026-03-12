@@ -171,6 +171,12 @@ npm run dict -- --provider anthropic --model claude-sonnet-4-5 --text "gonna"
 
 # 只看 prompt，不发 API（回归调试用）
 npm run dict:dry
+
+# 跑评测集（需要可用 API key）
+npm run dict:eval -- --provider openai --limit 3
+
+# 按 case 过滤并输出 JSON 报告
+npm run dict:eval -- --provider anthropic --case DP-003 --json
 ```
 
 **或者使用 Claude Code 直接调用技能：**
