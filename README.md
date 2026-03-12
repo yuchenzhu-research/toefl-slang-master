@@ -54,7 +54,7 @@
 
 | 模块名称 | 核心定位 | 五维输出 |
 | :--- | :--- | :--- |
-| **深度词典 (Dictionary Pro)** | 极简双向对标 | **翻译 · 俚语 · 对标 · 频次 · 例析** |
+| **深度词典 (Dictionary Pro)** | 表达级语域转换 | **翻译 · 俚语 · 对标 · 频次 · 例析** |
 | **托福教练 (TOEFL Coach)** | 纯学术逻辑诊断 | **评分 · 逻辑 · 用词 · 句式 · 优化** |
 | **素材拆解 (Content Parser)** | 深度外刊文化分析 | **导读 · 拆解 · 俚语 · 文化 · 转化** |
 
@@ -84,19 +84,19 @@
 
 ```
 toefl-slang-master/
+├── skills/                  # Canonical skills 目录
+│   └── dictionary-pro/      # 深度词典主技能目录
+│       ├── SKILL.md         # 技能定义
+│       ├── agents/          # UI 元数据
+│       └── references/      # 输出契约与补充规则
 ├── .claude/
-│   ├── skills/              # 技能指令集（逻辑代码分离）
-│   │   ├── dictionary-pro/  # 深度词典模块
-│   │   ├── toefl-writing/   # 托福教练模块
-│   │   ├── content-parser/  # 素材拆解模块
-│   │   └── skill-creator/   # 技能创建器
-│   └── notes/               # 用户笔记存储
+│   └── skills/              # 兼容旧工具链的历史目录
 ├── src/                     # TypeScript 源代码
 │   ├── api/                 # API 集成层
 │   │   └── client.ts        # OpenAI API 客户端
 │   ├── auth/                # 鉴权管理层
 │   │   └── manager.ts       # OpenClaw-style 配置管理
-│   └── index.ts             # 入口文件
+│   └── index.ts             # 入口文件（读取 skills/dictionary-pro）
 ├── package.json             # 依赖配置
 ├── tsconfig.json            # TypeScript 配置
 └── README.md / README_EN.md # 双语文档

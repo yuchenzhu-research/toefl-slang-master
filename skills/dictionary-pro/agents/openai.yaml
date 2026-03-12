@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dictionary Pro"
+  short_description: "Slang-to-TOEFL expression converter"
+  default_prompt: "Use $dictionary-pro to convert this informal expression into a TOEFL-appropriate alternative."

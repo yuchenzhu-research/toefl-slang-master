@@ -2,8 +2,8 @@
  * TOEFL Slang Master - MVP 入口
  *
  * 功能：
- * 1. 读取 .claude/skills/dictionary-pro/SKILL.md 作为 system prompt
- * 2. 使用 gpt-4o 流式输出 dictionary-pro 格式的单词解析
+ * 1. 读取 skills/dictionary-pro/SKILL.md 作为 system prompt
+ * 2. 使用 gpt-4o 流式输出 dictionary-pro 格式的表达解析
  */
 
 import * as fs from "fs";
@@ -14,8 +14,7 @@ async function main() {
   console.log("🎯 TOEFL Slang Master - MVP\n");
 
   // 1. 读取 system prompt（dictionary-pro SKILL.md）
-  const skillsPath = path.join(__dirname, "..", ".claude", "skills");
-  const skillPath = path.join(skillsPath, "dictionary-pro", "SKILL.md");
+  const skillPath = path.join(__dirname, "..", "skills", "dictionary-pro", "SKILL.md");
 
   if (!fs.existsSync(skillPath)) {
     console.error(`❌ 错误: 找不到 ${skillPath}`);
@@ -25,16 +24,16 @@ async function main() {
   const systemPrompt = fs.readFileSync(skillPath, "utf-8");
   console.log(`✅ 已加载 system prompt: ${skillPath}\n`);
 
-  // 2. 测试单词
-  const testWord = "cap";
+  // 2. 测试表达
+  const testExpression = "a big deal";
 
-  console.log(`📝 查询单词: "${testWord}"\n`);
+  console.log(`📝 查询表达: "${testExpression}"\n`);
   console.log("─".repeat(50));
 
   // 3. 调用客户端
   const client = new ToeflSlangClient();
 
-  const userInput = `请解析单词 "${testWord}"，严格按照 dictionary-pro 的 5 维度格式输出：翻译、俚语、对标、频次、例析。`;
+  const userInput = `请解析表达 "${testExpression}"。如果存在多个常见义项，先区分义项；随后按照 Dictionary Pro 的默认格式输出，并给出最适合 TOEFL 写作的替换。`;
 
   await client.chatStreaming(systemPrompt, userInput);
 

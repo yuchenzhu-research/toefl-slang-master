@@ -54,7 +54,7 @@ Powered by the OpenClaw architecture's API engine, three core functions cover yo
 
 | Module | Core Purpose | 5-D Output |
 | :--- | :--- | :--- |
-| **Dictionary Pro** | Minimalist Bidirectional Alignment | **Translation · Slang · Alignment · Frequency · Analysis** |
+| **Dictionary Pro** | Expression-Level Register Conversion | **Translation · Slang · Alignment · Frequency · Analysis** |
 | **TOEFL Coach** | Pure Academic Logic Diagnosis | **Score · Logic · Vocabulary · Structure · Optimization** |
 | **Content Parser** | Deep Foreign Publication Cultural Analysis | **Overview · Breakdown · Slang · Culture · Conversion** |
 
@@ -84,19 +84,19 @@ Powered by the OpenClaw architecture's API engine, three core functions cover yo
 
 ```
 toefl-slang-master/
+├── skills/                  # Canonical skills directory
+│   └── dictionary-pro/      # Primary Dictionary Pro skill folder
+│       ├── SKILL.md         # Skill definition
+│       ├── agents/          # UI metadata
+│       └── references/      # Output contract and support rules
 ├── .claude/
-│   ├── skills/              # Instruction sets (logic-code separation)
-│   │   ├── dictionary-pro/  # Dictionary module
-│   │   ├── toefl-writing/   # TOEFL coaching module
-│   │   ├── content-parser/  # Content parsing module
-│   │   └── skill-creator/   # Skill creator
-│   └── notes/               # User notes storage
+│   └── skills/              # Legacy compatibility directory
 ├── src/                     # TypeScript source code
 │   ├── api/                 # API integration layer
 │   │   └── client.ts        # OpenAI API client
 │   ├── auth/                # Authentication management
 │   │   └── manager.ts       # OpenClaw-style config management
-│   └── index.ts             # Entry point
+│   └── index.ts             # Entry point (reads skills/dictionary-pro)
 ├── package.json             # Dependencies
 ├── tsconfig.json            # TypeScript configuration
 └── README.md / README_EN.md # Bilingual documentation

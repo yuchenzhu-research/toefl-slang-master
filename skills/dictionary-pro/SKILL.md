@@ -1,8 +1,6 @@
 ---
 name: dictionary-pro
 description: Convert informal English words, phrases, collocations, and sentence fragments into precise TOEFL-appropriate alternatives while preserving meaning and register. Use when a user asks what an expression means, whether it is too informal, how to say it more academically, how to replace low-level vocabulary in TOEFL writing, or how slang/plain English compares with academic alternatives.
-version: 3.0.0
-allowed-tools: Read, Write, Grep, Glob
 ---
 
 # Dictionary Pro
@@ -29,19 +27,9 @@ Route the request into one primary mode:
 
 ### 3. Choose the output shape
 
-- For word or phrase queries, use the default 5-dimension table below.
+- For word or phrase queries, use the default 5-dimension table in `references/output-contract.md`.
 - For sentence-level upgrades, mark the weak span, offer 2 to 3 replacements, and provide one recommended rewrite.
 - For ambiguous inputs, show candidate senses first, then align replacements to each sense.
-
-## Default 5-Dimension Table
-
-| 维度 | 内容说明 |
-| --- | --- |
-| **翻译** | 给出最贴近当前语境的中文义项。若无语境且有歧义，先列 2 到 4 个常见义项。 |
-| **俚语** | 说明原表达的口语程度、语气和常见非正式变体。若输入本身已经是俚语，说明它听起来像什么人会说。 |
-| **对标** | 给出 2 到 4 个 TOEFL-safe 替换，按“最稳妥”到“更强”排序，并用极短短语标明差异。 |
-| **频次** | 只做定性判断，例如“口语高频 / 新闻常见 / 学术写作少见”。不要伪造精确统计。 |
-| **例析** | 至少给 1 个原表达例句和 1 个 TOEFL-safe 例句，并解释两者在语域或语义上的差异。 |
 
 ## Quality Bar
 
@@ -73,3 +61,7 @@ Every recommendation must satisfy all of the following:
 - Handle lexical choice, local rewrites, and register conversion.
 - Hand off full essay diagnosis to `toefl-writing`.
 - Hand off full article or PDF breakdown to `content-parser`.
+
+## Resource
+
+- Read `references/output-contract.md` when formatting a response or when the input type is ambiguous.
