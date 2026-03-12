@@ -26,7 +26,7 @@
 <!-- Badges -->
 ![Version](https://img.shields.io/badge/version-1.0.0-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)
-![Engine](https://img.shields.io/badge/OpenAI-API-412991)
+![Engine](https://img.shields.io/badge/Engine-Multi--Provider-412991)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Vibe](https://img.shields.io/badge/Philosophy-Vibe%20Engineering-FF69B4)
 
@@ -50,7 +50,7 @@ Have you ever been stuck in this dilemma?
 
 ## 🎯 Core Modules
 
-Powered by the OpenClaw architecture's API engine, three core functions cover your entire English learning journey:
+Powered by an OpenClaw-style multi-provider API engine, three core functions cover your entire English learning journey:
 
 | Module | Core Purpose | 5-D Output |
 | :--- | :--- | :--- |
@@ -93,9 +93,13 @@ toefl-slang-master/
 │   └── skills/              # Legacy compatibility directory
 ├── src/                     # TypeScript source code
 │   ├── api/                 # API integration layer
-│   │   └── client.ts        # OpenAI API client
+│   │   └── client.ts        # Unified multi-provider client entry
 │   ├── auth/                # Authentication management
-│   │   └── manager.ts       # OpenClaw-style config management
+│   │   └── manager.ts       # OpenClaw-style local config and key resolution
+│   ├── providers/           # OpenClaw-style provider runtime
+│   │   ├── catalog.ts       # Provider catalog and defaults
+│   │   ├── runtime.ts       # Protocol dispatch and execution
+│   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama adapters
 │   └── index.ts             # Entry point (reads skills/dictionary-pro)
 ├── package.json             # Dependencies
 ├── tsconfig.json            # TypeScript configuration
@@ -105,7 +109,7 @@ toefl-slang-master/
 | Tech Stack | Version | Purpose |
 | :--- | :--- | :--- |
 | **TypeScript** | ^5.9 | Type safety + rapid development |
-| **OpenAI SDK** | ^6.25 | Native API client |
+| **Provider Runtime** | OpenClaw-style | Multi-provider protocol adapters and unified calls |
 | **dotenv** | ^17.3 | Environment variable loading |
 | **ts-node** | ^10.9 | Run TypeScript directly |
 | **@types/node** | ^25.3 | Node.js type definitions |
@@ -139,7 +143,8 @@ npm install
 
 # 2. Configure API key
 cp .env.example .env
-# Edit .env file, fill in your OPENAI_API_KEY
+# Edit .env file and add the provider key you want to use
+# e.g. OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
 # 3. Run the project
 npm start
@@ -151,11 +156,18 @@ npm start
 # Minimal query (auto mode)
 npm run dict -- --text "a big deal"
 
+# List supported providers
+npm run dict:providers
+
 # Explicit mode + target scenario
 npm run dict -- --text "gonna" --mode conversion --target toefl-writing
 
 # Add context for disambiguation
 npm run dict -- --text "cap" --context "The proposal puts a cap on tuition increases."
+
+# Switch provider and model
+npm run dict -- --provider google --model gemini-3-pro --text "cap"
+npm run dict -- --provider anthropic --model claude-sonnet-4-5 --text "gonna"
 
 # Prompt-only run (no API call)
 npm run dict:dry

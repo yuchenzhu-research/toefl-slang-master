@@ -7,6 +7,7 @@
     "start": "ts-node src/index.ts",
     "dict": "ts-node src/index.ts",
     "dict:dry": "ts-node src/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",
+    "dict:providers": "ts-node src/index.ts --list-providers",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

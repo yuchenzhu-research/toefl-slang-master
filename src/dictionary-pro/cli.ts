@@ -1,6 +1,7 @@
 import { ToeflSlangClient } from "../api/client";
 import { buildDictionaryProPrompts } from "./prompt";
 import { DictionaryProMode, DictionaryProQuery, DictionaryProTarget } from "./types";
+import { PROVIDER_APIS } from "../providers/types";
 
 const VALID_MODES: DictionaryProMode[] = ["meaning", "conversion", "upgrade", "comparison"];
 const VALID_TARGETS: DictionaryProTarget[] = [
@@ -9,19 +10,29 @@ const VALID_TARGETS: DictionaryProTarget[] = [
   "general-academic",
   "daily-english",
 ];
+const VALID_PROTOCOLS = [...PROVIDER_APIS];
 
 function printUsage(): void {
   const usage = `
 Dictionary Pro CLI
 
 Usage:
-  npm start -- --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--dry-run]
+  npm start -- --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
 
 Options:
   --text, -t      Required. Word, phrase, or sentence fragment to process.
   --context, -c   Optional. Extra context for disambiguation.
   --mode, -m      Optional. meaning | conversion | upgrade | comparison
   --target, -g    Optional. toefl-writing | toefl-speaking | general-academic | daily-english
+  --provider, -p  Optional. Model provider. Default: openai
+  --model         Optional. Provider model id.
+  --api-key       Optional. API key override.
+  --base-url      Optional. Provider base URL override.
+  --protocol      Optional. openai-completions | openai-responses | anthropic-messages | google-generative-ai | ollama
+  --max-tokens    Optional. Override max output tokens.
+  --cloudflare-account-id Optional. Cloudflare AI Gateway account id.
+  --cloudflare-gateway-id Optional. Cloudflare AI Gateway gateway id.
+  --list-providers Print supported provider catalog.
   --dry-run       Optional. Print prompt payload without API call.
   --help, -h      Show help.
 `;
@@ -53,6 +64,11 @@ export function parseDictionaryProArgs(argv: string[]): DictionaryProQuery {
 
     if (token === "--dry-run") {
       draft.dryRun = true;
+      continue;
+    }
+
+    if (token === "--list-providers") {
+      draft.listProviders = true;
       continue;
     }
 
@@ -88,16 +104,73 @@ export function parseDictionaryProArgs(argv: string[]): DictionaryProQuery {
       continue;
     }
 
+    if (token === "--provider" || token === "-p") {
+      draft.provider = parseArgValue(argv, i, token);
+      i += 1;
+      continue;
+    }
+
+    if (token === "--model") {
+      draft.model = parseArgValue(argv, i, token);
+      i += 1;
+      continue;
+    }
+
+    if (token === "--api-key") {
+      draft.apiKey = parseArgValue(argv, i, token);
+      i += 1;
+      continue;
+    }
+
+    if (token === "--base-url") {
+      draft.baseUrl = parseArgValue(argv, i, token);
+      i += 1;
+      continue;
+    }
+
+    if (token === "--protocol") {
+      const protocol = parseArgValue(argv, i, token);
+      if (!VALID_PROTOCOLS.includes(protocol as (typeof VALID_PROTOCOLS)[number])) {
+        throw new Error(`Invalid protocol "${protocol}". Allowed: ${VALID_PROTOCOLS.join(", ")}`);
+      }
+      draft.protocol = protocol as (typeof VALID_PROTOCOLS)[number];
+      i += 1;
+      continue;
+    }
+
+    if (token === "--max-tokens") {
+      const rawValue = parseArgValue(argv, i, token);
+      const parsedValue = Number(rawValue);
+      if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
+        throw new Error(`Invalid --max-tokens "${rawValue}". Expected a positive integer.`);
+      }
+      draft.maxTokens = parsedValue;
+      i += 1;
+      continue;
+    }
+
+    if (token === "--cloudflare-account-id") {
+      draft.cloudflareAccountId = parseArgValue(argv, i, token);
+      i += 1;
+      continue;
+    }
+
+    if (token === "--cloudflare-gateway-id") {
+      draft.cloudflareGatewayId = parseArgValue(argv, i, token);
+      i += 1;
+      continue;
+    }
+
     throw new Error(`Unknown option: ${token}`);
   }
 
-  if (!draft.text || !draft.text.trim()) {
+  if (!draft.listProviders && (!draft.text || !draft.text.trim())) {
     throw new Error(`Missing required --text. Run with --help for usage.`);
   }
 
   const query: DictionaryProQuery = {
     ...draft,
-    text: draft.text.trim(),
+    text: draft.text?.trim(),
   };
 
   if (query.context) {
@@ -109,12 +182,34 @@ export function parseDictionaryProArgs(argv: string[]): DictionaryProQuery {
 
 export async function runDictionaryProCli(argv: string[]): Promise<void> {
   const query = parseDictionaryProArgs(argv);
+
+  if (query.listProviders) {
+    console.log(ToeflSlangClient.listProviders());
+    return;
+  }
+
+  if (!query.text) {
+    throw new Error("Missing required --text.");
+  }
+
   const prompts = buildDictionaryProPrompts(query);
+  const client = new ToeflSlangClient({
+    provider: query.provider ?? "openai",
+    model: query.model,
+    apiKey: query.apiKey,
+    baseUrl: query.baseUrl,
+    protocol: query.protocol,
+    maxTokens: query.maxTokens,
+    accountId: query.cloudflareAccountId,
+    gatewayId: query.cloudflareGatewayId,
+  });
+  const preview = client.formatPreview();
 
   console.log("Dictionary Pro");
   console.log(`text: ${query.text}`);
   console.log(`mode: ${query.mode ?? "auto-detect"}`);
   console.log(`target: ${query.target ?? "toefl-writing"}`);
+  console.log(preview);
   if (query.context) {
     console.log(`context: ${query.context}`);
   }
@@ -127,6 +222,5 @@ export async function runDictionaryProCli(argv: string[]): Promise<void> {
     return;
   }
 
-  const client = new ToeflSlangClient();
   await client.chatStreaming(prompts.systemPrompt, prompts.userPrompt);
 }

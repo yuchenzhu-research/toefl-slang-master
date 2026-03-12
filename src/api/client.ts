@@ -1,62 +1,55 @@
-/**
- * OpenAI API 客户端模块
- * 封装流式请求处理
- */
+import {
+  formatProviderCatalog,
+  formatResolvedProviderPreview,
+  generateTextWithProvider,
+  resolveProviderConfig,
+} from "../providers/runtime";
+import { ProviderApi, ProviderResolutionOptions, ResolvedProvider } from "../providers/types";
 
-import OpenAI from "openai";
-import { getApiKey } from "../auth/manager";
+export interface ToeflSlangClientOptions extends ProviderResolutionOptions {}
 
 export class ToeflSlangClient {
-  private client: OpenAI;
+  constructor(private readonly options: ToeflSlangClientOptions = { provider: "openai" }) {}
 
-  constructor() {
-    const apiKey = getApiKey();
-    this.client = new OpenAI({
-      apiKey,
-    });
-  }
-
-  /**
-   * 流式聊天请求
-   * @param systemPrompt System Prompt
-   * @param userInput 用户输入
-   */
   async chatStreaming(systemPrompt: string, userInput: string): Promise<void> {
-    const stream = await this.client.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userInput },
-      ],
-      stream: true,
-      temperature: 0.3,
+    const response = await generateTextWithProvider({
+      provider: this.options,
+      request: {
+        systemPrompt,
+        userPrompt: userInput,
+        temperature: 0.3,
+      },
     });
 
     process.stdout.write("\n");
-
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content;
-      if (content) {
-        process.stdout.write(content);
-      }
-    }
-
+    process.stdout.write(response.text);
     process.stdout.write("\n\n");
   }
 
-  /**
-   * 非流式聊天请求（用于测试）
-   */
   async chat(systemPrompt: string, userInput: string): Promise<string> {
-    const response = await this.client.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userInput },
-      ],
-      temperature: 0.3,
+    const response = await generateTextWithProvider({
+      provider: this.options,
+      request: {
+        systemPrompt,
+        userPrompt: userInput,
+        temperature: 0.3,
+      },
     });
 
-    return response.choices[0]?.message?.content || "";
+    return response.text;
+  }
+
+  previewProvider(): ResolvedProvider {
+    return resolveProviderConfig(this.options, { requireApiKey: false });
+  }
+
+  formatPreview(): string {
+    return formatResolvedProviderPreview(this.previewProvider());
+  }
+
+  static listProviders(): string {
+    return formatProviderCatalog();
   }
 }
+
+export type { ProviderApi };

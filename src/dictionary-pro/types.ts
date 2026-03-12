@@ -1,3 +1,5 @@
+import { ProviderApi } from "../providers/types";
+
 export type DictionaryProMode = "meaning" | "conversion" | "upgrade" | "comparison";
 
 export type DictionaryProTarget =
@@ -7,10 +9,18 @@ export type DictionaryProTarget =
   | "daily-english";
 
 export interface DictionaryProQuery {
-  text: string;
+  text?: string;
   context?: string;
   mode?: DictionaryProMode;
   target?: DictionaryProTarget;
   dryRun?: boolean;
+  listProviders?: boolean;
+  provider?: string;
+  model?: string;
+  apiKey?: string;
+  baseUrl?: string;
+  protocol?: ProviderApi;
+  maxTokens?: number;
+  cloudflareAccountId?: string;
+  cloudflareGatewayId?: string;
 }
-

@@ -26,7 +26,7 @@
 <!-- Badges -->
 ![Version](https://img.shields.io/badge/version-1.0.0-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)
-![Engine](https://img.shields.io/badge/OpenAI-API-412991)
+![Engine](https://img.shields.io/badge/Engine-Multi--Provider-412991)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Vibe](https://img.shields.io/badge/Philosophy-Vibe%20Engineering-FF69B4)
 
@@ -50,7 +50,7 @@
 
 ## 🎯 核心模块
 
-基于 OpenClaw 架构的 API 引擎驱动，三大核心功能覆盖你的英语学习全链路：
+基于 OpenClaw 架构的多厂商 API 引擎驱动，三大核心功能覆盖你的英语学习全链路：
 
 | 模块名称 | 核心定位 | 五维输出 |
 | :--- | :--- | :--- |
@@ -93,9 +93,13 @@ toefl-slang-master/
 │   └── skills/              # 兼容旧工具链的历史目录
 ├── src/                     # TypeScript 源代码
 │   ├── api/                 # API 集成层
-│   │   └── client.ts        # OpenAI API 客户端
+│   │   └── client.ts        # 多厂商统一客户端入口
 │   ├── auth/                # 鉴权管理层
-│   │   └── manager.ts       # OpenClaw-style 配置管理
+│   │   └── manager.ts       # OpenClaw-style 本地配置与密钥解析
+│   ├── providers/           # OpenClaw-style provider runtime
+│   │   ├── catalog.ts       # 厂商目录与默认配置
+│   │   ├── runtime.ts       # 协议分发与执行
+│   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama 适配器
 │   └── index.ts             # 入口文件（读取 skills/dictionary-pro）
 ├── package.json             # 依赖配置
 ├── tsconfig.json            # TypeScript 配置
@@ -105,7 +109,7 @@ toefl-slang-master/
 | 技术栈 | 版本 | 用途 |
 | :--- | :--- | :--- |
 | **TypeScript** | ^5.9 | 类型安全与快速开发 |
-| **OpenAI SDK** | ^6.25 | 原生 API 客户端 |
+| **Provider Runtime** | OpenClaw-style | 多厂商协议适配与统一调用 |
 | **dotenv** | ^17.3 | 环境变量加载 |
 | **ts-node** | ^10.9 | 直接运行 TypeScript |
 | **@types/node** | ^25.3 | Node.js 类型定义 |
@@ -139,7 +143,8 @@ npm install
 
 # 2. 配置 API 密钥
 cp .env.example .env
-# 编辑 .env 文件，填入你的 OPENAI_API_KEY
+# 编辑 .env 文件，填入你要用的厂商 API key
+# 例如 OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
 # 3. 运行项目
 npm start
@@ -151,11 +156,18 @@ npm start
 # 最简查询（自动模式）
 npm run dict -- --text "a big deal"
 
+# 查看当前支持的 provider
+npm run dict:providers
+
 # 指定模式 + 目标场景
 npm run dict -- --text "gonna" --mode conversion --target toefl-writing
 
 # 加上下文做消歧
 npm run dict -- --text "cap" --context "The proposal puts a cap on tuition increases."
+
+# 切换厂商与模型
+npm run dict -- --provider google --model gemini-3-pro --text "cap"
+npm run dict -- --provider anthropic --model claude-sonnet-4-5 --text "gonna"
 
 # 只看 prompt，不发 API（回归调试用）
 npm run dict:dry
