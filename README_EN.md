@@ -139,10 +139,26 @@ npm install
 
 # 2. Configure API key
 cp .env.example .env
-# Edit .env file, fill in your Anthropic API Key
+# Edit .env file, fill in your OPENAI_API_KEY
 
 # 3. Run the project
 npm start
+```
+
+### Dictionary Pro CLI Examples
+
+```bash
+# Minimal query (auto mode)
+npm run dict -- --text "a big deal"
+
+# Explicit mode + target scenario
+npm run dict -- --text "gonna" --mode conversion --target toefl-writing
+
+# Add context for disambiguation
+npm run dict -- --text "cap" --context "The proposal puts a cap on tuition increases."
+
+# Prompt-only run (no API call)
+npm run dict:dry
 ```
 
 **Or use Claude Code to call skills directly:**

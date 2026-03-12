@@ -139,10 +139,26 @@ npm install
 
 # 2. 配置 API 密钥
 cp .env.example .env
-# 编辑 .env 文件，填入你的 Anthropic API Key
+# 编辑 .env 文件，填入你的 OPENAI_API_KEY
 
 # 3. 运行项目
 npm start
+```
+
+### Dictionary Pro 操作示例
+
+```bash
+# 最简查询（自动模式）
+npm run dict -- --text "a big deal"
+
+# 指定模式 + 目标场景
+npm run dict -- --text "gonna" --mode conversion --target toefl-writing
+
+# 加上下文做消歧
+npm run dict -- --text "cap" --context "The proposal puts a cap on tuition increases."
+
+# 只看 prompt，不发 API（回归调试用）
+npm run dict:dry
 ```
 
 **或者使用 Claude Code 直接调用技能：**

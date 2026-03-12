@@ -65,3 +65,4 @@ Every recommendation must satisfy all of the following:
 ## Resource
 
 - Read `references/output-contract.md` when formatting a response or when the input type is ambiguous.
+- Read `references/evaluation-cases.md` when running prompt regression checks after updates.
