@@ -50,13 +50,13 @@ Have you ever been stuck in this dilemma?
 
 ## 🎯 Core Modules
 
-Powered by an OpenClaw-style multi-provider API engine, three core functions cover your entire English learning journey:
+Powered by an OpenClaw-style multi-provider API engine, the project currently centers on `Dictionary Pro`, while the other modules remain at the skill-design stage:
 
-| Module | Core Purpose | 5-D Output |
+| Module | Core Purpose | Current Status |
 | :--- | :--- | :--- |
-| **Dictionary Pro** | Expression-Level Register Conversion | **Translation · Slang · Alignment · Frequency · Analysis** |
-| **TOEFL Coach** | Pure Academic Logic Diagnosis | **Score · Logic · Vocabulary · Structure · Optimization** |
-| **Content Parser** | Deep Foreign Publication Cultural Analysis | **Overview · Breakdown · Slang · Culture · Conversion** |
+| **Dictionary Pro** | Expression-Level Register Conversion | **Runnable now**: CLI, multi-provider API, structured output, repair loop, evaluation |
+| **TOEFL Coach** | Pure Academic Logic Diagnosis | **Not wired into runtime yet**: currently only skill direction and docs |
+| **Content Parser** | Deep Foreign Publication Cultural Analysis | **Not wired into runtime yet**: currently only skill direction and docs |
 
 ### Dictionary Pro Example
 
@@ -80,6 +80,42 @@ Powered by an OpenClaw-style multi-provider API engine, three core functions cov
 
 ---
 
+## 📌 Current Scope
+
+### Implemented
+
+| Capability | Current Status |
+| :--- | :--- |
+| **Dictionary Pro CLI query** | Ready to run directly via `npm run dict -- ...` |
+| **Multi-provider API integration** | OpenClaw-style provider runtime with API-key-based access |
+| **Structured output** | JSON contract validation with fixed 5-slot rendering |
+| **Auto-repair** | Invalid first-pass output can be retried with validation feedback |
+| **Regression evaluation** | `npm run dict:eval` runs case batches and generates reports |
+| **Dry run debugging** | Prompt-only mode without sending a real API request |
+
+### Not Implemented Yet
+
+| Capability | Current Status |
+| :--- | :--- |
+| **TOEFL Coach runtime** | No executable CLI / API yet |
+| **Content Parser runtime** | No executable CLI / API yet |
+| **Web UI or GUI** | Not available yet; the main entry is still CLI |
+| **OAuth / Plus-account mode** | Not supported; API-key mode only |
+| **General encyclopedic dictionary** | Not the current focus; proper nouns like `Iceland` are only partially supported |
+| **Retrieval / corpus layer** | Still mostly model-generated; no external dictionary or corpus retrieval yet |
+
+### What Dictionary Pro Handles Best Right Now
+
+| Input Type | Current Quality |
+| :--- | :--- |
+| **Slang / informal expressions** | Strong, such as `gonna`, `kinda`, `tons of` |
+| **Weak vocabulary upgrades** | Strong, such as `good`, `get`, `big deal` |
+| **Near-synonym comparison** | Strong, such as `however vs nevertheless` |
+| **Ambiguous words with context** | Usable, such as `cap` and `issue`, especially with a sentence |
+| **Proper nouns / places / names** | Limited, such as `Iceland`, because they are still forced into the word-card framework |
+
+---
+
 ## 🏗️ Technical Architecture
 
 ```
@@ -100,7 +136,8 @@ toefl-slang-master/
 │   │   ├── catalog.ts       # Provider catalog and defaults
 │   │   ├── runtime.ts       # Protocol dispatch and execution
 │   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama adapters
-│   └── index.ts             # Entry point (reads skills/dictionary-pro)
+│   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
+│   └── index.ts             # Entry point (currently defaults to Dictionary Pro)
 ├── package.json             # Dependencies
 ├── tsconfig.json            # TypeScript configuration
 └── README.md / README_EN.md # Bilingual documentation
@@ -146,9 +183,11 @@ cp .env.example .env
 # Edit .env file and add the provider key you want to use
 # e.g. OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
-# 3. Run the project
-npm start
+# 3. Run the main finished feature (Dictionary Pro)
+npm run dict -- --text "gonna"
 ```
+
+> **Note**: the only fully runnable product entry right now is `Dictionary Pro`. `TOEFL Coach` and `Content Parser` are not executable yet.
 
 ### Dictionary Pro CLI Examples
 
@@ -177,6 +216,19 @@ npm run dict:eval -- --provider openai --limit 3
 
 # Filter by case id and emit JSON report
 npm run dict:eval -- --provider anthropic --case DP-003 --json
+```
+
+### Recommended CLI Entry Points
+
+```bash
+# Query one slang item and render the fixed word card
+npm run dict -- --provider openai --text "gonna" --mode conversion --target toefl-writing
+
+# Query an ambiguous word with context
+npm run dict -- --provider openai --text "cap" --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
+
+# Compare two near-synonyms
+npm run dict -- --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
 ```
 
 **Or use Claude Code to call skills directly:**

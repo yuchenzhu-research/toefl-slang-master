@@ -50,13 +50,13 @@
 
 ## 🎯 核心模块
 
-基于 OpenClaw 架构的多厂商 API 引擎驱动，三大核心功能覆盖你的英语学习全链路：
+基于 OpenClaw 架构的多厂商 API 引擎驱动，项目当前以 `Dictionary Pro` 为主入口，其他模块仍处于技能设计阶段：
 
-| 模块名称 | 核心定位 | 五维输出 |
+| 模块名称 | 核心定位 | 当前状态 |
 | :--- | :--- | :--- |
-| **深度词典 (Dictionary Pro)** | 表达级语域转换 | **翻译 · 俚语 · 对标 · 频次 · 例析** |
-| **托福教练 (TOEFL Coach)** | 纯学术逻辑诊断 | **评分 · 逻辑 · 用词 · 句式 · 优化** |
-| **素材拆解 (Content Parser)** | 深度外刊文化分析 | **导读 · 拆解 · 俚语 · 文化 · 转化** |
+| **深度词典 (Dictionary Pro)** | 表达级语域转换 | **已可运行**：CLI、多厂商 API、结构化输出、自动修复、评测 |
+| **托福教练 (TOEFL Coach)** | 纯学术逻辑诊断 | **未接入运行时**：目前只有技能方向与文档草案 |
+| **素材拆解 (Content Parser)** | 深度外刊文化分析 | **未接入运行时**：目前只有技能方向与文档草案 |
 
 ### Dictionary Pro 示例
 
@@ -80,6 +80,42 @@
 
 ---
 
+## 📌 当前可用范围
+
+### 已可实施
+
+| 能力 | 当前状态 |
+| :--- | :--- |
+| **Dictionary Pro 命令行查询** | 已可直接运行，入口是 `npm run dict -- ...` |
+| **多厂商 API 接入** | 已接入 OpenClaw-style provider runtime，支持 API key 模式 |
+| **结构化输出** | 已支持 JSON contract 校验，并可渲染为固定 5 维词卡 |
+| **自动修复** | 首轮输出不合法时，会按校验错误自动重试 |
+| **回归评测** | 已支持 `npm run dict:eval` 批量跑 case 并生成报告 |
+| **Dry Run 调试** | 已支持只看 prompt，不发真实 API 请求 |
+
+### 暂未实施
+
+| 能力 | 当前状态 |
+| :--- | :--- |
+| **TOEFL Coach 运行时** | 尚未提供可执行 CLI / API |
+| **Content Parser 运行时** | 尚未提供可执行 CLI / API |
+| **Web 页面或 GUI** | 目前没有，当前主入口是命令行 |
+| **OAuth / Plus 账号模式** | 不做，当前只支持 API key 模式 |
+| **通用百科词典** | 不是当前重点，专有名词如 `Iceland` 这类输入支持有限 |
+| **语料 / 词典检索层** | 目前主要依赖模型生成，还未接入外部词典或 corpus 检索 |
+
+### Dictionary Pro 最适合处理什么输入？
+
+| 输入类型 | 当前表现 |
+| :--- | :--- |
+| **口语词 / 俚语** | 最强，例如 `gonna`、`kinda`、`tons of` |
+| **低阶词升级** | 较强，例如 `good`、`get`、`big deal` |
+| **近义词比较** | 较强，例如 `however vs nevertheless` |
+| **多义词消歧** | 可用，例如 `cap`、`issue`，但最好带上下文 |
+| **专有名词 / 地名 / 人名** | 一般，例如 `Iceland`，目前会被硬套进词卡框架 |
+
+---
+
 ## 🏗️ 技术架构
 
 ```
@@ -100,7 +136,8 @@ toefl-slang-master/
 │   │   ├── catalog.ts       # 厂商目录与默认配置
 │   │   ├── runtime.ts       # 协议分发与执行
 │   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama 适配器
-│   └── index.ts             # 入口文件（读取 skills/dictionary-pro）
+│   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
+│   └── index.ts             # 入口文件（当前默认进入 Dictionary Pro）
 ├── package.json             # 依赖配置
 ├── tsconfig.json            # TypeScript 配置
 └── README.md / README_EN.md # 双语文档
@@ -146,9 +183,11 @@ cp .env.example .env
 # 编辑 .env 文件，填入你要用的厂商 API key
 # 例如 OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
-# 3. 运行项目
-npm start
+# 3. 运行当前已完成的主功能（Dictionary Pro）
+npm run dict -- --text "gonna"
 ```
+
+> **说明**：当前真正可直接运行的是 `Dictionary Pro`。`TOEFL Coach` 和 `Content Parser` 还没有接成可执行入口。
 
 ### Dictionary Pro 操作示例
 
@@ -177,6 +216,19 @@ npm run dict:eval -- --provider openai --limit 3
 
 # 按 case 过滤并输出 JSON 报告
 npm run dict:eval -- --provider anthropic --case DP-003 --json
+```
+
+### 当前最推荐的命令行入口
+
+```bash
+# 查一个口语词，输出固定词卡
+npm run dict -- --provider openai --text "gonna" --mode conversion --target toefl-writing
+
+# 查一个多义词，并给上下文
+npm run dict -- --provider openai --text "cap" --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
+
+# 对比两个近义表达
+npm run dict -- --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
 ```
 
 **或者使用 Claude Code 直接调用技能：**
