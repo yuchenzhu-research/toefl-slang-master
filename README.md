@@ -56,7 +56,7 @@
 | :--- | :--- | :--- |
 | **深度词典 (Dictionary Pro)** | 表达级语域转换 | **已可运行**：CLI、多厂商 API、结构化输出、自动修复、评测 |
 | **托福教练 (TOEFL Coach)** | 纯学术逻辑诊断 | **未接入运行时**：目前只有技能方向与文档草案 |
-| **素材拆解 (Content Parser)** | 深度外刊文化分析 | **未接入运行时**：目前只有技能方向与文档草案 |
+| **素材拆解 (Content Parser)** | 深度外刊文化分析 | **初始框架已可运行**：PDF/MD/TXT 读取、结构化输出、CLI |
 
 ### Dictionary Pro 示例
 
@@ -87,6 +87,7 @@
 | 能力 | 当前状态 |
 | :--- | :--- |
 | **Dictionary Pro 命令行查询** | 已可直接运行，入口是 `npm run dict -- ...` |
+| **Content Parser 初始框架** | 已可直接运行，入口是 `npm run content -- ...` |
 | **多厂商 API 接入** | 已接入 OpenClaw-style provider runtime，支持 API key 模式 |
 | **结构化输出** | 已支持 JSON contract 校验，并可渲染为固定 5 维词卡 |
 | **自动修复** | 首轮输出不合法时，会按校验错误自动重试 |
@@ -98,7 +99,8 @@
 | 能力 | 当前状态 |
 | :--- | :--- |
 | **TOEFL Coach 运行时** | 尚未提供可执行 CLI / API |
-| **Content Parser 运行时** | 尚未提供可执行 CLI / API |
+| **PDF OCR / 图片型 PDF** | 尚未支持，当前只处理可提取文本的 PDF |
+| **Content Parser 分块深读** | 目前只有单次抽取 + 单次解析骨架，长文分块还没做 |
 | **Web 页面或 GUI** | 目前没有，当前主入口是命令行 |
 | **OAuth / Plus 账号模式** | 不做，当前只支持 API key 模式 |
 | **通用百科词典** | 不是当前重点，专有名词如 `Iceland` 这类输入支持有限 |
@@ -136,6 +138,7 @@ toefl-slang-master/
 │   │   ├── catalog.ts       # 厂商目录与默认配置
 │   │   ├── runtime.ts       # 协议分发与执行
 │   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama 适配器
+│   ├── content-parser/      # CLI / extractor / prompt / validator / runner
 │   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
 │   └── index.ts             # 入口文件（当前默认进入 Dictionary Pro）
 ├── package.json             # 依赖配置
@@ -183,11 +186,12 @@ cp .env.example .env
 # 编辑 .env 文件，填入你要用的厂商 API key
 # 例如 OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
-# 3. 运行当前已完成的主功能（Dictionary Pro）
+# 3. 运行当前已完成的功能
 npm run dict -- --text "gonna"
+npm run content -- --file README.md --extract-only
 ```
 
-> **说明**：当前真正可直接运行的是 `Dictionary Pro`。`TOEFL Coach` 和 `Content Parser` 还没有接成可执行入口。
+> **说明**：当前可直接运行的是 `Dictionary Pro` 和 `Content Parser` 初始框架。`TOEFL Coach` 还没有接成可执行入口。
 
 ### Dictionary Pro 操作示例
 
@@ -229,6 +233,22 @@ npm run dict -- --provider openai --text "cap" --context "The proposal puts a ca
 
 # 对比两个近义表达
 npm run dict -- --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
+```
+
+### Content Parser 操作示例
+
+```bash
+# 只做 PDF / 文本抽取，不发模型
+npm run content -- --file README.md --extract-only
+
+# 读取 PDF 并生成结构化笔记
+npm run content -- --pdf ./article.pdf --provider openai --focus full
+
+# 只看 prompt，检查 PDF 提取后的素材如何进入模型
+npm run content -- --pdf ./article.pdf --focus syntax --dry-run
+
+# 输出 JSON
+npm run content -- --file README.md --provider openai --json
 ```
 
 **或者使用 Claude Code 直接调用技能：**

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Parser"
+  short_description: "PDF-to-study-note parser for TOEFL learners"
+  default_prompt: "Use $content-parser to read this article or PDF and turn it into structured TOEFL study notes."

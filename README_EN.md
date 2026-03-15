@@ -56,7 +56,7 @@ Powered by an OpenClaw-style multi-provider API engine, the project currently ce
 | :--- | :--- | :--- |
 | **Dictionary Pro** | Expression-Level Register Conversion | **Runnable now**: CLI, multi-provider API, structured output, repair loop, evaluation |
 | **TOEFL Coach** | Pure Academic Logic Diagnosis | **Not wired into runtime yet**: currently only skill direction and docs |
-| **Content Parser** | Deep Foreign Publication Cultural Analysis | **Not wired into runtime yet**: currently only skill direction and docs |
+| **Content Parser** | Deep Foreign Publication Cultural Analysis | **Initial framework runnable**: PDF/MD/TXT ingestion, structured output, CLI |
 
 ### Dictionary Pro Example
 
@@ -87,6 +87,7 @@ Powered by an OpenClaw-style multi-provider API engine, the project currently ce
 | Capability | Current Status |
 | :--- | :--- |
 | **Dictionary Pro CLI query** | Ready to run directly via `npm run dict -- ...` |
+| **Content Parser initial framework** | Ready to run directly via `npm run content -- ...` |
 | **Multi-provider API integration** | OpenClaw-style provider runtime with API-key-based access |
 | **Structured output** | JSON contract validation with fixed 5-slot rendering |
 | **Auto-repair** | Invalid first-pass output can be retried with validation feedback |
@@ -98,7 +99,8 @@ Powered by an OpenClaw-style multi-provider API engine, the project currently ce
 | Capability | Current Status |
 | :--- | :--- |
 | **TOEFL Coach runtime** | No executable CLI / API yet |
-| **Content Parser runtime** | No executable CLI / API yet |
+| **PDF OCR / image-only PDFs** | Not supported yet; current framework expects extractable text PDFs |
+| **Content Parser chunked deep reading** | Only a single-pass extraction + parsing skeleton exists so far |
 | **Web UI or GUI** | Not available yet; the main entry is still CLI |
 | **OAuth / Plus-account mode** | Not supported; API-key mode only |
 | **General encyclopedic dictionary** | Not the current focus; proper nouns like `Iceland` are only partially supported |
@@ -136,6 +138,7 @@ toefl-slang-master/
 │   │   ├── catalog.ts       # Provider catalog and defaults
 │   │   ├── runtime.ts       # Protocol dispatch and execution
 │   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama adapters
+│   ├── content-parser/      # CLI / extractor / prompt / validator / runner
 │   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
 │   └── index.ts             # Entry point (currently defaults to Dictionary Pro)
 ├── package.json             # Dependencies
@@ -183,11 +186,12 @@ cp .env.example .env
 # Edit .env file and add the provider key you want to use
 # e.g. OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
-# 3. Run the main finished feature (Dictionary Pro)
+# 3. Run the currently finished features
 npm run dict -- --text "gonna"
+npm run content -- --file README.md --extract-only
 ```
 
-> **Note**: the only fully runnable product entry right now is `Dictionary Pro`. `TOEFL Coach` and `Content Parser` are not executable yet.
+> **Note**: the runnable product entries right now are `Dictionary Pro` and the initial `Content Parser` framework. `TOEFL Coach` is not executable yet.
 
 ### Dictionary Pro CLI Examples
 
@@ -229,6 +233,22 @@ npm run dict -- --provider openai --text "cap" --context "The proposal puts a ca
 
 # Compare two near-synonyms
 npm run dict -- --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
+```
+
+### Content Parser CLI Examples
+
+```bash
+# Extraction only, no model call
+npm run content -- --file README.md --extract-only
+
+# Read a PDF and generate structured notes
+npm run content -- --pdf ./article.pdf --provider openai --focus full
+
+# Prompt-only mode to inspect extracted PDF text before generation
+npm run content -- --pdf ./article.pdf --focus syntax --dry-run
+
+# Emit validated JSON
+npm run content -- --file README.md --provider openai --json
 ```
 
 **Or use Claude Code to call skills directly:**
