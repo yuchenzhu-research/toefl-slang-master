@@ -192,7 +192,7 @@ npm run content -- --file README.md --extract-only
 
 # 4. If you want a direct command like openclaw
 npm link
-dictpro --text "gonna"
+dictpro "gonna"
 ```
 
 > **Note**: the runnable product entries right now are `Dictionary Pro` and the initial `Content Parser` framework. `TOEFL Coach` is not executable yet.
@@ -202,9 +202,11 @@ dictpro --text "gonna"
 ```bash
 # Minimal query (auto mode)
 npm run dict -- --text "a big deal"
+dictpro "a big deal"
 
 # List supported providers
 npm run dict:providers
+dictpro providers
 
 # Explicit mode + target scenario
 npm run dict -- --text "gonna" --mode conversion --target toefl-writing
@@ -221,6 +223,7 @@ npm run dict:dry
 
 # Run evaluation cases (requires a valid API key)
 npm run dict:eval -- --provider openai --limit 3
+dictpro eval --provider openai --limit 3
 
 # Filter by case id and emit JSON report
 npm run dict:eval -- --provider anthropic --case DP-003 --json
@@ -233,16 +236,16 @@ npm run dict:eval -- --provider anthropic --case DP-003 --json
 npm link
 
 # Query one slang item and render the fixed word card
-dictpro --provider openai --text "gonna" --mode conversion --target toefl-writing
+dictpro "gonna" --provider openai --mode conversion --target toefl-writing
 
 # Query an ambiguous word with context
-dictpro --provider openai --text "cap" --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
+dictpro "cap" --provider openai --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
 
 # Compare two near-synonyms
-dictpro --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
+dictpro "obtain vs acquire" --provider openai --mode comparison --target toefl-writing
 
 # Run evaluation
-dictpro-eval --provider openai --limit 3
+dictpro eval --provider openai --limit 3
 ```
 
 ### Content Parser CLI Examples

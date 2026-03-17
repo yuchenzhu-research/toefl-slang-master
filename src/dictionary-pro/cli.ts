@@ -18,11 +18,14 @@ function printUsage(): void {
 Dictionary Pro CLI
 
 Usage:
+  dictpro "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
   dictpro --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
+  dictpro providers
+  dictpro eval --provider <id> [--case <id-or-text>] [--limit <n>] [--json]
   npm run dict -- --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
 
 Options:
-  --text, -t      Required. Word, phrase, or sentence fragment to process.
+  --text, -t      Word, phrase, or sentence fragment to process. You can also pass it as the first positional argument.
   --context, -c   Optional. Extra context for disambiguation.
   --mode, -m      Optional. meaning | conversion | upgrade | comparison
   --target, -g    Optional. toefl-writing | toefl-speaking | general-academic | daily-english
@@ -63,6 +66,14 @@ export function parseDictionaryProArgs(argv: string[]): DictionaryProQuery {
     if (token === "--help" || token === "-h") {
       printUsage();
       process.exit(0);
+    }
+
+    if (!token.startsWith("-")) {
+      if (!draft.text) {
+        draft.text = token;
+        continue;
+      }
+      throw new Error(`Unexpected positional argument: ${token}`);
     }
 
     if (token === "--dry-run") {

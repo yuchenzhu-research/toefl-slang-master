@@ -23,6 +23,7 @@ function printUsage(): void {
   console.log(`Dictionary Pro Eval
 
 Usage:
+  dictpro eval --provider <id> [--model <id>] [--case <id-or-text>] [--limit <n>] [--json]
   dictpro-eval --provider <id> [--model <id>] [--case <id-or-text>] [--limit <n>] [--json]
   npm run dict:eval -- --provider <id> [--model <id>] [--case <id-or-text>] [--limit <n>] [--json]
 
@@ -166,8 +167,8 @@ function parseArgs(argv: string[]): EvalCliOptions {
   return options as EvalCliOptions;
 }
 
-async function main(): Promise<void> {
-  const options = parseArgs(process.argv.slice(2));
+export async function runDictionaryProEvalCli(argv: string[]): Promise<void> {
+  const options = parseArgs(argv);
   const report = await runDictionaryProEvaluation({
     clientOptions: {
       provider: options.provider,
@@ -196,7 +197,12 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
-  console.error("Dictionary Pro eval error:", error instanceof Error ? error.message : String(error));
-  process.exit(1);
-});
+if (require.main === module) {
+  runDictionaryProEvalCli(process.argv.slice(2)).catch((error) => {
+    console.error(
+      "Dictionary Pro eval error:",
+      error instanceof Error ? error.message : String(error),
+    );
+    process.exit(1);
+  });
+}
