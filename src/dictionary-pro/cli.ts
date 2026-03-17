@@ -18,7 +18,8 @@ function printUsage(): void {
 Dictionary Pro CLI
 
 Usage:
-  npm start -- --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
+  dictpro --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
+  npm run dict -- --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
 
 Options:
   --text, -t      Required. Word, phrase, or sentence fragment to process.

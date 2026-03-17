@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "dictpro": "./bin/dictpro.cjs",
+    "dictpro-eval": "./bin/dictpro-eval.cjs"
+  },
   "scripts": {
     "start": "ts-node src/index.ts",
     "dict": "ts-node src/index.ts",

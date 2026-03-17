@@ -189,6 +189,10 @@ cp .env.example .env
 # 3. 运行当前已完成的功能
 npm run dict -- --text "gonna"
 npm run content -- --file README.md --extract-only
+
+# 4. 如果你想像 openclaw 一样直接输入命令
+npm link
+dictpro --text "gonna"
 ```
 
 > **说明**：当前可直接运行的是 `Dictionary Pro` 和 `Content Parser` 初始框架。`TOEFL Coach` 还没有接成可执行入口。
@@ -225,14 +229,20 @@ npm run dict:eval -- --provider anthropic --case DP-003 --json
 ### 当前最推荐的命令行入口
 
 ```bash
+# 先把当前仓库注册为本地 CLI
+npm link
+
 # 查一个口语词，输出固定词卡
-npm run dict -- --provider openai --text "gonna" --mode conversion --target toefl-writing
+dictpro --provider openai --text "gonna" --mode conversion --target toefl-writing
 
 # 查一个多义词，并给上下文
-npm run dict -- --provider openai --text "cap" --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
+dictpro --provider openai --text "cap" --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
 
 # 对比两个近义表达
-npm run dict -- --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
+dictpro --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
+
+# 跑评测
+dictpro-eval --provider openai --limit 3
 ```
 
 ### Content Parser 操作示例

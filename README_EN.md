@@ -189,6 +189,10 @@ cp .env.example .env
 # 3. Run the currently finished features
 npm run dict -- --text "gonna"
 npm run content -- --file README.md --extract-only
+
+# 4. If you want a direct command like openclaw
+npm link
+dictpro --text "gonna"
 ```
 
 > **Note**: the runnable product entries right now are `Dictionary Pro` and the initial `Content Parser` framework. `TOEFL Coach` is not executable yet.
@@ -225,14 +229,20 @@ npm run dict:eval -- --provider anthropic --case DP-003 --json
 ### Recommended CLI Entry Points
 
 ```bash
+# Register this repo as a local CLI first
+npm link
+
 # Query one slang item and render the fixed word card
-npm run dict -- --provider openai --text "gonna" --mode conversion --target toefl-writing
+dictpro --provider openai --text "gonna" --mode conversion --target toefl-writing
 
 # Query an ambiguous word with context
-npm run dict -- --provider openai --text "cap" --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
+dictpro --provider openai --text "cap" --context "The proposal puts a cap on tuition increases." --mode meaning --target general-academic
 
 # Compare two near-synonyms
-npm run dict -- --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
+dictpro --provider openai --text "obtain vs acquire" --mode comparison --target toefl-writing
+
+# Run evaluation
+dictpro-eval --provider openai --limit 3
 ```
 
 ### Content Parser CLI Examples

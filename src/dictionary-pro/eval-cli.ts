@@ -23,6 +23,7 @@ function printUsage(): void {
   console.log(`Dictionary Pro Eval
 
 Usage:
+  dictpro-eval --provider <id> [--model <id>] [--case <id-or-text>] [--limit <n>] [--json]
   npm run dict:eval -- --provider <id> [--model <id>] [--case <id-or-text>] [--limit <n>] [--json]
 
 Options:
