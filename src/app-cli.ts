@@ -1,0 +1,86 @@
+import { runContentParserCli } from "./content-parser/cli";
+import { runDictionaryProCli } from "./dictionary-pro/cli";
+import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
+import { runToeflWritingCli } from "./toefl-writing/cli";
+import { ToeflSlangClient } from "./api/client";
+
+function printUsage(): void {
+  const usage = `
+TOEFL Slang Master CLI
+
+Usage:
+  tsm dict "<expression>" [options]
+  tsm dict eval [options]
+  tsm coach "<essay-or-paragraph>" [options]
+  tsm content --file <article.md> [options]
+  tsm providers
+
+Commands:
+  dict       Run Dictionary Pro.
+  coach      Run TOEFL Coach.
+  content    Run Content Parser.
+  providers  List all supported model providers.
+  help       Show this message.
+
+Examples:
+  tsm dict "gonna" --provider openai --mode conversion --target toefl-writing
+  tsm dict eval --provider openai --limit 3
+  tsm coach "I think technology is good because it helps us communicate." --dry-run
+  tsm content --file README.md --extract-only
+`;
+
+  console.log(usage.trim());
+}
+
+export async function runTopLevelCli(argv: string[]): Promise<void> {
+  if (argv.length === 0) {
+    printUsage();
+    return;
+  }
+
+  const [command, ...rest] = argv;
+
+  if (command === "help" || command === "--help" || command === "-h") {
+    printUsage();
+    return;
+  }
+
+  if (command === "providers") {
+    console.log(ToeflSlangClient.listProviders());
+    return;
+  }
+
+  if (command === "dict") {
+    if (rest[0] === "eval") {
+      await runDictionaryProEvalCli(rest.slice(1));
+      return;
+    }
+    await runDictionaryProCli(rest.length === 0 ? ["--help"] : rest);
+    return;
+  }
+
+  if (command === "coach") {
+    await runToeflWritingCli(rest.length === 0 ? ["--help"] : rest);
+    return;
+  }
+
+  if (command === "content") {
+    await runContentParserCli(rest.length === 0 ? ["--help"] : rest);
+    return;
+  }
+
+  throw new Error(
+    `Unknown command "${command}". Use "tsm help" to see the available commands.`,
+  );
+}
+
+async function main() {
+  await runTopLevelCli(process.argv.slice(2));
+}
+
+if (require.main === module) {
+  main().catch((error) => {
+    console.error("TOEFL Slang Master CLI error:", error.message);
+    process.exit(1);
+  });
+}

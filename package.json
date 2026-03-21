@@ -7,10 +7,12 @@
     "coachpro": "./bin/coachpro.cjs",
     "contentpro": "./bin/contentpro.cjs",
     "dictpro": "./bin/dictpro.cjs",
-    "dictpro-eval": "./bin/dictpro-eval.cjs"
+    "dictpro-eval": "./bin/dictpro-eval.cjs",
+    "tsm": "./bin/tsm.cjs"
   },
   "scripts": {
     "start": "ts-node src/index.ts",
+    "tsm": "ts-node src/app-cli.ts",
     "dict": "ts-node src/index.ts",
     "dict:dry": "ts-node src/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",
     "dict:providers": "ts-node src/index.ts --list-providers",

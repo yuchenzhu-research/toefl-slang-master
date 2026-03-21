@@ -130,6 +130,7 @@ toefl-slang-master/
 ├── .claude/
 │   └── skills/              # Legacy compatibility directory
 ├── src/                     # TypeScript source code
+│   ├── app-cli.ts           # Unified top-level entry (tsm)
 │   ├── api/                 # API integration layer
 │   │   └── client.ts        # Unified multi-provider client entry
 │   ├── auth/                # Authentication management
@@ -140,7 +141,13 @@ toefl-slang-master/
 │   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama adapters
 │   ├── content-parser/      # CLI / extractor / prompt / validator / runner
 │   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
-│   └── index.ts             # Entry point (currently defaults to Dictionary Pro)
+│   ├── toefl-writing/       # CLI / prompt / validator / runner
+│   └── index.ts             # Dictionary Pro standalone entry
+├── bin/                     # Global command entrypoints
+│   ├── tsm.cjs             # Unified top-level command
+│   ├── dictpro.cjs         # Dictionary Pro
+│   ├── coachpro.cjs        # TOEFL Coach
+│   └── contentpro.cjs      # Content Parser
 ├── package.json             # Dependencies
 ├── tsconfig.json            # TypeScript configuration
 └── README.md / README_EN.md # Bilingual documentation
@@ -196,6 +203,7 @@ npm link
 dictpro "gonna"
 coachpro "I think technology is good because it helps us communicate."
 contentpro --file README.md --extract-only
+tsm dict "gonna"
 ```
 
 > **Note**: the runnable product entries right now are `Dictionary Pro`, `TOEFL Coach`, and `Content Parser`. All three share the same multi-provider runtime.
@@ -251,6 +259,11 @@ npm run coach:dry
 ```bash
 # Register this repo as a local CLI first
 npm link
+
+# Unified top-level entry
+tsm dict "gonna"
+tsm coach "I think technology is good because it helps us communicate."
+tsm content --file README.md --extract-only
 
 # Query one slang item and render the fixed word card
 dictpro "gonna" --provider openai --mode conversion --target toefl-writing

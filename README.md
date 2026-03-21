@@ -130,6 +130,7 @@ toefl-slang-master/
 ├── .claude/
 │   └── skills/              # 兼容旧工具链的历史目录
 ├── src/                     # TypeScript 源代码
+│   ├── app-cli.ts           # 统一总入口（tsm）
 │   ├── api/                 # API 集成层
 │   │   └── client.ts        # 多厂商统一客户端入口
 │   ├── auth/                # 鉴权管理层
@@ -140,7 +141,13 @@ toefl-slang-master/
 │   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama 适配器
 │   ├── content-parser/      # CLI / extractor / prompt / validator / runner
 │   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
-│   └── index.ts             # 入口文件（当前默认进入 Dictionary Pro）
+│   ├── toefl-writing/       # CLI / prompt / validator / runner
+│   └── index.ts             # Dictionary Pro 独立入口
+├── bin/                     # 全局命令入口
+│   ├── tsm.cjs             # 统一总命令
+│   ├── dictpro.cjs         # Dictionary Pro
+│   ├── coachpro.cjs        # TOEFL Coach
+│   └── contentpro.cjs      # Content Parser
 ├── package.json             # 依赖配置
 ├── tsconfig.json            # TypeScript 配置
 └── README.md / README_EN.md # 双语文档
@@ -196,6 +203,7 @@ npm link
 dictpro "gonna"
 coachpro "I think technology is good because it helps us communicate."
 contentpro --file README.md --extract-only
+tsm dict "gonna"
 ```
 
 > **说明**：当前可直接运行的是 `Dictionary Pro`、`TOEFL Coach` 和 `Content Parser`。三者都共用同一套多厂商 API runtime。
@@ -251,6 +259,11 @@ npm run coach:dry
 ```bash
 # 先把当前仓库注册为本地 CLI
 npm link
+
+# 统一总入口
+tsm dict "gonna"
+tsm coach "I think technology is good because it helps us communicate."
+tsm content --file README.md --extract-only
 
 # 查一个口语词，输出固定词卡
 dictpro "gonna" --provider openai --mode conversion --target toefl-writing
