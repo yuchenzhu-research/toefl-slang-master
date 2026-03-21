@@ -14,11 +14,13 @@ function printUsage(): void {
 TOEFL Coach CLI
 
 Usage:
+  coachpro "<essay-or-paragraph>" [--title "<title>"] [--provider <id>] [--dry-run]
+  coachpro providers
   npm run coach -- --text "<essay-or-paragraph>" [--title "<title>"] [--provider <id>] [--dry-run]
   npm run coach -- --file <essay.md> [--title "<title>"] [--provider <id>] [--json]
 
 Options:
-  --text            Optional. Inline essay, paragraph, or sentence.
+  --text            Optional. Inline essay, paragraph, or sentence. You can also pass it as the first positional argument.
   --file            Optional. Markdown or plain-text file path.
   --title           Optional. Override source title.
   --provider, -p    Optional. Model provider. Default: openai
@@ -258,6 +260,11 @@ function inferDefaultTitle(text: string): string {
 }
 
 export async function runToeflWritingCli(argv: string[]): Promise<void> {
+  if (argv.length === 1 && argv[0] === "providers") {
+    console.log(ToeflSlangClient.listProviders());
+    return;
+  }
+
   const query = parseToeflWritingArgs(argv);
 
   if (query.listProviders) {

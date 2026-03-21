@@ -20,6 +20,10 @@ function printUsage(): void {
 Content Parser CLI
 
 Usage:
+  contentpro --pdf <file.pdf> [--focus <focus>] [--provider <id>] [--dry-run]
+  contentpro --file <article.md> [--focus <focus>] [--extract-only]
+  contentpro --text "<content>" [--title "<title>"] [--json]
+  contentpro providers
   npm run content -- --pdf <file.pdf> [--focus <focus>] [--provider <id>] [--dry-run]
   npm run content -- --file <article.md> [--focus <focus>] [--extract-only]
   npm run content -- --text "<content>" [--title "<title>"] [--json]
@@ -208,6 +212,11 @@ export function parseContentParserArgs(argv: string[]): ContentParserQuery {
 }
 
 export async function runContentParserCli(argv: string[]): Promise<void> {
+  if (argv.length === 1 && argv[0] === "providers") {
+    console.log(ToeflSlangClient.listProviders());
+    return;
+  }
+
   const query = parseContentParserArgs(argv);
 
   if (query.listProviders) {

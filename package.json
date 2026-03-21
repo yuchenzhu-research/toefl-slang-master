@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "bin": {
+    "coachpro": "./bin/coachpro.cjs",
+    "contentpro": "./bin/contentpro.cjs",
     "dictpro": "./bin/dictpro.cjs",
     "dictpro-eval": "./bin/dictpro-eval.cjs"
   },

@@ -194,6 +194,8 @@ npm run coach -- --text "I think technology is good because it helps us communic
 # 4. 如果你想像 openclaw 一样直接输入命令
 npm link
 dictpro "gonna"
+coachpro "I think technology is good because it helps us communicate."
+contentpro --file README.md --extract-only
 ```
 
 > **说明**：当前可直接运行的是 `Dictionary Pro`、`TOEFL Coach` 和 `Content Parser`。三者都共用同一套多厂商 API runtime。
@@ -235,6 +237,7 @@ npm run dict:eval -- --provider anthropic --case DP-003 --json
 ```bash
 # 诊断一段托福写作
 npm run coach -- --text "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
+coachpro "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
 
 # 读取文件并输出结构化 JSON
 npm run coach -- --file ./essay.txt --json
@@ -267,6 +270,7 @@ dictpro eval --provider openai --limit 3
 ```bash
 # 只做 PDF / 文本抽取，不发模型
 npm run content -- --file README.md --extract-only
+contentpro --file README.md --extract-only
 
 # 读取 PDF 并生成结构化笔记
 npm run content -- --pdf ./article.pdf --provider openai --focus full
@@ -276,6 +280,9 @@ npm run content -- --pdf ./article.pdf --focus syntax --dry-run
 
 # 输出 JSON
 npm run content -- --file README.md --provider openai --json
+
+# 查看当前支持的 provider
+contentpro providers
 ```
 
 **或者使用 Claude Code 直接调用技能：**

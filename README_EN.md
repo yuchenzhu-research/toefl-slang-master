@@ -194,6 +194,8 @@ npm run coach -- --text "I think technology is good because it helps us communic
 # 4. If you want a direct command like openclaw
 npm link
 dictpro "gonna"
+coachpro "I think technology is good because it helps us communicate."
+contentpro --file README.md --extract-only
 ```
 
 > **Note**: the runnable product entries right now are `Dictionary Pro`, `TOEFL Coach`, and `Content Parser`. All three share the same multi-provider runtime.
@@ -235,6 +237,7 @@ npm run dict:eval -- --provider anthropic --case DP-003 --json
 ```bash
 # Diagnose a TOEFL writing paragraph
 npm run coach -- --text "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
+coachpro "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
 
 # Read a file and emit structured JSON
 npm run coach -- --file ./essay.txt --json
@@ -267,6 +270,7 @@ dictpro eval --provider openai --limit 3
 ```bash
 # Extraction only, no model call
 npm run content -- --file README.md --extract-only
+contentpro --file README.md --extract-only
 
 # Read a PDF and generate structured notes
 npm run content -- --pdf ./article.pdf --provider openai --focus full
@@ -276,6 +280,9 @@ npm run content -- --pdf ./article.pdf --focus syntax --dry-run
 
 # Emit validated JSON
 npm run content -- --file README.md --provider openai --json
+
+# List supported providers
+contentpro providers
 ```
 
 **Or use Claude Code to call skills directly:**
