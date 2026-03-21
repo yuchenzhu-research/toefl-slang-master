@@ -1,0 +1,4 @@
+interface:
+  display_name: "TOEFL Coach"
+  short_description: "Academic writing diagnosis and score estimation for TOEFL learners"
+  default_prompt: "Use $toefl-writing to diagnose this essay and return five-dimension TOEFL writing feedback."

@@ -50,12 +50,12 @@ Have you ever been stuck in this dilemma?
 
 ## 🎯 Core Modules
 
-Powered by an OpenClaw-style multi-provider API engine, the project currently centers on `Dictionary Pro`, while the other modules remain at the skill-design stage:
+Powered by an OpenClaw-style multi-provider API engine, the project now has three runnable entries:
 
 | Module | Core Purpose | Current Status |
 | :--- | :--- | :--- |
 | **Dictionary Pro** | Expression-Level Register Conversion | **Runnable now**: CLI, multi-provider API, structured output, repair loop, evaluation |
-| **TOEFL Coach** | Pure Academic Logic Diagnosis | **Not wired into runtime yet**: currently only skill direction and docs |
+| **TOEFL Coach** | Pure Academic Logic Diagnosis | **Runnable now**: CLI, multi-provider API, structured output, repair loop |
 | **Content Parser** | Deep Foreign Publication Cultural Analysis | **Initial framework runnable**: PDF/MD/TXT ingestion, structured output, CLI |
 
 ### Dictionary Pro Example
@@ -87,6 +87,7 @@ Powered by an OpenClaw-style multi-provider API engine, the project currently ce
 | Capability | Current Status |
 | :--- | :--- |
 | **Dictionary Pro CLI query** | Ready to run directly via `npm run dict -- ...` |
+| **TOEFL Coach CLI diagnosis** | Ready to run directly via `npm run coach -- ...` |
 | **Content Parser initial framework** | Ready to run directly via `npm run content -- ...` |
 | **Multi-provider API integration** | OpenClaw-style provider runtime with API-key-based access |
 | **Structured output** | JSON contract validation with fixed 5-slot rendering |
@@ -98,7 +99,6 @@ Powered by an OpenClaw-style multi-provider API engine, the project currently ce
 
 | Capability | Current Status |
 | :--- | :--- |
-| **TOEFL Coach runtime** | No executable CLI / API yet |
 | **PDF OCR / image-only PDFs** | Not supported yet; current framework expects extractable text PDFs |
 | **Content Parser chunked deep reading** | Only a single-pass extraction + parsing skeleton exists so far |
 | **Web UI or GUI** | Not available yet; the main entry is still CLI |
@@ -189,13 +189,14 @@ cp .env.example .env
 # 3. Run the currently finished features
 npm run dict -- --text "gonna"
 npm run content -- --file README.md --extract-only
+npm run coach -- --text "I think technology is good because it helps us communicate."
 
 # 4. If you want a direct command like openclaw
 npm link
 dictpro "gonna"
 ```
 
-> **Note**: the runnable product entries right now are `Dictionary Pro` and the initial `Content Parser` framework. `TOEFL Coach` is not executable yet.
+> **Note**: the runnable product entries right now are `Dictionary Pro`, `TOEFL Coach`, and `Content Parser`. All three share the same multi-provider runtime.
 
 ### Dictionary Pro CLI Examples
 
@@ -227,6 +228,19 @@ dictpro eval --provider openai --limit 3
 
 # Filter by case id and emit JSON report
 npm run dict:eval -- --provider anthropic --case DP-003 --json
+```
+
+### TOEFL Coach CLI Examples
+
+```bash
+# Diagnose a TOEFL writing paragraph
+npm run coach -- --text "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
+
+# Read a file and emit structured JSON
+npm run coach -- --file ./essay.txt --json
+
+# Prompt-only run
+npm run coach:dry
 ```
 
 ### Recommended CLI Entry Points

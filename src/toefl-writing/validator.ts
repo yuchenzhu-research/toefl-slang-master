@@ -1,0 +1,253 @@
+import { ToeflWritingStructuredResponse, ToeflWritingScope, inferWritingScope } from "./schema";
+import { ToeflWritingQuery, ToeflWritingSourcePayload, ToeflWritingSourceType } from "./types";
+
+const SCOPE_VALUES: ToeflWritingScope[] = ["sentence", "paragraph", "essay"];
+const SOURCE_TYPES: ToeflWritingSourceType[] = ["text", "file"];
+
+export type ToeflWritingValidationResult =
+  | {
+      ok: true;
+      value: ToeflWritingStructuredResponse;
+      rawJson: unknown;
+    }
+  | {
+      ok: false;
+      errors: string[];
+      rawJson?: unknown;
+    };
+
+export function parseAndValidateToeflWritingResponse(
+  rawText: string,
+  _query: ToeflWritingQuery,
+  source: ToeflWritingSourcePayload,
+): ToeflWritingValidationResult {
+  const jsonText = extractJsonObject(rawText);
+  if (!jsonText) {
+    return {
+      ok: false,
+      errors: ["未找到合法 JSON 对象。输出必须是一个 JSON object。"],
+    };
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(jsonText);
+  } catch (error) {
+    return {
+      ok: false,
+      errors: [`JSON 解析失败: ${(error as Error).message}`],
+    };
+  }
+
+  const normalized = validateToeflWritingResponse(parsed, source);
+  if (!normalized.ok) {
+    return {
+      ok: false,
+      errors: normalized.errors,
+      rawJson: parsed,
+    };
+  }
+
+  return {
+    ok: true,
+    value: normalized.value,
+    rawJson: parsed,
+  };
+}
+
+function validateToeflWritingResponse(
+  input: unknown,
+  source: ToeflWritingSourcePayload,
+): ToeflWritingValidationResult {
+  const errors: string[] = [];
+  const record = asRecord(input, "root", errors);
+  if (!record) {
+    return { ok: false, errors };
+  }
+
+  const kind = readString(record.kind, "kind", errors);
+  if (kind !== "writing_diagnosis") {
+    errors.push(`kind 必须是 "writing_diagnosis"，实际为 "${kind ?? "undefined"}"。`);
+  }
+
+  const title = readString(record.title, "title", errors);
+  const scope = readEnum(record.scope, "scope", SCOPE_VALUES, errors);
+  const sourceType = readEnum(record.sourceType, "sourceType", SOURCE_TYPES, errors);
+  const charCount = readPositiveInteger(record.charCount, "charCount", errors);
+  const notes = readOptionalStringArray(record.notes, "notes", errors);
+
+  const scoreRecord = asRecord(record.score, "score", errors);
+  const optimizationRecord = asRecord(record.optimization, "optimization", errors);
+  const logic = readStringArray(record.logic, "logic", errors, 1);
+  const vocabulary = readStringArray(record.vocabulary, "vocabulary", errors, 1);
+  const structure = readStringArray(record.structure, "structure", errors, 1);
+
+  if (
+    !title ||
+    !scope ||
+    !sourceType ||
+    charCount === null ||
+    !scoreRecord ||
+    !optimizationRecord ||
+    !logic ||
+    !vocabulary ||
+    !structure
+  ) {
+    return { ok: false, errors, rawJson: input };
+  }
+
+  const band = readString(scoreRecord.band, "score.band", errors);
+  const reason = readString(scoreRecord.reason, "score.reason", errors);
+  const rewrite = readString(optimizationRecord.rewrite, "optimization.rewrite", errors);
+  const explanations = readStringArray(
+    optimizationRecord.explanations,
+    "optimization.explanations",
+    errors,
+    1,
+  );
+
+  if (!band || !reason || !rewrite || !explanations) {
+    return { ok: false, errors, rawJson: input };
+  }
+
+  if (sourceType !== source.sourceType) {
+    errors.push(`sourceType 应与输入一致，期望 "${source.sourceType}"，实际 "${sourceType}"。`);
+  }
+
+  if (charCount !== source.charCount) {
+    errors.push(`charCount 应与输入一致，期望 "${source.charCount}"，实际 "${charCount}"。`);
+  }
+
+  const expectedScope = inferWritingScope(source.text);
+  if (scope !== expectedScope) {
+    errors.push(`scope 应与输入一致，期望 "${expectedScope}"，实际 "${scope}"。`);
+  }
+
+  return {
+    ok: true,
+    value: {
+      kind: "writing_diagnosis",
+      title,
+      scope,
+      sourceType,
+      charCount,
+      score: {
+        band,
+        reason,
+      },
+      logic,
+      vocabulary,
+      structure,
+      optimization: {
+        rewrite,
+        explanations,
+      },
+      notes: notes ?? undefined,
+    },
+    rawJson: input,
+  };
+}
+
+function asRecord(
+  input: unknown,
+  label: string,
+  errors: string[],
+): Record<string, unknown> | null {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    errors.push(`${label} 必须是 object。`);
+    return null;
+  }
+  return input as Record<string, unknown>;
+}
+
+function readEnum<T extends string>(
+  value: unknown,
+  label: string,
+  allowed: readonly T[],
+  errors: string[],
+): T | null {
+  if (typeof value !== "string" || !allowed.includes(value as T)) {
+    errors.push(`${label} 必须是以下值之一: ${allowed.join(", ")}。`);
+    return null;
+  }
+  return value as T;
+}
+
+function readString(value: unknown, label: string, errors: string[]): string | null {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    errors.push(`${label} 必须是非空字符串。`);
+    return null;
+  }
+  return value.trim();
+}
+
+function readStringArray(
+  value: unknown,
+  label: string,
+  errors: string[],
+  minLength: number,
+): string[] | null {
+  if (!Array.isArray(value)) {
+    errors.push(`${label} 必须是字符串数组。`);
+    return null;
+  }
+
+  const items = value
+    .map((item, index) => {
+      if (typeof item !== "string" || item.trim().length === 0) {
+        errors.push(`${label}[${index}] 必须是非空字符串。`);
+        return null;
+      }
+      return item.trim();
+    })
+    .filter((item): item is string => item !== null);
+
+  if (items.length < minLength) {
+    errors.push(`${label} 至少需要 ${minLength} 条内容。`);
+    return null;
+  }
+
+  return items;
+}
+
+function readOptionalStringArray(
+  value: unknown,
+  label: string,
+  errors: string[],
+): string[] | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  return readStringArray(value, label, errors, 1) ?? undefined;
+}
+
+function readPositiveInteger(value: unknown, label: string, errors: string[]): number | null {
+  if (typeof value !== "number" || !Number.isInteger(value) || value <= 0) {
+    errors.push(`${label} 必须是正整数。`);
+    return null;
+  }
+  return value;
+}
+
+function extractJsonObject(rawText: string): string | null {
+  const trimmed = rawText.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+    return trimmed;
+  }
+
+  const start = trimmed.indexOf("{");
+  const end = trimmed.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) {
+    return null;
+  }
+
+  return trimmed.slice(start, end + 1);
+}
+
+export function formatToeflWritingValidationErrors(errors: string[]): string {
+  return errors.map((error, index) => `${index + 1}. ${error}`).join("\n");
+}

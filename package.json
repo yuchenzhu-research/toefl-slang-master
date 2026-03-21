@@ -12,6 +12,8 @@
     "dict": "ts-node src/index.ts",
     "dict:dry": "ts-node src/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",
     "dict:providers": "ts-node src/index.ts --list-providers",
+    "coach": "ts-node src/toefl-writing/cli.ts",
+    "coach:dry": "ts-node src/toefl-writing/cli.ts --text \"I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully.\" --dry-run",
     "content": "ts-node src/content-parser/cli.ts",
     "content:dry": "ts-node src/content-parser/cli.ts --file README.md --focus full --dry-run",
     "dict:eval": "ts-node src/dictionary-pro/eval-cli.ts",

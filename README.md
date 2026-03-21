@@ -50,12 +50,12 @@
 
 ## 🎯 核心模块
 
-基于 OpenClaw 架构的多厂商 API 引擎驱动，项目当前以 `Dictionary Pro` 为主入口，其他模块仍处于技能设计阶段：
+基于 OpenClaw 架构的多厂商 API 引擎驱动，项目当前已经有三个可运行入口：
 
 | 模块名称 | 核心定位 | 当前状态 |
 | :--- | :--- | :--- |
 | **深度词典 (Dictionary Pro)** | 表达级语域转换 | **已可运行**：CLI、多厂商 API、结构化输出、自动修复、评测 |
-| **托福教练 (TOEFL Coach)** | 纯学术逻辑诊断 | **未接入运行时**：目前只有技能方向与文档草案 |
+| **托福教练 (TOEFL Coach)** | 纯学术逻辑诊断 | **已可运行**：CLI、多厂商 API、结构化输出、自动修复 |
 | **素材拆解 (Content Parser)** | 深度外刊文化分析 | **初始框架已可运行**：PDF/MD/TXT 读取、结构化输出、CLI |
 
 ### Dictionary Pro 示例
@@ -87,6 +87,7 @@
 | 能力 | 当前状态 |
 | :--- | :--- |
 | **Dictionary Pro 命令行查询** | 已可直接运行，入口是 `npm run dict -- ...` |
+| **TOEFL Coach 命令行诊断** | 已可直接运行，入口是 `npm run coach -- ...` |
 | **Content Parser 初始框架** | 已可直接运行，入口是 `npm run content -- ...` |
 | **多厂商 API 接入** | 已接入 OpenClaw-style provider runtime，支持 API key 模式 |
 | **结构化输出** | 已支持 JSON contract 校验，并可渲染为固定 5 维词卡 |
@@ -98,7 +99,6 @@
 
 | 能力 | 当前状态 |
 | :--- | :--- |
-| **TOEFL Coach 运行时** | 尚未提供可执行 CLI / API |
 | **PDF OCR / 图片型 PDF** | 尚未支持，当前只处理可提取文本的 PDF |
 | **Content Parser 分块深读** | 目前只有单次抽取 + 单次解析骨架，长文分块还没做 |
 | **Web 页面或 GUI** | 目前没有，当前主入口是命令行 |
@@ -189,13 +189,14 @@ cp .env.example .env
 # 3. 运行当前已完成的功能
 npm run dict -- --text "gonna"
 npm run content -- --file README.md --extract-only
+npm run coach -- --text "I think technology is good because it helps us communicate."
 
 # 4. 如果你想像 openclaw 一样直接输入命令
 npm link
 dictpro "gonna"
 ```
 
-> **说明**：当前可直接运行的是 `Dictionary Pro` 和 `Content Parser` 初始框架。`TOEFL Coach` 还没有接成可执行入口。
+> **说明**：当前可直接运行的是 `Dictionary Pro`、`TOEFL Coach` 和 `Content Parser`。三者都共用同一套多厂商 API runtime。
 
 ### Dictionary Pro 操作示例
 
@@ -227,6 +228,19 @@ dictpro eval --provider openai --limit 3
 
 # 按 case 过滤并输出 JSON 报告
 npm run dict:eval -- --provider anthropic --case DP-003 --json
+```
+
+### TOEFL Coach 操作示例
+
+```bash
+# 诊断一段托福写作
+npm run coach -- --text "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
+
+# 读取文件并输出结构化 JSON
+npm run coach -- --file ./essay.txt --json
+
+# 只看 prompt，不发 API
+npm run coach:dry
 ```
 
 ### 当前最推荐的命令行入口
