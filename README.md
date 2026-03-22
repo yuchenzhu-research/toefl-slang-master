@@ -193,6 +193,9 @@ cp .env.example .env
 # 编辑 .env 文件，填入你要用的厂商 API key
 # 例如 OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
+# 2.1 先体检当前环境
+npm run doctor
+
 # 3. 运行当前已完成的功能
 npm run dict -- --text "gonna"
 npm run content -- --file README.md --extract-only
@@ -264,6 +267,7 @@ npm link
 tsm dict "gonna"
 tsm coach "I think technology is good because it helps us communicate."
 tsm content --file README.md --extract-only
+tsm doctor
 
 # 查一个口语词，输出固定词卡
 dictpro "gonna" --provider openai --mode conversion --target toefl-writing

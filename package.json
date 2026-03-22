@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
+    "doctor": "ts-node src/doctor.ts",
     "tsm": "ts-node src/app-cli.ts",
     "dict": "ts-node src/index.ts",
     "dict:dry": "ts-node src/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",

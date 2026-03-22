@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { runDictionaryProCli } from "./dictionary-pro/cli";
 import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
 

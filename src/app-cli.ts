@@ -1,8 +1,11 @@
+import "dotenv/config";
+
 import { runContentParserCli } from "./content-parser/cli";
 import { runDictionaryProCli } from "./dictionary-pro/cli";
 import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
 import { runToeflWritingCli } from "./toefl-writing/cli";
 import { ToeflSlangClient } from "./api/client";
+import { runDoctorCli } from "./doctor";
 
 function printUsage(): void {
   const usage = `
@@ -13,12 +16,14 @@ Usage:
   tsm dict eval [options]
   tsm coach "<essay-or-paragraph>" [options]
   tsm content --file <article.md> [options]
+  tsm doctor [--json]
   tsm providers
 
 Commands:
   dict       Run Dictionary Pro.
   coach      Run TOEFL Coach.
   content    Run Content Parser.
+  doctor     Check local environment, provider keys, and PDF extraction readiness.
   providers  List all supported model providers.
   help       Show this message.
 
@@ -27,6 +32,7 @@ Examples:
   tsm dict eval --provider openai --limit 3
   tsm coach "I think technology is good because it helps us communicate." --dry-run
   tsm content --file README.md --extract-only
+  tsm doctor
 `;
 
   console.log(usage.trim());
@@ -47,6 +53,11 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
 
   if (command === "providers") {
     console.log(ToeflSlangClient.listProviders());
+    return;
+  }
+
+  if (command === "doctor") {
+    runDoctorCli(rest);
     return;
   }
 

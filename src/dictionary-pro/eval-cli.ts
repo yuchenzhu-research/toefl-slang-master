@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { runDictionaryProEvaluation, formatDictionaryProEvaluationReport } from "./evaluation";
 import { PROVIDER_APIS } from "../providers/types";
 

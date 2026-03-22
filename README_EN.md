@@ -193,6 +193,9 @@ cp .env.example .env
 # Edit .env file and add the provider key you want to use
 # e.g. OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
+# 2.1 Check your local environment first
+npm run doctor
+
 # 3. Run the currently finished features
 npm run dict -- --text "gonna"
 npm run content -- --file README.md --extract-only
@@ -264,6 +267,7 @@ npm link
 tsm dict "gonna"
 tsm coach "I think technology is good because it helps us communicate."
 tsm content --file README.md --extract-only
+tsm doctor
 
 # Query one slang item and render the fixed word card
 dictpro "gonna" --provider openai --mode conversion --target toefl-writing
