@@ -35,11 +35,22 @@ function buildDoctorReport(): DoctorReport {
 
   const envExamplePath = path.join(cwd, ".env.example");
   const envPath = path.join(cwd, ".env");
+  const packageJsonPath = path.join(cwd, "package.json");
+  const skillPaths = [
+    path.join(cwd, "skills", "dictionary-pro", "SKILL.md"),
+    path.join(cwd, "skills", "toefl-writing", "SKILL.md"),
+    path.join(cwd, "skills", "content-parser", "SKILL.md"),
+  ];
+  const isWorkspace =
+    fs.existsSync(packageJsonPath) &&
+    skillPaths.every((skillPath) => fs.existsSync(skillPath));
 
   checks.push({
     label: "workspace",
-    status: "ok",
-    detail: cwd,
+    status: isWorkspace ? "ok" : "warn",
+    detail: isWorkspace
+      ? cwd
+      : `Current cwd does not look like a TOEFL Slang Master workspace: ${cwd}`,
   });
   checks.push({
     label: ".env.example",
@@ -76,8 +87,10 @@ function buildDoctorReport(): DoctorReport {
 
   checks.push({
     label: "modules",
-    status: "ok",
-    detail: "Dictionary Pro, TOEFL Coach, Content Parser",
+    status: skillPaths.every((skillPath) => fs.existsSync(skillPath)) ? "ok" : "warn",
+    detail: skillPaths.every((skillPath) => fs.existsSync(skillPath))
+      ? "Dictionary Pro, TOEFL Coach, Content Parser"
+      : "Missing one or more skill definitions under skills/",
   });
   checks.push({
     label: "global cli",

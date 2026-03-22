@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
+    "setup": "ts-node src/init.ts",
     "doctor": "ts-node src/doctor.ts",
     "tsm": "ts-node src/app-cli.ts",
     "dict": "ts-node src/index.ts",

@@ -188,9 +188,10 @@ ANTHROPIC_API_KEY=sk-ant-api03-xxxxx
 # 1. Install dependencies
 npm install
 
-# 2. Configure API key
-cp .env.example .env
-# Edit .env file and add the provider key you want to use
+# 2. Initialize local .env
+tsm init
+# Or do it manually: cp .env.example .env
+# Then edit .env and add the provider key you want to use
 # e.g. OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
 # 2.1 Check your local environment first
@@ -264,6 +265,7 @@ npm run coach:dry
 npm link
 
 # Unified top-level entry
+tsm init
 tsm dict "gonna"
 tsm coach "I think technology is good because it helps us communicate."
 tsm content --file README.md --extract-only

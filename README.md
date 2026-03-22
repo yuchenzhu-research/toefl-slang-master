@@ -188,9 +188,10 @@ ANTHROPIC_API_KEY=sk-ant-api03-xxxxx
 # 1. 安装依赖
 npm install
 
-# 2. 配置 API 密钥
-cp .env.example .env
-# 编辑 .env 文件，填入你要用的厂商 API key
+# 2. 初始化本地 .env
+tsm init
+# 或者手动执行：cp .env.example .env
+# 然后编辑 .env，填入你要用的厂商 API key
 # 例如 OPENAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
 # 2.1 先体检当前环境
@@ -264,6 +265,7 @@ npm run coach:dry
 npm link
 
 # 统一总入口
+tsm init
 tsm dict "gonna"
 tsm coach "I think technology is good because it helps us communicate."
 tsm content --file README.md --extract-only
