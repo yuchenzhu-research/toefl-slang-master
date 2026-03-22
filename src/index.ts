@@ -1,5 +1,6 @@
 import "dotenv/config";
 
+import { runDictionaryProBenchCli } from "./dictionary-pro/bench-cli";
 import { runDictionaryProCli } from "./dictionary-pro/cli";
 import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
 
@@ -14,6 +15,11 @@ async function main() {
 
   if (command === "eval") {
     await runDictionaryProEvalCli(rest);
+    return;
+  }
+
+  if (command === "bench") {
+    await runDictionaryProBenchCli(rest);
     return;
   }
 

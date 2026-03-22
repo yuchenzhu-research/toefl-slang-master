@@ -240,6 +240,10 @@ npm run dict:dry
 npm run dict:eval -- --provider openai --limit 3
 dictpro eval --provider openai --limit 3
 
+# 跑多 provider 基准比较
+npm run dict:bench -- --providers openai,anthropic,google --limit 2
+dictpro bench --providers openai,anthropic,google --limit 2
+
 # 按 case 过滤并输出 JSON 报告
 npm run dict:eval -- --provider anthropic --case DP-003 --json
 ```
@@ -267,6 +271,7 @@ npm link
 # 统一总入口
 tsm init
 tsm dict "gonna"
+tsm bench --providers openai,anthropic,google --limit 2
 tsm coach "I think technology is good because it helps us communicate."
 tsm content --file README.md --extract-only
 tsm doctor
@@ -282,6 +287,9 @@ dictpro "obtain vs acquire" --provider openai --mode comparison --target toefl-w
 
 # 跑评测
 dictpro eval --provider openai --limit 3
+
+# 跑 benchmark
+tsm bench --providers openai,anthropic,google --limit 2
 ```
 
 ### Content Parser 操作示例

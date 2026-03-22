@@ -22,6 +22,7 @@ Usage:
   dictpro --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
   dictpro providers
   dictpro eval --provider <id> [--case <id-or-text>] [--limit <n>] [--json]
+  dictpro bench [--providers <provider[:model],...>] [--case <id-or-text>] [--limit <n>] [--json]
   npm run dict -- --text "<expression>" [--context "<sentence>"] [--mode <mode>] [--target <target>] [--provider <id>] [--model <id>] [--dry-run]
 
 Options:

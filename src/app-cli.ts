@@ -1,6 +1,7 @@
 import "dotenv/config";
 
 import { runContentParserCli } from "./content-parser/cli";
+import { runDictionaryProBenchCli } from "./dictionary-pro/bench-cli";
 import { runDictionaryProCli } from "./dictionary-pro/cli";
 import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
 import { runToeflWritingCli } from "./toefl-writing/cli";
@@ -15,6 +16,8 @@ TOEFL Slang Master CLI
 Usage:
   tsm dict "<expression>" [options]
   tsm dict eval [options]
+  tsm dict bench [options]
+  tsm bench [options]
   tsm coach "<essay-or-paragraph>" [options]
   tsm content --file <article.md> [options]
   tsm init [--force] [--json]
@@ -23,6 +26,7 @@ Usage:
 
 Commands:
   dict       Run Dictionary Pro.
+  bench      Benchmark Dictionary Pro across providers.
   coach      Run TOEFL Coach.
   content    Run Content Parser.
   init       Create .env from .env.example and print next steps.
@@ -33,8 +37,10 @@ Commands:
 Examples:
   tsm dict "gonna" --provider openai --mode conversion --target toefl-writing
   tsm dict eval --provider openai --limit 3
+  tsm dict bench --providers openai,anthropic,google --limit 2
   tsm coach "I think technology is good because it helps us communicate." --dry-run
   tsm content --file README.md --extract-only
+  tsm bench --providers openai,anthropic,google --limit 2
   tsm init
   tsm doctor
 `;
@@ -60,6 +66,11 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "bench") {
+    await runDictionaryProBenchCli(rest);
+    return;
+  }
+
   if (command === "doctor") {
     runDoctorCli(rest);
     return;
@@ -73,6 +84,10 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (command === "dict") {
     if (rest[0] === "eval") {
       await runDictionaryProEvalCli(rest.slice(1));
+      return;
+    }
+    if (rest[0] === "bench") {
+      await runDictionaryProBenchCli(rest.slice(1));
       return;
     }
     await runDictionaryProCli(rest.length === 0 ? ["--help"] : rest);
