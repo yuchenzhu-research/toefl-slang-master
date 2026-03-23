@@ -238,6 +238,10 @@
 - target register
 - severity
 
+第一条落地链路的详细协议见：
+
+- `docs/connectors/coach-to-dict.md`
+
 用途：
 
 - 自动喂给 `Dictionary Pro`
