@@ -82,6 +82,16 @@ Powered by an OpenClaw-style multi-provider API engine, the project now has thre
 
 ## 📌 Current Scope
 
+### Current Progress Snapshot
+
+| Layer | Status | Notes |
+| :--- | :--- | :--- |
+| **Platform Layer** | **Established** | Unified CLI, multi-provider runtime, init / doctor / bench are already in place |
+| **Dictionary Pro** | **Most mature** | Has standalone entrypoint, structured output, repair, eval, and bench |
+| **TOEFL Coach** | **Runnable** | Has standalone entrypoint, structured output, and repair, but no dedicated eval / bench yet |
+| **Content Parser** | **Runnable** | Has standalone entrypoint, extraction layer, and structured output, but no chunked reading or downstream chaining yet |
+| **Connector Layer** | **Not implemented** | The three modules are parallel right now, not a real workflow graph |
+
 ### Implemented
 
 | Capability | Current Status |
@@ -118,40 +128,100 @@ Powered by an OpenClaw-style multi-provider API engine, the project now has thre
 
 ---
 
+## 🧱 Module Boundaries
+
+### 1. Platform Layer
+
+| Shared capability | Current location | Responsibility |
+| :--- | :--- | :--- |
+| **Unified CLI dispatch** | `src/app-cli.ts` | Routes `tsm` subcommands into module entrypoints |
+| **Shared facade** | `src/platform/` | Exposes unified `client / auth / providers / doctor / init` to business modules |
+| **Multi-provider runtime** | `src/platform/providers/` | Adapters for OpenAI / Anthropic / Gemini / Ollama and related gateways |
+| **Environment management** | `src/platform/init.ts` / `src/platform/doctor.ts` | Initialize `.env` and validate local setup |
+| **Validated JSON runtime** | `src/platform/runtime/validated-json.ts` | Shared JSON validation, repair, and failure handling |
+
+### 2. Dictionary Pro Boundary
+
+| Item | Description |
+| :--- | :--- |
+| **Entrypoint** | `src/dictionary-pro/index.ts` |
+| **Owns** | Register conversion, word-card output, comparison, evaluation, benchmark |
+| **Does not own** | PDF extraction, essay scoring, cross-module orchestration |
+| **Current gap** | Proper-noun mode, external dictionary / corpus retrieval |
+
+### 3. TOEFL Coach Boundary
+
+| Item | Description |
+| :--- | :--- |
+| **Entrypoint** | `src/toefl-writing/index.ts` |
+| **Owns** | Writing diagnosis, structured feedback, rewrite suggestions |
+| **Does not own** | Dictionary retrieval, content extraction, multi-provider benchmark |
+| **Current gap** | Dedicated eval / bench, feeding weak expressions back into Dictionary Pro |
+
+### 4. Content Parser Boundary
+
+| Item | Description |
+| :--- | :--- |
+| **Entrypoint** | `src/content-parser/index.ts` |
+| **Owns** | PDF / MD / TXT extraction, structured notes, syntax / culture / conversion analysis |
+| **Does not own** | Writing scoring, word-card refinement, cross-module orchestration |
+| **Current gap** | OCR, long-document chunking, standardized downstream outputs |
+
+---
+
 ## 🏗️ Technical Architecture
 
-```
+```text
 toefl-slang-master/
-├── skills/                  # Canonical skills directory
-│   └── dictionary-pro/      # Primary Dictionary Pro skill folder
-│       ├── SKILL.md         # Skill definition
-│       ├── agents/          # UI metadata
-│       └── references/      # Output contract and support rules
-├── .claude/
-│   └── skills/              # Legacy compatibility directory
-├── src/                     # TypeScript source code
-│   ├── app-cli.ts           # Unified top-level entry (tsm)
-│   ├── api/                 # API integration layer
-│   │   └── client.ts        # Unified multi-provider client entry
-│   ├── auth/                # Authentication management
-│   │   └── manager.ts       # OpenClaw-style local config and key resolution
-│   ├── providers/           # OpenClaw-style provider runtime
-│   │   ├── catalog.ts       # Provider catalog and defaults
-│   │   ├── runtime.ts       # Protocol dispatch and execution
-│   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama adapters
-│   ├── content-parser/      # CLI / extractor / prompt / validator / runner
-│   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
-│   ├── toefl-writing/       # CLI / prompt / validator / runner
-│   └── index.ts             # Dictionary Pro standalone entry
-├── bin/                     # Global command entrypoints
-│   ├── tsm.cjs             # Unified top-level command
-│   ├── dictpro.cjs         # Dictionary Pro
-│   ├── coachpro.cjs        # TOEFL Coach
-│   └── contentpro.cjs      # Content Parser
-├── package.json             # Dependencies
-├── tsconfig.json            # TypeScript configuration
-└── README.md / README_EN.md # Bilingual documentation
+├── skills/
+│   ├── dictionary-pro/
+│   ├── toefl-writing/
+│   └── content-parser/
+├── src/
+│   ├── app-cli.ts                  # Platform top-level entry (tsm)
+│   ├── platform/                   # Shared platform facade
+│   │   ├── client.ts
+│   │   ├── init.ts
+│   │   ├── doctor.ts
+│   │   ├── auth/
+│   │   ├── providers/
+│   │   └── runtime/
+│   ├── dictionary-pro/             # Standalone module: dictionary / eval / bench
+│   │   ├── index.ts
+│   │   ├── cli.ts
+│   │   ├── runner.ts
+│   │   └── ...
+│   ├── toefl-writing/              # Standalone module: writing diagnosis
+│   │   ├── index.ts
+│   │   ├── cli.ts
+│   │   ├── runner.ts
+│   │   └── ...
+│   ├── content-parser/             # Standalone module: extraction and parsing
+│   │   ├── index.ts
+│   │   ├── cli.ts
+│   │   ├── extractor.ts
+│   │   └── ...
+│   └── index.ts                    # Compatibility proxy for Dictionary Pro
+├── bin/
+│   ├── tsm.cjs
+│   ├── dictpro.cjs
+│   ├── coachpro.cjs
+│   └── contentpro.cjs
+└── README.md / README_EN.md
 ```
+
+> Note: this is the recommended **logical architecture view**. Low-level implementation details still remain in `src/api`, `src/auth`, and `src/providers`, but business modules now access them through the `src/platform/` facade.
+
+### Current Logical Layers
+
+1. **Platform Layer**  
+Owns provider runtime, auth, CLI, environment setup, and validated JSON runtime.
+
+2. **Skill Module Layer**  
+Runs `Dictionary Pro`, `TOEFL Coach`, and `Content Parser` as isolated standalone modules.
+
+3. **Connector Layer (not implemented yet)**  
+Will eventually connect the three modules through shared intermediate objects instead of prompt-to-prompt coupling.
 
 | Tech Stack | Version | Purpose |
 | :--- | :--- | :--- |
@@ -160,6 +230,35 @@ toefl-slang-master/
 | **dotenv** | ^17.3 | Environment variable loading |
 | **ts-node** | ^10.9 | Run TypeScript directly |
 | **@types/node** | ^25.3 | Node.js type definitions |
+
+---
+
+## 🌿 The Future “Plasmodesmata” Layer
+
+The three modules are now isolated, but they still do not share a real nervous system.  
+The next high-value step is a dedicated **Connector Layer**.
+
+Recommended shared intermediate objects:
+
+| Intermediate object | Producer | Consumer | Purpose |
+| :--- | :--- | :--- | :--- |
+| **ExpressionCard** | Dictionary Pro | TOEFL Coach / review system | Reusable word-card unit for vocabulary and register upgrades |
+| **WritingDiagnosis** | TOEFL Coach | Dictionary Pro | Structured export of weak expressions, low-level words, and logic issues |
+| **SourceDigest** | Content Parser | Dictionary Pro / TOEFL Coach | Compresses article content into reusable expressions, patterns, and cultural notes |
+| **ExpressionCandidates** | Content Parser | Dictionary Pro | Extracts candidate expressions worth looking up or upgrading |
+
+The three most natural future flows are:
+
+1. `Content Parser -> Dictionary Pro`  
+Extract expressions from an article and convert them into cards.
+
+2. `Content Parser -> TOEFL Coach`  
+Turn source material into writing-practice input.
+
+3. `TOEFL Coach -> Dictionary Pro`  
+Send weak expressions from essays into the dictionary pipeline for upgrades.
+
+This layer is **not implemented yet**, but it is now treated as explicit target architecture.
 
 ---
 

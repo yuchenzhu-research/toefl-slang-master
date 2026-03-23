@@ -82,6 +82,16 @@
 
 ## 📌 当前可用范围
 
+### 当前进展判断
+
+| 层级 | 当前状态 | 说明 |
+| :--- | :--- | :--- |
+| **平台层 (Platform)** | **已成型** | 已有统一 CLI、多厂商 provider runtime、init / doctor / bench |
+| **Dictionary Pro** | **最成熟** | 已有独立入口、结构化输出、repair、eval、bench |
+| **TOEFL Coach** | **可运行** | 已有独立入口、结构化输出、repair，但还没有自己的 eval / bench |
+| **Content Parser** | **可运行** | 已有独立入口、提取层、结构化输出，但还没有分块深读和下游串联 |
+| **模块串联层** | **未实现** | 三个模块现在是并列运行，不是工作流链路 |
+
 ### 已可实施
 
 | 能力 | 当前状态 |
@@ -118,40 +128,100 @@
 
 ---
 
+## 🧱 模块边界
+
+### 1. 平台层（共享底盘）
+
+| 平台能力 | 当前位置 | 职责 |
+| :--- | :--- | :--- |
+| **统一 CLI 分发** | `src/app-cli.ts` | 把 `tsm` 子命令分发到各模块入口 |
+| **共享 facade** | `src/platform/` | 对业务模块暴露统一 `client / auth / providers / doctor / init` |
+| **多厂商模型底盘** | `src/platform/providers/` | OpenAI / Anthropic / Gemini / Ollama 等协议适配 |
+| **环境管理** | `src/platform/init.ts` / `src/platform/doctor.ts` | 初始化 `.env`、做环境体检 |
+| **公共校验运行时** | `src/platform/runtime/validated-json.ts` | 统一 JSON 校验、repair、失败收口 |
+
+### 2. Dictionary Pro 边界
+
+| 项目 | 说明 |
+| :--- | :--- |
+| **入口** | `src/dictionary-pro/index.ts` |
+| **负责** | 表达级语域转换、词卡输出、comparison、evaluation、benchmark |
+| **不负责** | PDF 提取、作文评分、跨模块工作流编排 |
+| **当前缺口** | 专有名词模式、外部词典 / corpus retrieval |
+
+### 3. TOEFL Coach 边界
+
+| 项目 | 说明 |
+| :--- | :--- |
+| **入口** | `src/toefl-writing/index.ts` |
+| **负责** | 写作诊断、结构化反馈、改写建议 |
+| **不负责** | 词典检索、素材提取、多 provider benchmark |
+| **当前缺口** | 自己的 eval / bench、错误表达回流到词典模块 |
+
+### 4. Content Parser 边界
+
+| 项目 | 说明 |
+| :--- | :--- |
+| **入口** | `src/content-parser/index.ts` |
+| **负责** | PDF / MD / TXT 提取、结构化拆解、语法 / 文化 / 转化笔记 |
+| **不负责** | 写作评分、词卡细化、跨模块联动编排 |
+| **当前缺口** | OCR、长文分块、向下游模块输出标准化中间产物 |
+
+---
+
 ## 🏗️ 技术架构
 
-```
+```text
 toefl-slang-master/
-├── skills/                  # Canonical skills 目录
-│   └── dictionary-pro/      # 深度词典主技能目录
-│       ├── SKILL.md         # 技能定义
-│       ├── agents/          # UI 元数据
-│       └── references/      # 输出契约与补充规则
-├── .claude/
-│   └── skills/              # 兼容旧工具链的历史目录
-├── src/                     # TypeScript 源代码
-│   ├── app-cli.ts           # 统一总入口（tsm）
-│   ├── api/                 # API 集成层
-│   │   └── client.ts        # 多厂商统一客户端入口
-│   ├── auth/                # 鉴权管理层
-│   │   └── manager.ts       # OpenClaw-style 本地配置与密钥解析
-│   ├── providers/           # OpenClaw-style provider runtime
-│   │   ├── catalog.ts       # 厂商目录与默认配置
-│   │   ├── runtime.ts       # 协议分发与执行
-│   │   └── protocols/       # OpenAI / Anthropic / Gemini / Ollama 适配器
-│   ├── content-parser/      # CLI / extractor / prompt / validator / runner
-│   ├── dictionary-pro/      # CLI / prompt / validator / runner / evaluation
-│   ├── toefl-writing/       # CLI / prompt / validator / runner
-│   └── index.ts             # Dictionary Pro 独立入口
-├── bin/                     # 全局命令入口
-│   ├── tsm.cjs             # 统一总命令
-│   ├── dictpro.cjs         # Dictionary Pro
-│   ├── coachpro.cjs        # TOEFL Coach
-│   └── contentpro.cjs      # Content Parser
-├── package.json             # 依赖配置
-├── tsconfig.json            # TypeScript 配置
-└── README.md / README_EN.md # 双语文档
+├── skills/
+│   ├── dictionary-pro/
+│   ├── toefl-writing/
+│   └── content-parser/
+├── src/
+│   ├── app-cli.ts                  # 平台总入口（tsm）
+│   ├── platform/                   # 共享底盘 facade
+│   │   ├── client.ts
+│   │   ├── init.ts
+│   │   ├── doctor.ts
+│   │   ├── auth/
+│   │   ├── providers/
+│   │   └── runtime/
+│   ├── dictionary-pro/             # 独立模块：词典 / eval / bench
+│   │   ├── index.ts
+│   │   ├── cli.ts
+│   │   ├── runner.ts
+│   │   └── ...
+│   ├── toefl-writing/              # 独立模块：写作诊断
+│   │   ├── index.ts
+│   │   ├── cli.ts
+│   │   ├── runner.ts
+│   │   └── ...
+│   ├── content-parser/             # 独立模块：素材提取与解析
+│   │   ├── index.ts
+│   │   ├── cli.ts
+│   │   ├── extractor.ts
+│   │   └── ...
+│   └── index.ts                    # Dictionary Pro 兼容入口代理
+├── bin/
+│   ├── tsm.cjs
+│   ├── dictpro.cjs
+│   ├── coachpro.cjs
+│   └── contentpro.cjs
+└── README.md / README_EN.md
 ```
+
+> 说明：这里展示的是当前推荐的**逻辑架构视图**。底层实现细节仍保留在 `src/api`、`src/auth`、`src/providers`，但业务模块已经通过 `src/platform/` facade 间接访问它们。
+
+### 当前逻辑分层
+
+1. **Platform Layer**
+统一 provider、认证、CLI、环境管理、校验运行时。
+
+2. **Skill Module Layer**
+`Dictionary Pro`、`TOEFL Coach`、`Content Parser` 三条线各自独立运行。
+
+3. **Connector Layer（未实现）**
+未来负责把三个模块串成工作流，而不是让它们彼此直接调用 prompt。
 
 | 技术栈 | 版本 | 用途 |
 | :--- | :--- | :--- |
@@ -160,6 +230,35 @@ toefl-slang-master/
 | **dotenv** | ^17.3 | 环境变量加载 |
 | **ts-node** | ^10.9 | 直接运行 TypeScript |
 | **@types/node** | ^25.3 | Node.js 类型定义 |
+
+---
+
+## 🌿 下一步的“胞间连丝”
+
+当前三个模块已经被隔离成并列结构，但它们之间还没有真正的“神经系统”。  
+下一步最值得做的，不是让模块互相硬调用，而是设计一个单独的 **Connector Layer**。
+
+建议的中间产物如下：
+
+| 中间产物 | 生产者 | 消费者 | 作用 |
+| :--- | :--- | :--- | :--- |
+| **ExpressionCard** | Dictionary Pro | TOEFL Coach / 复习系统 | 把词、短语、语域对标固定成可复用词卡 |
+| **WritingDiagnosis** | TOEFL Coach | Dictionary Pro | 把作文里的弱表达、低阶词、逻辑问题结构化吐出来 |
+| **SourceDigest** | Content Parser | Dictionary Pro / TOEFL Coach | 把文章内容压缩成可再利用的表达、句式、文化素材包 |
+| **ExpressionCandidates** | Content Parser | Dictionary Pro | 从外刊里先筛出值得查和值得升级的表达 |
+
+未来最自然的三条串联路径是：
+
+1. `Content Parser -> Dictionary Pro`
+从文章里抽出表达候选，再生成词卡。
+
+2. `Content Parser -> TOEFL Coach`
+把外刊素材转成写作训练输入。
+
+3. `TOEFL Coach -> Dictionary Pro`
+把作文里的弱表达自动送去做词汇升级。
+
+这层现在**还没实现**，但现在已经被明确成下一步目标架构。
 
 ---
 
