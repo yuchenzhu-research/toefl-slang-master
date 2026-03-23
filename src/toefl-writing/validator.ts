@@ -1,8 +1,20 @@
+import {
+  WEAK_EXPRESSION_CATEGORIES,
+  WEAK_EXPRESSION_SEVERITIES,
+  WeakExpression,
+  WeakExpressionSet,
+} from "../connectors/coach-to-dict";
 import { ToeflWritingStructuredResponse, ToeflWritingScope, inferWritingScope } from "./schema";
 import { ToeflWritingQuery, ToeflWritingSourcePayload, ToeflWritingSourceType } from "./types";
 
 const SCOPE_VALUES: ToeflWritingScope[] = ["sentence", "paragraph", "essay"];
 const SOURCE_TYPES: ToeflWritingSourceType[] = ["text", "file"];
+const TARGET_VALUES = [
+  "toefl-writing",
+  "toefl-speaking",
+  "general-academic",
+  "daily-english",
+] as const;
 
 export type ToeflWritingValidationResult =
   | {
@@ -75,12 +87,24 @@ function validateToeflWritingResponse(
   const sourceType = readEnum(record.sourceType, "sourceType", SOURCE_TYPES, errors);
   const charCount = readPositiveInteger(record.charCount, "charCount", errors);
   const notes = readOptionalStringArray(record.notes, "notes", errors);
+  const revisionFocus = readOptionalStringArray(record.revisionFocus, "revisionFocus", errors);
+  const upgradePrioritySummary = readOptionalString(
+    record.upgradePrioritySummary,
+    "upgradePrioritySummary",
+    errors,
+  );
 
   const scoreRecord = asRecord(record.score, "score", errors);
   const optimizationRecord = asRecord(record.optimization, "optimization", errors);
   const logic = readStringArray(record.logic, "logic", errors, 1);
   const vocabulary = readStringArray(record.vocabulary, "vocabulary", errors, 1);
   const structure = readStringArray(record.structure, "structure", errors, 1);
+  const weakExpressionSet = readOptionalWeakExpressionSet(
+    record.weakExpressionSet,
+    errors,
+    title,
+    scope,
+  );
 
   if (
     !title ||
@@ -142,6 +166,9 @@ function validateToeflWritingResponse(
         rewrite,
         explanations,
       },
+      weakExpressionSet,
+      revisionFocus,
+      upgradePrioritySummary,
       notes: notes ?? undefined,
     },
     rawJson: input,
@@ -221,6 +248,17 @@ function readOptionalStringArray(
   return readStringArray(value, label, errors, 1) ?? undefined;
 }
 
+function readOptionalString(
+  value: unknown,
+  label: string,
+  errors: string[],
+): string | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  return readString(value, label, errors) ?? undefined;
+}
+
 function readPositiveInteger(value: unknown, label: string, errors: string[]): number | null {
   if (typeof value !== "number" || !Number.isInteger(value) || value <= 0) {
     errors.push(`${label} 必须是正整数。`);
@@ -246,6 +284,149 @@ function extractJsonObject(rawText: string): string | null {
   }
 
   return trimmed.slice(start, end + 1);
+}
+
+function readOptionalWeakExpressionSet(
+  value: unknown,
+  errors: string[],
+  expectedTitle: string | null,
+  expectedScope: ToeflWritingScope | null,
+): WeakExpressionSet | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  const record = asRecord(value, "weakExpressionSet", errors);
+  if (!record) {
+    return undefined;
+  }
+
+  const kind = readString(record.kind, "weakExpressionSet.kind", errors);
+  if (kind !== "weak_expression_set") {
+    errors.push(
+      `weakExpressionSet.kind 必须是 "weak_expression_set"，实际为 "${kind ?? "undefined"}"。`,
+    );
+  }
+
+  const title = readString(record.title, "weakExpressionSet.title", errors);
+  const scope = readEnum(record.scope, "weakExpressionSet.scope", SCOPE_VALUES, errors);
+  const targetRegister = readEnum(
+    record.targetRegister,
+    "weakExpressionSet.targetRegister",
+    TARGET_VALUES,
+    errors,
+  );
+  const sourceText = readString(record.sourceText, "weakExpressionSet.sourceText", errors);
+  const summary = readString(record.summary, "weakExpressionSet.summary", errors);
+  const items = readWeakExpressionItems(record.items, "weakExpressionSet.items", errors);
+  const notes = readOptionalStringArray(record.notes, "weakExpressionSet.notes", errors);
+
+  if (!title || !scope || !targetRegister || !sourceText || !summary || !items) {
+    return undefined;
+  }
+
+  if (expectedTitle && title !== expectedTitle) {
+    errors.push(`weakExpressionSet.title 应与 title 一致，期望 "${expectedTitle}"，实际 "${title}"。`);
+  }
+
+  if (expectedScope && scope !== expectedScope) {
+    errors.push(
+      `weakExpressionSet.scope 应与 scope 一致，期望 "${expectedScope}"，实际 "${scope}"。`,
+    );
+  }
+
+  return {
+    kind: "weak_expression_set",
+    title,
+    scope,
+    targetRegister,
+    sourceText,
+    summary,
+    items,
+    notes,
+  };
+}
+
+function readWeakExpressionItems(
+  value: unknown,
+  label: string,
+  errors: string[],
+): WeakExpression[] | null {
+  if (!Array.isArray(value)) {
+    errors.push(`${label} 必须是对象数组。`);
+    return null;
+  }
+
+  const items = value
+    .map((item, index) => readWeakExpression(item, `${label}[${index}]`, errors))
+    .filter((item): item is WeakExpression => item !== null);
+
+  if (items.length === 0) {
+    errors.push(`${label} 至少需要 1 个弱表达对象。`);
+    return null;
+  }
+
+  return items;
+}
+
+function readWeakExpression(
+  value: unknown,
+  label: string,
+  errors: string[],
+): WeakExpression | null {
+  const record = asRecord(value, label, errors);
+  if (!record) {
+    return null;
+  }
+
+  const text = readString(record.text, `${label}.text`, errors);
+  const category = readEnum(
+    record.category,
+    `${label}.category`,
+    WEAK_EXPRESSION_CATEGORIES,
+    errors,
+  );
+  const severity = readEnum(
+    record.severity,
+    `${label}.severity`,
+    WEAK_EXPRESSION_SEVERITIES,
+    errors,
+  );
+  const reason = readString(record.reason, `${label}.reason`, errors);
+  const targetRegister = readEnum(
+    record.targetRegister,
+    `${label}.targetRegister`,
+    TARGET_VALUES,
+    errors,
+  );
+  const sourceSentence = readString(record.sourceSentence, `${label}.sourceSentence`, errors);
+  const sourceFragment = readOptionalString(record.sourceFragment, `${label}.sourceFragment`, errors);
+  const rewriteGoal = readString(record.rewriteGoal, `${label}.rewriteGoal`, errors);
+  const coachNote = readOptionalString(record.coachNote, `${label}.coachNote`, errors);
+
+  if (
+    !text ||
+    !category ||
+    !severity ||
+    !reason ||
+    !targetRegister ||
+    !sourceSentence ||
+    !rewriteGoal
+  ) {
+    return null;
+  }
+
+  return {
+    text,
+    category,
+    severity,
+    reason,
+    targetRegister,
+    sourceSentence,
+    sourceFragment,
+    rewriteGoal,
+    coachNote,
+  };
 }
 
 export function formatToeflWritingValidationErrors(errors: string[]): string {

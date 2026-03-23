@@ -9,6 +9,7 @@ Common rules:
 - `sourceType` must be one of: `text`, `file`.
 - All required strings must be non-empty.
 - Array fields must contain at least 1 string unless marked optional.
+- `weakExpressionSet`, `revisionFocus`, and `upgradePrioritySummary` are optional connector fields for `TOEFL Coach -> Dictionary Pro`.
 
 ```json
 {
@@ -41,6 +42,32 @@ Common rules:
       "benefits / adverse effects 的词汇等级更适合学术写作。"
     ]
   },
+  "weakExpressionSet": {
+    "kind": "weak_expression_set",
+    "title": "Technology paragraph",
+    "scope": "paragraph",
+    "targetRegister": "toefl-writing",
+    "sourceText": "Technology has many good effects on society. I think it helps people a lot.",
+    "summary": "The passage relies on vague adjectives and spoken-style framing.",
+    "items": [
+      {
+        "text": "good",
+        "category": "low_precision_word",
+        "severity": "high",
+        "reason": "Meaning is too vague for TOEFL writing.",
+        "targetRegister": "toefl-writing",
+        "sourceSentence": "Technology has many good effects on society.",
+        "sourceFragment": "good effects",
+        "rewriteGoal": "Replace the vague phrase with a more precise academic alternative.",
+        "coachNote": "Prefer a noun-adjective pair that sounds analytical rather than conversational."
+      }
+    ]
+  },
+  "revisionFocus": [
+    "good effects",
+    "I think"
+  ],
+  "upgradePrioritySummary": "Vague vocabulary and spoken-style framing should be upgraded first.",
   "notes": [
     "如果继续扩展成完整托福段落，需要加入更具体的例证。"
   ]
