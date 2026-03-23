@@ -1,13 +1,11 @@
 import "dotenv/config";
 
-import { runContentParserCli } from "./content-parser/cli";
-import { runDictionaryProBenchCli } from "./dictionary-pro/bench-cli";
-import { runDictionaryProCli } from "./dictionary-pro/cli";
-import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
+import { runContentParserModuleCli } from "./content-parser";
+import { runDictionaryProBenchCli, runDictionaryProModuleCli } from "./dictionary-pro";
 import { ToeflSlangClient } from "./platform/client";
 import { runDoctorCli } from "./platform/doctor";
 import { runInitCli } from "./platform/init";
-import { runToeflWritingCli } from "./toefl-writing/cli";
+import { runToeflWritingModuleCli } from "./toefl-writing";
 
 function printUsage(): void {
   const usage = `
@@ -82,25 +80,17 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   }
 
   if (command === "dict") {
-    if (rest[0] === "eval") {
-      await runDictionaryProEvalCli(rest.slice(1));
-      return;
-    }
-    if (rest[0] === "bench") {
-      await runDictionaryProBenchCli(rest.slice(1));
-      return;
-    }
-    await runDictionaryProCli(rest.length === 0 ? ["--help"] : rest);
+    await runDictionaryProModuleCli(rest);
     return;
   }
 
   if (command === "coach") {
-    await runToeflWritingCli(rest.length === 0 ? ["--help"] : rest);
+    await runToeflWritingModuleCli(rest);
     return;
   }
 
   if (command === "content") {
-    await runContentParserCli(rest.length === 0 ? ["--help"] : rest);
+    await runContentParserModuleCli(rest);
     return;
   }
 

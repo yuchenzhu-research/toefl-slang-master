@@ -2,11 +2,10 @@
 
 require("./register-ts-node.cjs");
 
-const { runContentParserCli } = require("../src/content-parser/cli.ts");
+const { runContentParserModuleCli } = require("../src/content-parser/index.ts");
 
 async function main() {
-  const argv = process.argv.slice(2);
-  await runContentParserCli(argv.length === 0 ? ["--help"] : argv);
+  await runContentParserModuleCli(process.argv.slice(2));
 }
 
 main().catch((error) => {

@@ -1,37 +1,16 @@
 import "dotenv/config";
 
-import { runDictionaryProBenchCli } from "./dictionary-pro/bench-cli";
-import { runDictionaryProCli } from "./dictionary-pro/cli";
-import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
+import { runDictionaryProModuleCli } from "./dictionary-pro";
+
+export * from "./dictionary-pro";
 
 async function main() {
-  const argv = process.argv.slice(2);
-  if (argv.length === 0) {
-    await runDictionaryProCli(["--help"]);
-    return;
-  }
-
-  const [command, ...rest] = argv;
-
-  if (command === "eval") {
-    await runDictionaryProEvalCli(rest);
-    return;
-  }
-
-  if (command === "bench") {
-    await runDictionaryProBenchCli(rest);
-    return;
-  }
-
-  if (command === "providers") {
-    await runDictionaryProCli(["--list-providers"]);
-    return;
-  }
-
-  await runDictionaryProCli(argv);
+  await runDictionaryProModuleCli(process.argv.slice(2));
 }
 
-main().catch((error) => {
-  console.error("Dictionary Pro error:", error.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error("Dictionary Pro error:", error.message);
+    process.exit(1);
+  });
+}

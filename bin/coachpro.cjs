@@ -2,11 +2,10 @@
 
 require("./register-ts-node.cjs");
 
-const { runToeflWritingCli } = require("../src/toefl-writing/cli.ts");
+const { runToeflWritingModuleCli } = require("../src/toefl-writing/index.ts");
 
 async function main() {
-  const argv = process.argv.slice(2);
-  await runToeflWritingCli(argv.length === 0 ? ["--help"] : argv);
+  await runToeflWritingModuleCli(process.argv.slice(2));
 }
 
 main().catch((error) => {
