@@ -99,3 +99,9 @@ export type CoachToDictDictionaryQuery = Pick<
   DictionaryProQuery,
   "text" | "context" | "mode" | "target"
 >;
+
+export type CoachToDictBridgeBundle = {
+  weakExpressionSet: WeakExpressionSet;
+  seeds: ExpressionCardSeed[];
+  queries: CoachToDictDictionaryQuery[];
+};

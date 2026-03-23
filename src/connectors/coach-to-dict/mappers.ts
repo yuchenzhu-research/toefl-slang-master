@@ -1,6 +1,8 @@
 import type { DictionaryProTarget } from "../../dictionary-pro/types";
 import type { ToeflWritingStructuredResponse } from "../../toefl-writing/schema";
 import {
+  CoachToDictBridgeBundle,
+  CoachToDictDictionaryQuery,
   ExpressionCardSeed,
   ExpressionCardSeedSource,
   WeakExpression,
@@ -50,6 +52,34 @@ export function toExpressionCardSeed(item: WeakExpression): ExpressionCardSeed {
 
 export function toExpressionCardSeeds(set: WeakExpressionSet): ExpressionCardSeed[] {
   return set.items.map((item) => toExpressionCardSeed(item));
+}
+
+export function toDictionaryProQuery(item: WeakExpression): CoachToDictDictionaryQuery {
+  const seed = toExpressionCardSeed(item);
+  return {
+    text: seed.query,
+    context: seed.context,
+    mode: seed.mode,
+    target: seed.target,
+  };
+}
+
+export function toDictionaryProQueries(set: WeakExpressionSet): CoachToDictDictionaryQuery[] {
+  return set.items.map((item) => toDictionaryProQuery(item));
+}
+
+export function buildCoachToDictBridgeBundle(
+  diagnosis: ToeflWritingStructuredResponse,
+): CoachToDictBridgeBundle | null {
+  if (!diagnosis.weakExpressionSet) {
+    return null;
+  }
+
+  return {
+    weakExpressionSet: diagnosis.weakExpressionSet,
+    seeds: toExpressionCardSeeds(diagnosis.weakExpressionSet),
+    queries: toDictionaryProQueries(diagnosis.weakExpressionSet),
+  };
 }
 
 export function buildConnectorView(
