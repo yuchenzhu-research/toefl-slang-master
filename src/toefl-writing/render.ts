@@ -17,6 +17,32 @@ export function renderToeflWritingResponse(response: ToeflWritingStructuredRespo
     `| **优化** | ${escapeCell(`改写: ${response.optimization.rewrite}`)}<br>${formatCell(response.optimization.explanations)} |`,
   ];
 
+  if (
+    response.upgradePrioritySummary ||
+    (response.revisionFocus && response.revisionFocus.length > 0) ||
+    response.weakExpressionSet
+  ) {
+    header.push("", "**表达升级入口**");
+
+    if (response.upgradePrioritySummary) {
+      header.push(`- 优先级摘要: ${response.upgradePrioritySummary}`);
+    }
+
+    if (response.revisionFocus && response.revisionFocus.length > 0) {
+      header.push(`- Revision Focus: ${response.revisionFocus.join(" / ")}`);
+    }
+
+    if (response.weakExpressionSet) {
+      header.push(`- 弱表达摘要: ${response.weakExpressionSet.summary}`);
+      header.push(
+        ...response.weakExpressionSet.items.map(
+          (item) =>
+            `- [${item.severity}] ${item.sourceFragment ?? item.text}: ${item.reason} -> ${item.rewriteGoal}`,
+        ),
+      );
+    }
+  }
+
   if (response.notes && response.notes.length > 0) {
     header.push("", "**补充说明**", ...response.notes.map((note) => `- ${note}`));
   }
