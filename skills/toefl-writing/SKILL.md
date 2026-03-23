@@ -23,6 +23,10 @@ Use this skill as an academic writing coach, not as a slang generator or casual 
    - `vocabulary`
    - `structure`
    - `optimization`
+   - When the runtime requests connector-ready JSON, also provide:
+     - `weakExpressionSet`
+     - `revisionFocus`
+     - `upgradePrioritySummary`
 4. When rewriting, preserve the user's original claim and argumentative direction.
 
 ## Output Rules
@@ -33,6 +37,7 @@ Use this skill as an academic writing coach, not as a slang generator or casual 
 - Prefer actionable diagnosis over generic praise.
 - When the runtime requests JSON, follow `references/json-contract.md` exactly.
 - When rendering Markdown, follow `references/output-contract.md`.
+- Only extract connector fields for expression-level issues that can be upgraded locally.
 
 ## Quality Bar
 

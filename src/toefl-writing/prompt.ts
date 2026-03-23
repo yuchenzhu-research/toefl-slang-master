@@ -64,6 +64,14 @@ export function buildToeflWritingPrompts(
 
   const userLines = buildSourceSummary(query, source);
   userLines.push("请先诊断再改写，保持原文观点方向，不要替作者改立场。");
+  if (outputMode === "json") {
+    userLines.push(
+      "如果文本里存在可单独升级的弱表达，请额外返回 weakExpressionSet、revisionFocus 和 upgradePrioritySummary。",
+    );
+    userLines.push(
+      "weakExpressionSet 只包含表达级问题，不包含纯语法或纯结构问题；title 和 scope 必须与顶层字段一致。",
+    );
+  }
   userLines.push(
     outputMode === "json"
       ? "请直接返回合法 JSON 对象，不要输出 Markdown、解释或代码块。"
@@ -98,6 +106,7 @@ export function buildToeflWritingRepairPrompts(params: {
 
   const userLines = buildSourceSummary(params.query, params.source);
   userLines.push("上一次输出没有通过校验，请修复而不是改写任务目标。");
+  userLines.push("如果存在表达级问题，请保留或补全 weakExpressionSet、revisionFocus 和 upgradePrioritySummary。");
   userLines.push("校验错误:");
   userLines.push(...params.validationErrors.map((error, index) => `${index + 1}. ${error}`));
   userLines.push("");
