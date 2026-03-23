@@ -1,4 +1,5 @@
-import { ToeflSlangClient, ToeflSlangClientOptions } from "../api/client";
+import { ToeflSlangClient, ToeflSlangClientOptions } from "../platform/client";
+import { runValidatedJsonGeneration } from "../platform/runtime/validated-json";
 import { buildToeflWritingPrompts, buildToeflWritingRepairPrompts } from "./prompt";
 import { renderToeflWritingResponse } from "./render";
 import { ToeflWritingStructuredResponse } from "./schema";
@@ -25,45 +26,33 @@ export async function runToeflWritingQuery(params: {
   source: ToeflWritingSourcePayload;
 }): Promise<ToeflWritingRunResult> {
   const client = new ToeflSlangClient(params.clientOptions);
-  let rawText = "";
-  let validationErrors: string[] = [];
-
-  for (let attempt = 1; attempt <= MAX_GENERATION_ATTEMPTS; attempt += 1) {
-    const prompts =
-      attempt === 1
+  const validated = await runValidatedJsonGeneration({
+    maxAttempts: MAX_GENERATION_ATTEMPTS,
+    failureLabel: "TOEFL Coach",
+    generate: async ({ attempt, previousOutput, validationErrors }) => {
+      const prompts =
+        attempt === 1
         ? buildToeflWritingPrompts(params.query, params.source, { outputMode: "json" })
         : buildToeflWritingRepairPrompts({
             query: params.query,
             source: params.source,
-            previousOutput: rawText,
+            previousOutput,
             validationErrors,
           });
 
-    rawText = await client.chat(prompts.systemPrompt, prompts.userPrompt);
-    const parsed = parseAndValidateToeflWritingResponse(rawText, params.query, params.source);
+      return client.chat(prompts.systemPrompt, prompts.userPrompt);
+    },
+    parseAndValidate: (rawText) =>
+      parseAndValidateToeflWritingResponse(rawText, params.query, params.source),
+    formatValidationErrors: formatToeflWritingValidationErrors,
+  });
 
-    if (parsed.ok) {
-      return {
-        source: params.source,
-        structured: parsed.value,
-        markdown: renderToeflWritingResponse(parsed.value),
-        rawText,
-        attempts: attempt,
-        repaired: attempt > 1,
-      };
-    }
-
-    validationErrors = parsed.errors;
-  }
-
-  throw new Error(
-    [
-      `TOEFL Coach failed validation after ${MAX_GENERATION_ATTEMPTS} attempts.`,
-      "Validation errors:",
-      formatToeflWritingValidationErrors(validationErrors),
-      "",
-      "Last model output:",
-      rawText,
-    ].join("\n"),
-  );
+  return {
+    source: params.source,
+    structured: validated.value,
+    markdown: renderToeflWritingResponse(validated.value),
+    rawText: validated.rawText,
+    attempts: validated.attempts,
+    repaired: validated.repaired,
+  };
 }

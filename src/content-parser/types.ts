@@ -1,4 +1,4 @@
-import { ProviderApi } from "../providers/types";
+import { ProviderApi } from "../platform/providers/types";
 
 export type ContentParserFocus = "full" | "syntax" | "slang" | "culture" | "conversion";
 export type ContentParserSourceType = "pdf" | "markdown" | "text";

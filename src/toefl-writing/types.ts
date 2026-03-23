@@ -1,4 +1,4 @@
-import { ProviderApi } from "../providers/types";
+import { ProviderApi } from "../platform/providers/types";
 
 export type ToeflWritingSourceType = "text" | "file";
 

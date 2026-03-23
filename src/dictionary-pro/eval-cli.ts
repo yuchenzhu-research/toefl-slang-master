@@ -1,7 +1,7 @@
 import "dotenv/config";
 
+import { PROVIDER_APIS } from "../platform/providers/types";
 import { runDictionaryProEvaluation, formatDictionaryProEvaluationReport } from "./evaluation";
-import { PROVIDER_APIS } from "../providers/types";
 
 type EvalCliOptions = {
   provider: string;

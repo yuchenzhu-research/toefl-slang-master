@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { ToeflSlangClientOptions } from "../api/client";
+import { ToeflSlangClientOptions } from "../platform/client";
 import {
   DictionaryProAmbiguousResponse,
   DictionaryProComparisonResponse,

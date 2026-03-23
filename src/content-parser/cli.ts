@@ -1,7 +1,7 @@
 import "dotenv/config";
 
-import { ToeflSlangClient } from "../api/client";
-import { PROVIDER_APIS } from "../providers/types";
+import { ToeflSlangClient } from "../platform/client";
+import { PROVIDER_APIS } from "../platform/providers/types";
 import { resolveContentParserSource } from "./extractor";
 import { buildContentParserPrompts } from "./prompt";
 import { runContentParserQuery } from "./runner";

@@ -1,4 +1,5 @@
-import { ToeflSlangClient, ToeflSlangClientOptions } from "../api/client";
+import { ToeflSlangClient, ToeflSlangClientOptions } from "../platform/client";
+import { runValidatedJsonGeneration } from "../platform/runtime/validated-json";
 import {
   buildDictionaryProPrompts,
   buildDictionaryProRepairPrompts,
@@ -26,43 +27,30 @@ export async function runDictionaryProQuery(params: {
   clientOptions: ToeflSlangClientOptions;
 }): Promise<DictionaryProRunResult> {
   const client = new ToeflSlangClient(params.clientOptions);
-  let rawText = "";
-  let validationErrors: string[] = [];
-
-  for (let attempt = 1; attempt <= MAX_GENERATION_ATTEMPTS; attempt += 1) {
-    const prompts =
-      attempt === 1
+  const validated = await runValidatedJsonGeneration({
+    maxAttempts: MAX_GENERATION_ATTEMPTS,
+    failureLabel: "Dictionary Pro",
+    generate: async ({ attempt, previousOutput, validationErrors }) => {
+      const prompts =
+        attempt === 1
         ? buildDictionaryProPrompts(params.query, { outputMode: "json" })
         : buildDictionaryProRepairPrompts({
             query: params.query,
-            previousOutput: rawText,
+            previousOutput,
             validationErrors,
           });
 
-    rawText = await client.chat(prompts.systemPrompt, prompts.userPrompt);
-    const parsed = parseAndValidateDictionaryProResponse(rawText, params.query);
+      return client.chat(prompts.systemPrompt, prompts.userPrompt);
+    },
+    parseAndValidate: (rawText) => parseAndValidateDictionaryProResponse(rawText, params.query),
+    formatValidationErrors: formatDictionaryProValidationErrors,
+  });
 
-    if (parsed.ok) {
-      return {
-        structured: parsed.value,
-        markdown: renderDictionaryProResponse(parsed.value),
-        rawText,
-        attempts: attempt,
-        repaired: attempt > 1,
-      };
-    }
-
-    validationErrors = parsed.errors;
-  }
-
-  throw new Error(
-    [
-      `Dictionary Pro failed validation after ${MAX_GENERATION_ATTEMPTS} attempts.`,
-      "Validation errors:",
-      formatDictionaryProValidationErrors(validationErrors),
-      "",
-      "Last model output:",
-      rawText,
-    ].join("\n"),
-  );
+  return {
+    structured: validated.value,
+    markdown: renderDictionaryProResponse(validated.value),
+    rawText: validated.rawText,
+    attempts: validated.attempts,
+    repaired: validated.repaired,
+  };
 }

@@ -1,8 +1,8 @@
-import { ToeflSlangClient } from "../api/client";
+import { ToeflSlangClient } from "../platform/client";
+import { PROVIDER_APIS } from "../platform/providers/types";
 import { buildDictionaryProPrompts } from "./prompt";
 import { runDictionaryProQuery } from "./runner";
 import { DictionaryProMode, DictionaryProQuery, DictionaryProTarget } from "./types";
-import { PROVIDER_APIS } from "../providers/types";
 
 const VALID_MODES: DictionaryProMode[] = ["meaning", "conversion", "upgrade", "comparison"];
 const VALID_TARGETS: DictionaryProTarget[] = [

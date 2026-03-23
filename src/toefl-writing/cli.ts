@@ -2,8 +2,8 @@ import "dotenv/config";
 
 import * as fs from "fs";
 import * as path from "path";
-import { ToeflSlangClient } from "../api/client";
-import { PROVIDER_APIS } from "../providers/types";
+import { ToeflSlangClient } from "../platform/client";
+import { PROVIDER_APIS } from "../platform/providers/types";
 import { buildToeflWritingPrompts } from "./prompt";
 import { inferWritingScope } from "./schema";
 import { runToeflWritingQuery } from "./runner";

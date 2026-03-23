@@ -5,7 +5,7 @@ import {
   parseBenchmarkTargets,
   runDictionaryProBenchmark,
 } from "./benchmark";
-import { PROVIDER_APIS } from "../providers/types";
+import { PROVIDER_APIS } from "../platform/providers/types";
 
 type BenchCliOptions = {
   providers?: string;

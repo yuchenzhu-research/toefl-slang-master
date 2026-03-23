@@ -1,6 +1,6 @@
-import { ToeflSlangClientOptions } from "../api/client";
-import { getLocalProviderConfig } from "../auth/manager";
-import { listProviderCatalog, normalizeProviderId } from "../providers/catalog";
+import { ToeflSlangClientOptions } from "../platform/client";
+import { getLocalProviderConfig } from "../platform/auth/manager";
+import { listProviderCatalog, normalizeProviderId } from "../platform/providers/catalog";
 import { DictionaryProEvaluationReport, runDictionaryProEvaluation } from "./evaluation";
 
 export type DictionaryProBenchmarkTarget = {

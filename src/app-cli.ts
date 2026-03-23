@@ -4,10 +4,10 @@ import { runContentParserCli } from "./content-parser/cli";
 import { runDictionaryProBenchCli } from "./dictionary-pro/bench-cli";
 import { runDictionaryProCli } from "./dictionary-pro/cli";
 import { runDictionaryProEvalCli } from "./dictionary-pro/eval-cli";
+import { ToeflSlangClient } from "./platform/client";
+import { runDoctorCli } from "./platform/doctor";
+import { runInitCli } from "./platform/init";
 import { runToeflWritingCli } from "./toefl-writing/cli";
-import { ToeflSlangClient } from "./api/client";
-import { runDoctorCli } from "./doctor";
-import { runInitCli } from "./init";
 
 function printUsage(): void {
   const usage = `

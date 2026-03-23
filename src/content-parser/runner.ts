@@ -1,4 +1,5 @@
-import { ToeflSlangClient, ToeflSlangClientOptions } from "../api/client";
+import { ToeflSlangClient, ToeflSlangClientOptions } from "../platform/client";
+import { runValidatedJsonGeneration } from "../platform/runtime/validated-json";
 import { resolveContentParserSource } from "./extractor";
 import { buildContentParserPrompts, buildContentParserRepairPrompts } from "./prompt";
 import { renderContentParserResponse } from "./render";
@@ -27,45 +28,33 @@ export async function runContentParserQuery(params: {
 }): Promise<ContentParserRunResult> {
   const client = new ToeflSlangClient(params.clientOptions);
   const source = params.source ?? (await resolveContentParserSource(params.query));
-  let rawText = "";
-  let validationErrors: string[] = [];
-
-  for (let attempt = 1; attempt <= MAX_GENERATION_ATTEMPTS; attempt += 1) {
-    const prompts =
-      attempt === 1
+  const validated = await runValidatedJsonGeneration({
+    maxAttempts: MAX_GENERATION_ATTEMPTS,
+    failureLabel: "Content Parser",
+    generate: async ({ attempt, previousOutput, validationErrors }) => {
+      const prompts =
+        attempt === 1
         ? buildContentParserPrompts(params.query, source, { outputMode: "json" })
         : buildContentParserRepairPrompts({
             query: params.query,
             source,
-            previousOutput: rawText,
+            previousOutput,
             validationErrors,
           });
 
-    rawText = await client.chat(prompts.systemPrompt, prompts.userPrompt);
-    const parsed = parseAndValidateContentParserResponse(rawText, params.query, source);
+      return client.chat(prompts.systemPrompt, prompts.userPrompt);
+    },
+    parseAndValidate: (rawText) =>
+      parseAndValidateContentParserResponse(rawText, params.query, source),
+    formatValidationErrors: formatContentParserValidationErrors,
+  });
 
-    if (parsed.ok) {
-      return {
-        source,
-        structured: parsed.value,
-        markdown: renderContentParserResponse(parsed.value),
-        rawText,
-        attempts: attempt,
-        repaired: attempt > 1,
-      };
-    }
-
-    validationErrors = parsed.errors;
-  }
-
-  throw new Error(
-    [
-      `Content Parser failed validation after ${MAX_GENERATION_ATTEMPTS} attempts.`,
-      "Validation errors:",
-      formatContentParserValidationErrors(validationErrors),
-      "",
-      "Last model output:",
-      rawText,
-    ].join("\n"),
-  );
+  return {
+    source,
+    structured: validated.value,
+    markdown: renderContentParserResponse(validated.value),
+    rawText: validated.rawText,
+    attempts: validated.attempts,
+    repaired: validated.repaired,
+  };
 }
