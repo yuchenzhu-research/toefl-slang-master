@@ -1,5 +1,4 @@
 import type { DictionaryProQuery, DictionaryProTarget } from "../../dictionary-pro/types";
-import type { ToeflWritingScope, ToeflWritingStructuredResponse } from "../../toefl-writing/schema";
 
 export const WEAK_EXPRESSION_CATEGORIES = [
   "low_precision_word",
@@ -14,6 +13,7 @@ export const WEAK_EXPRESSION_SEVERITIES = ["high", "medium", "low"] as const;
 
 export type WeakExpressionCategory = (typeof WEAK_EXPRESSION_CATEGORIES)[number];
 export type WeakExpressionSeverity = (typeof WEAK_EXPRESSION_SEVERITIES)[number];
+export type ConnectorWritingScope = "sentence" | "paragraph" | "essay";
 
 export type WeakExpression = {
   text: string;
@@ -30,7 +30,7 @@ export type WeakExpression = {
 export type WeakExpressionSet = {
   kind: "weak_expression_set";
   title: string;
-  scope: ToeflWritingScope;
+  scope: ConnectorWritingScope;
   targetRegister: DictionaryProTarget;
   sourceText: string;
   summary: string;
@@ -52,17 +52,32 @@ export type ExpressionCardSeed = {
   };
 };
 
-export type WritingDiagnosisConnectorView = Pick<
-  ToeflWritingStructuredResponse,
-  "title" | "scope" | "score" | "logic" | "vocabulary" | "structure" | "optimization" | "notes"
-> & {
+export type WritingDiagnosisConnectorView = {
+  title: string;
+  scope: ConnectorWritingScope;
+  score: {
+    band: string;
+    reason: string;
+  };
+  logic: string[];
+  vocabulary: string[];
+  structure: string[];
+  optimization: {
+    rewrite: string;
+    explanations: string[];
+  };
+  notes?: string[];
   weakExpressionSet?: WeakExpressionSet;
   revisionFocus?: string[];
   upgradePrioritySummary?: string;
 };
 
 export type WeakExpressionSetBuildInput = {
-  diagnosis: Pick<ToeflWritingStructuredResponse, "title" | "scope" | "notes">;
+  diagnosis: {
+    title: string;
+    scope: ConnectorWritingScope;
+    notes?: string[];
+  };
   sourceText: string;
   targetRegister?: DictionaryProTarget;
   summary?: string;

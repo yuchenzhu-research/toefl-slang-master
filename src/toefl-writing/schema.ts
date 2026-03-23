@@ -1,3 +1,4 @@
+import type { WeakExpressionSet } from "../connectors/coach-to-dict";
 import { ToeflWritingSourcePayload } from "./types";
 
 export type ToeflWritingScope = "sentence" | "paragraph" | "essay";
@@ -19,6 +20,9 @@ export type ToeflWritingStructuredResponse = {
     rewrite: string;
     explanations: string[];
   };
+  weakExpressionSet?: WeakExpressionSet;
+  revisionFocus?: string[];
+  upgradePrioritySummary?: string;
   notes?: string[];
 };
 
