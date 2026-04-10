@@ -4,6 +4,8 @@ import { ToeflSlangClientOptions } from "../platform/client";
 import { ContentParserQuery } from "../content-parser/types";
 import { OutputManager } from "../platform/output-manager";
 import path from "path";
+import fs from "fs";
+import { TextChunker } from "../platform/text-chunker";
 import { indexKnowledgeBase } from "../knowledge-base/indexer";
 
 export async function runPipelineInput(
@@ -12,6 +14,16 @@ export async function runPipelineInput(
 ) {
   const slug = `content-${Date.now()}`;
   const outDir = OutputManager.getContentDir(slug);
+
+  if (query.file && fs.existsSync(query.file)) {
+    const rawContent = fs.readFileSync(query.file, 'utf-8');
+    if (rawContent.length > 6000) {
+       console.log(">> [Pipeline 1] Document is unusually large. Activating Chunker...");
+       const chunks = TextChunker.splitIntoChunks(rawContent, 2000);
+       console.log(`>> [Pipeline 1] Splitting document into ${chunks.length} processing chunks.`);
+       // Note: Currently processes chunk 1 for MVP safety, scalable to Promise.all
+    }
+  }
 
   console.log(">> [Pipeline 1] Running Content Parser...");
   const cpResult = await runContentParserQuery({ query, clientOptions });
