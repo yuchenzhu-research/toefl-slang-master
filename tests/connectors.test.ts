@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert";
 import { mapCoachToDictSeeds } from "../src/connectors/coach-to-dict";
 import { WeakExpressionSet } from "../src/platform/contracts";
+import { TextChunker } from "../src/platform/text-chunker";
+import { LocaleManager } from "../src/platform/locale";
 
 test("mapCoachToDictSeeds correctly maps expressions to seeds", () => {
   const weakSet: WeakExpressionSet = {
@@ -43,16 +45,12 @@ test("mapCoachToDictSeeds handles empty or undefined sets safely", () => {
   assert.strictEqual(undefinedSeeds.length, 0);
 });
 
-import { TextChunker } from "../src/platform/text-chunker";
-
 test("TextChunker correct splitting behavior", () => {
   const longText = "Sentence one is here. ".repeat(50); 
   const chunks = TextChunker.splitIntoChunks(longText, 50);
   assert.ok(chunks.length > 1, "Should split text gracefully into multiple chunks.");
   assert.ok(chunks[0].endsWith("."), "Should split logically along valid sentential boundaries");
 });
-
-import { LocaleManager } from "../src/platform/locale";
 
 test("LocaleManager handles switcher flags correctly", () => {
   LocaleManager.setLocale("zht");
