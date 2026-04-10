@@ -43,6 +43,9 @@ Usage:
   tsm add "<word>" "<translation>" [context]
   tsm trace "<word>"
   tsm quiz
+  tsm cluster
+  tsm export print
+  tsm telemetry
 
 Commands:
   dict       Run Dictionary Pro.
@@ -69,6 +72,8 @@ Commands:
   trace      Cross-reference a word across your submitted essay reports.
   quiz       Launch an interactive MCQ vocabulary challenge.
   batch:coach Batch process essays for TOEFL coach.
+  cluster    Traverse graph to find the largest semantic synonym clusters.
+  telemetry  View API LLM usage and token tracking.
   help       Show this message.
 
 Examples:
@@ -190,6 +195,12 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "export" && rest[0] === "print") {
+    const { runPrintExport } = require('./connectors/print-exporter');
+    runPrintExport();
+    return;
+  }
+
   if (command === "batch:coach") {
     const dir = rest[0];
     if (!dir) throw new Error("Usage: tsm batch:coach <dir>");
@@ -271,6 +282,18 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (command === "quiz") {
     const { runMcqQuiz } = require('./knowledge-base/quiz');
     runMcqQuiz();
+    return;
+  }
+
+  if (command === "cluster") {
+    const { runSemanticClusters } = require('./knowledge-base/cluster');
+    runSemanticClusters();
+    return;
+  }
+
+  if (command === "telemetry") {
+    const { Telemetry } = require('./platform/telemetry');
+    Telemetry.printReport();
     return;
   }
 
