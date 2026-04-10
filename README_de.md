@@ -13,7 +13,7 @@
 | :--- | :--- | :--- |
 | **TOEFL Vorbereitung** | "gonna" ist zu informell, was ist die akademische Alternative? | **Dictionary Pro**: Akademische Registerkonvertierung per Klick. |
 | **Anspruchsvolles Lesen** | Verstehe The Economist, kann den Stil aber nicht replizieren. | **Content Parser**: Extrahieren Sie Satzschablonen. |
-| **Schreiben** | Präzisionsarme Wörter (good, bad) ziehen Ihre Punktzahl nach unten. | **TOEFL Coach**: Präzise Diagnose und akademische Ausrichtung. |
+| **Schreiben** | Präzisionsarme Wörter ziehen Ihre Punktzahl nach unten. | **TOEFL Coach**: Präzise Diagnose basierend auf offiziellen ETS-Standards. |
 
 ---
 
@@ -21,12 +21,18 @@
 
 ### 1. Dictionary Pro
 Wandelt umgangssprachliches oder ungenaues Englisch in akademische Standards um.
+*   **Vokabel-Upgrades**: Ersetzen Sie unpräzise Wörter durch anspruchsvolle akademische Alternativen.
+*   **Akademische Ausrichtung**: Direkte Zuordnung zwischen informellen und akademischen Begriffen.
 
 ### 2. TOEFL Coach
 Fokus auf akademische Logik und strukturelle Diagnose für anspruchsvolles Schreiben.
+*   **ETS-Standards**: Simulierte Bewertung und diagnostisches Feedback.
+*   **Extraktion schwacher Ausdrücke**: Erkennt automatisch informelle Sprache.
 
 ### 3. Content Parser
 Analysiert PDF/MD/TXT, um strukturierte Lernnotizen zu extrahieren.
+*   **Snippet-Extraktion**: Identifiziert die wertvollsten Ausdrücke zum Lernen.
+*   **Strukturierte Notizen**: Erzeugt Markdown- und JSON-Artefakte.
 
 ---
 
@@ -35,10 +41,14 @@ Analysiert PDF/MD/TXT, um strukturierte Lernnotizen zu extrahieren.
 ### Installation
 
 ```bash
+# Abhängigkeiten installieren
 npm install
+
+# Globalen CLI-Befehl registrieren
 npm link
-tsm init   # API-Keys einrichten (OpenAI, Gemini, Anthropic usw.)
-tsm doctor # Systemcheck
+
+# Lokale Umgebung initialisieren (.env)
+tsm init
 ```
 
 ### Kern-Pipelines
@@ -59,16 +69,11 @@ Erreichbar über `tsm x`:
 - **Spaced Repetition** (`tsm x review`)
 - **Tägliche Herausforderung** (`tsm x daily`)
 - **Semantische Cluster** (`tsm x cluster`)
-- **Native Sprachaubgabe** (`tsm x speak`)
+- **Native Sprachausgabe** (`tsm x speak`)
+- **REPL-Modus** (`tsm x repl`)
 
 ---
 
 ## 💂 Sicherheit & Datenschutz
 
-**API-Only Modus**: Kein zentraler Server. Ihre API-Keys und Daten bleiben lokal.
-
----
-
-## 📄 Lizenz
-
-MIT License.
+**API-Only Modus**: Kein zentraler Server. Ihre API-Keys und Daten bleiben lokal auf Ihrem Rechner.

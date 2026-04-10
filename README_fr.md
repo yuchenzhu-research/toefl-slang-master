@@ -13,7 +13,7 @@
 | :--- | :--- | :--- |
 | **Préparation TOEFL** | "gonna" est familier, quelle est l'alternative académique ? | **Dictionary Pro** : Conversion de registre académique. |
 | **Lecture Avancée** | Je comprends The Economist mais je n'arrive pas à répliquer le style. | **Content Parser** : Extraction de modèles de phrases. |
-| **Écriture** | Le vocabulaire imprécis (good, bad) fait baisser votre score. | **TOEFL Coach** : Diagnostic et alignement académique. |
+| **Écriture** | Le vocabulaire imprécis fait baisser votre score. | **TOEFL Coach** : Diagnostic et alignement académique basés sur les standards ETS. |
 
 ---
 
@@ -21,12 +21,18 @@
 
 ### 1. Dictionary Pro
 Transforme l'anglais familier ou vague en styles académiques standards.
+*   **Amélioration du Vocabulaire** : Remplacez les mots imprécis par des alternatives académiques sophistiquées.
+*   **Alignement Académique** : Correspondance directe entre expressions informelles et académiques.
 
 ### 2. TOEFL Coach
 Accent sur la logique académique et le diagnostic structurel pour l'écriture de haut niveau.
+*   **Standards ETS** : Scoring simulé et retours diagnostiques.
+*   **Extraction d'Expressions Faibles** : Identifie automatiquement le langage informel.
 
 ### 3. Content Parser
 Analyse les publications étrangères pour extraire des notes d'apprentissage structurées.
+*   **Extraction de Fragments** : Identifie les expressions les plus précieuses.
+*   **Notes Structurées** : Génère des artefacts en Markdown et JSON.
 
 ---
 
@@ -35,10 +41,14 @@ Analyse les publications étrangères pour extraire des notes d'apprentissage st
 ### Installation
 
 ```bash
+# Installer les dépendances
 npm install
+
+# Enregistrer la commande CLI globale
 npm link
-tsm init   # Configurez vos clés API (OpenAI, Gemini, Anthropic, etc.)
-tsm doctor # Vérification de santé
+
+# Initialiser l'environnement local (.env)
+tsm init
 ```
 
 ### Pipelines Principaux
@@ -59,16 +69,11 @@ Accessibles via `tsm x` :
 - **Répétition Espacée** (`tsm x review`)
 - **Défi Quotidien** (`tsm x daily`)
 - **Clustering Sémantique** (`tsm x cluster`)
-- **TTS Natif** (`tsm x speak`)
+- **TTS Nativo** (`tsm x speak`)
+- **Mode REPL** (`tsm x repl`)
 
 ---
 
 ## 💂 Sécurité et Confidentialité
 
-**Mode API Uniquement** : Pas de serveur central. Vos clés API et vos données restent sur votre machine.
-
----
-
-## 📄 Licence
-
-MIT License.
+**Mode API Uniquement** : Pas de serveur central. Vos clés API et vos données restent sur votre machine locale.
