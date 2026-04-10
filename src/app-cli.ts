@@ -34,6 +34,7 @@ Usage:
   tsm daily
   tsm export anki
   tsm graph
+  tsm backup
 
 Commands:
   dict       Run Dictionary Pro.
@@ -50,6 +51,7 @@ Commands:
   review     Review due flashcards via SM2 algorithm.
   export     Export knowledge base (e.g., export anki).
   graph      Build synonym graph across dictionary.
+  backup     Create a silent snapshot zip of your outputs.
   batch:coach Batch process essays for TOEFL coach.
   help       Show this message.
 
@@ -189,6 +191,12 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (command === "graph") {
     const { buildSynonymsGraph } = require('./knowledge-base/graph-builder');
     buildSynonymsGraph();
+    return;
+  }
+
+  if (command === "backup") {
+    const { runSnapshotBackup } = require('./platform/backup');
+    runSnapshotBackup();
     return;
   }
 
