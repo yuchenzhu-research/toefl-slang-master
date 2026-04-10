@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { StreakEngine } from '../platform/streak';
+import { StreakEngine } from '../streak';
 
 export function runMcqQuiz() {
   console.log("\n🎮 TOEFL SLANG MASTER - MCQ ARENA 🎮\n");

@@ -135,7 +135,7 @@
 | 平台能力 | 当前位置 | 职责 |
 | :--- | :--- | :--- |
 | **统一 CLI 分发** | `src/app-cli.ts` | 把 `tsm` 子命令分发到各模块入口 |
-| **共享 facade** | `src/platform/` | 对业务模块暴露统一 `client / auth / providers / doctor / init` |
+| **共享底座实现** | `src/platform/` | 对业务模块暴露统一 `client / auth / providers / doctor / init` |
 | **多厂商模型底盘** | `src/platform/providers/` | OpenAI / Anthropic / Gemini / Ollama 等协议适配 |
 | **环境管理** | `src/platform/init.ts` / `src/platform/doctor.ts` | 初始化 `.env`、做环境体检 |
 | **公共校验运行时** | `src/platform/runtime/validated-json.ts` | 统一 JSON 校验、repair、失败收口 |
@@ -172,34 +172,15 @@
 ## 🏗️ 技术架构
 
 ```text
-toefl-slang-master/
-├── skills/
-│   ├── dictionary-pro/
-│   ├── toefl-writing/
-│   └── content-parser/
-├── src/
-│   ├── app-cli.ts                  # 平台总入口（tsm）
-│   ├── platform/                   # 共享底盘 facade
-│   │   ├── client.ts
-│   │   ├── init.ts
-│   │   ├── doctor.ts
-│   │   ├── auth/
-│   │   ├── providers/
-│   │   └── runtime/
-│   ├── dictionary-pro/             # 独立模块：词典 / eval / bench
-│   │   ├── index.ts
-│   │   ├── cli.ts
-│   │   ├── runner.ts
-│   │   └── ...
-│   ├── toefl-writing/              # 独立模块：写作诊断
-│   │   ├── index.ts
-│   │   ├── cli.ts
-│   │   ├── runner.ts
-│   │   └── ...
-│   ├── content-parser/             # 独立模块：素材提取与解析
-│   │   ├── index.ts
-│   │   ├── cli.ts
-│   │   ├── extractor.ts
+│   ├── pipelines/                   # 工作流编排与副作用处理
+│   │   ├── input-learning.ts
+│   │   ├── output-correction.ts
+│   │   └── exporters.ts
+│   ├── experimental/                # [EXPERIMENTAL] 实验性功能 (SRS, Graph, REPL等)
+│   │   ├── knowledge-base/
+│   │   ├── srs.ts
+│   │   ├── streak.ts
+│   │   ├── audio.ts
 │   │   └── ...
 │   └── index.ts                    # Dictionary Pro 兼容入口代理
 ├── bin/
@@ -444,6 +425,19 @@ contentpro providers
 > "_TOEFL Slang Master 让我的写作从 22 分提升到 28 分，同时我在追《经济学人》时终于能听懂同事的骚话了。_"
 
 <div align="right">— 某不愿透露姓名的备考党</div>
+
+---
+
+## 🧪 实验性功能 (Experimental)
+
+以下功能处于实验阶段，可通过 `tsm x <command>` 访问，不保证稳定性：
+
+- **SRS 复习系统** (`tsm x review`): 基于 SM2 算法的间隔重复记忆。
+- **每日挑战** (`tsm x daily`): 随机抽取 3 张卡片的快速测试。
+- **知识库索引** (`tsm x kb:status`): 查看当前词卡库统计。
+- **语义聚类** (`tsm x cluster`): 自动寻找近义词群。
+- **TTS 语音** (`tsm x speak`): 调用系统语音引擎朗读表达。
+- **交互式 REPL** (`tsm x repl`): 连续处理终端。
 
 ---
 

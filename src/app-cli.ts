@@ -51,25 +51,28 @@ Usage:
   tsm x <command> [args]
 
 Commands:
-  pipeline:input   Run Pipeline 1 (Input Learning flow).
-  pipeline:output  Run Pipeline 2 (Output Correction flow).
-  kb:status        Show knowledge base indexing status.
-  daily            Run a quick 3-card daily challenge.
-  review           Review due flashcards via SM2 algorithm.
-  quiz             Launch an interactive MCQ vocabulary challenge.
-  telemetry        View API LLM usage and token tracking.
-  journal          Generate a weekly Markdown digest of cards.
-  search           Global fast search across dictionary cards.
-  archive          Move mastered flashcards to the archive.
-  graph            Build synonym graph across dictionary.
-  cluster          Find the largest semantic synonym clusters.
-  trace            Trace word usage across historical reports.
-  repl             Launch an interactive continuous processing terminal.
-  speak            Use native macOS TTS to read text.
-  batch:coach      Batch process essays for TOEFL coach.
-  backup           Create a silent snapshot zip of your outputs.
-  export           Export knowledge base (anki, print).
-  add              Manually create a dictionary card.
+  tsm x <command> [args]
+ 
+ Commands:
+-  pipeline:input   Run Pipeline 1 (Input Learning flow).
+-  pipeline:output  Run Pipeline 2 (Output Correction flow).
+-  kb:status        Show knowledge base indexing status.
+-  daily            [EXPERIMENTAL] Run a quick 3-card daily challenge.
+-  review           [EXPERIMENTAL] Review due flashcards via SM2 algorithm.
+-  quiz             [EXPERIMENTAL] Launch an interactive MCQ vocabulary challenge.
+-  telemetry        [EXPERIMENTAL] View API LLM usage and token tracking.
+-  journal          [EXPERIMENTAL] Generate a weekly Markdown digest of cards.
+-  search           [EXPERIMENTAL] Global fast search across dictionary cards.
+-  archive          [EXPERIMENTAL] Move mastered flashcards to the archive.
+-  graph            [EXPERIMENTAL] Build synonym graph across dictionary.
+-  cluster          [EXPERIMENTAL] Find the largest semantic synonym clusters.
+-  trace            [EXPERIMENTAL] Trace word usage across historical reports.
+-  repl             [EXPERIMENTAL] Launch an interactive continuous processing terminal.
+-  speak            [EXPERIMENTAL] Use native macOS TTS to read text.
+-  batch:coach      Batch process essays for TOEFL coach.
+-  backup           Create a silent snapshot zip of your outputs.
+-  export           Export knowledge base (anki, print).
+-  add              Manually create a dictionary card.
 `;
   console.log(usage.trim());
 }
@@ -154,7 +157,7 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   }
 
   if (command === "kb:status") {
-    const { renderDashboard } = require("./platform/dashboard");
+    const { renderDashboard } = require("./experimental/dashboard");
     renderDashboard();
     return;
   }
@@ -188,7 +191,7 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
       return;
     }
     console.log(`>> You have ${dueCards.length} card(s) to review today. (Interactive mode mocked for testing)`);
-    const SrsModule = require("./platform/srs");
+    const SrsModule = require("./experimental/srs");
     const first = dueCards[0];
     const cardData = JSON.parse(fs.readFileSync(first.file, "utf-8"));
     const oldRec = cardData.srsData || SrsModule.SRSEngine.createDefault();
@@ -219,13 +222,13 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   }
 
   if (command === "daily") {
-    const { runDailyChallenge } = require("./knowledge-base/daily");
+    const { runDailyChallenge } = require("./experimental/knowledge-base/daily");
     runDailyChallenge();
     return;
   }
 
   if (command === "graph") {
-    const { buildSynonymsGraph } = require("./knowledge-base/graph-builder");
+    const { buildSynonymsGraph } = require("./experimental/knowledge-base/graph-builder");
     buildSynonymsGraph();
     return;
   }
@@ -237,7 +240,7 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   }
 
   if (command === "repl") {
-    const { startRepl } = require("./cli/repl");
+    const { startRepl } = require("./experimental/repl");
     await startRepl();
     return;
   }
@@ -245,13 +248,13 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   if (command === "speak") {
     const text = rest.join(" ");
     if (!text) throw new Error("Usage: tsm x speak <text-or-headword>");
-    const { synthesizeSpeech } = require("./platform/audio");
+    const { synthesizeSpeech } = require("./experimental/audio");
     synthesizeSpeech(text);
     return;
   }
 
   if (command === "journal") {
-    const { buildWeeklyJournal } = require("./knowledge-base/journal");
+    const { buildWeeklyJournal } = require("./experimental/knowledge-base/journal");
     buildWeeklyJournal();
     return;
   }
@@ -259,13 +262,13 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   if (command === "search") {
     const kw = rest.join(" ");
     if (!kw) throw new Error("Usage: tsm x search <keyword>");
-    const { runGlobalSearch } = require("./knowledge-base/search");
+    const { runGlobalSearch } = require("./experimental/knowledge-base/search");
     runGlobalSearch(kw);
     return;
   }
 
   if (command === "archive") {
-    const { archiveCards } = require("./knowledge-base/archiver");
+    const { archiveCards } = require("./experimental/knowledge-base/archiver");
     archiveCards();
     return;
   }
@@ -283,25 +286,25 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   if (command === "trace") {
     const word = rest.join(" ");
     if (!word) throw new Error("Usage: tsm x trace <word>");
-    const { runCrossRefTrace } = require("./knowledge-base/cross-ref");
+    const { runCrossRefTrace } = require("./experimental/knowledge-base/cross-ref");
     runCrossRefTrace(word);
     return;
   }
 
   if (command === "quiz") {
-    const { runMcqQuiz } = require("./knowledge-base/quiz");
+    const { runMcqQuiz } = require("./experimental/knowledge-base/quiz");
     runMcqQuiz();
     return;
   }
 
   if (command === "cluster") {
-    const { runSemanticClusters } = require("./knowledge-base/cluster");
+    const { runSemanticClusters } = require("./experimental/knowledge-base/cluster");
     runSemanticClusters();
     return;
   }
 
   if (command === "telemetry") {
-    const { Telemetry } = require("./platform/telemetry");
+    const { Telemetry } = require("./experimental/telemetry");
     Telemetry.printReport();
     return;
   }

@@ -6,8 +6,8 @@ import { OutputManager } from "../platform/output-manager";
 import path from "path";
 import fs from "fs";
 import { TextChunker } from "../platform/text-chunker";
-import { indexKnowledgeBase } from "../knowledge-base/indexer";
 import { toExpressionCardSeeds } from "../connectors/content-to-dict";
+import { toExpressionCard } from "../connectors/dict-to-card";
 
 /**
  * Pipeline 1: Input Learning Workflow
@@ -35,9 +35,8 @@ export async function runPipelineInput(
   console.log(">> [Pipeline 1] Running Content Parser...");
   const cpResult = await runContentParserQuery({ query, clientOptions });
 
-  // 3. Side Effects: Save Parser Outputs
-  OutputManager.writeJson(path.join(outDir, "source.json"), cpResult.structured);
-  OutputManager.writeMarkdown(path.join(outDir, "source.md"), cpResult.markdown);
+  // 3. Side Effects: Save Parser Outputs via Sidecar Saver
+  OutputManager.saveContentDigest(slug, cpResult.structured, cpResult.markdown);
 
   const candidates = cpResult.structured.expressionCandidates || [];
   OutputManager.writeJson(path.join(outDir, "candidates.json"), { candidates });
@@ -62,18 +61,24 @@ export async function runPipelineInput(
       clientOptions,
     });
 
-    // 6. Side Effects: Save Dictionary Cards
-    const cardDir = OutputManager.getCardDir(seed.target, seed.source.category || "uncategorized", seed.query);
-    OutputManager.writeJson(path.join(cardDir, "card.json"), {
-      ...dpResult.structured,
-      relatedSourceSlug: slug
-    });
-    const traceString = `\n\n> 👋 本卡片提取自: ${slug}`;
-    OutputManager.writeMarkdown(path.join(cardDir, "index.md"), dpResult.markdown + traceString);
+    // 6. Side Effects: Map to Standard ExpressionCard and Save with Sidecar
+    const traceMetadata = { relatedSourceSlug: slug };
+    const standardizedCard = toExpressionCard(dpResult.structured, traceMetadata);
+    
+    console.log(`   -> Saving standardized card and sidecar for: ${seed.query}`);
+    OutputManager.saveDictionaryCard(
+       standardizedCard, 
+       dpResult.markdown + `\n\n> 👋 本卡片提取自素材: ${slug}`
+    );
   }
   
-  // 7. Side Effects: Update Knowledge Base Index
-  indexKnowledgeBase();
+  // 7. Side Effects: Update Knowledge Base Index (Optional/Experimental)
+  try {
+    const { indexKnowledgeBase } = require("../experimental/knowledge-base/indexer");
+    indexKnowledgeBase();
+  } catch (e) {
+    // Silent skip if experimental indexer is missing or fails
+  }
 
   console.log(`>> [Pipeline 1] Input Learning Complete. Artifacts saved to outputs/content/${slug}/`);
 }

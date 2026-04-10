@@ -1,8 +1,8 @@
 import { runDictionaryProQuery } from "../dictionary-pro/runner";
+import { toExpressionCard } from "../connectors/dict-to-card";
 import type { ToeflSlangClientOptions } from "../platform/client";
 import { OutputManager } from "../platform/output-manager";
 import path from "path";
-import { indexKnowledgeBase } from "../knowledge-base/indexer";
 import { resolveToeflWritingSource } from "../toefl-writing/cli";
 import { runToeflWritingQuery } from "../toefl-writing/runner";
 import { buildCoachToDictBridgeBundle } from "../connectors/coach-to-dict";
@@ -45,8 +45,7 @@ export async function runPipelineOutput(
     });
   }
 
-  OutputManager.writeJson(path.join(outDir, "diagnosis.json"), coachResult.structured);
-  OutputManager.writeMarkdown(path.join(outDir, "report.md"), reportMd);
+  OutputManager.saveCoachDiagnosis(slug, coachResult.structured, reportMd);
 
   // 4. Core Execution: Dictionary Pro Loop
   console.log(`>> [Pipeline 2] Found ${seeds.length} weak expressions. Translating to Dictionary Cards...`);
@@ -68,18 +67,24 @@ export async function runPipelineOutput(
       clientOptions,
     });
 
-    // 5. Side Effects: Save Dictionary Cards
-    const cardDir = OutputManager.getCardDir(seed.target, "weak-expression-fix", seed.query);
-    OutputManager.writeJson(path.join(cardDir, "card.json"), {
-      ...dpResult.structured,
-      relatedDiagnosisSlug: slug,
-    });
-    const traceString = `\n\n> Source diagnosis: ${slug}`;
-    OutputManager.writeMarkdown(path.join(cardDir, "index.md"), dpResult.markdown + traceString);
+    // 5. Side Effects: Map to Standard ExpressionCard and Save with Sidecar
+    const traceMetadata = { relatedDiagnosisSlug: slug };
+    const standardizedCard = toExpressionCard(dpResult.structured, traceMetadata);
+
+    console.log(`   -> Saving standardized card and sidecar for: ${seed.query}`);
+    OutputManager.saveDictionaryCard(
+      standardizedCard,
+      dpResult.markdown + `\n\n> Source diagnosis: ${slug}`
+    );
   }
 
-  // 6. Side Effects: Update Knowledge Base Index
-  indexKnowledgeBase();
+  // 6. Side Effects: Update Knowledge Base Index (Optional/Experimental)
+  try {
+    const { indexKnowledgeBase } = require("../experimental/knowledge-base/indexer");
+    indexKnowledgeBase();
+  } catch (e) {
+    // Silent skip if experimental indexer is missing or fails
+  }
 
   console.log(`>> [Pipeline 2] Output Correction Complete. Artifacts saved to outputs/coach/${slug}/`);
 }
