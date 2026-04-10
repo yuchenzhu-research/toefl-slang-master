@@ -51,3 +51,15 @@ test("TextChunker correct splitting behavior", () => {
   assert.ok(chunks.length > 1, "Should split text gracefully into multiple chunks.");
   assert.ok(chunks[0].endsWith("."), "Should split logically along valid sentential boundaries");
 });
+
+import { LocaleManager } from "../src/platform/locale";
+
+test("LocaleManager handles switcher flags correctly", () => {
+  LocaleManager.setLocale("zht");
+  assert.strictEqual(LocaleManager.getLocale(), "zh-Hant");
+  assert.ok(LocaleManager.injectPrompt().includes("繁体中文"));
+
+  LocaleManager.setLocale("en");
+  assert.strictEqual(LocaleManager.getLocale(), "en");
+  assert.ok(LocaleManager.injectPrompt().includes("English"));
+});
