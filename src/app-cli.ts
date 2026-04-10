@@ -175,6 +175,14 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "batch:coach") {
+    const dir = rest[0];
+    if (!dir) throw new Error("Usage: tsm batch:coach <dir>");
+    const { processBatchEssays } = require('./connectors/batch-coach');
+    await processBatchEssays(path.resolve(process.cwd(), dir));
+    return;
+  }
+
   throw new Error(
     `Unknown command "${command}". Use "tsm help" to see the available commands.`,
   );
