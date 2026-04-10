@@ -2,7 +2,7 @@
 
 ---
 
-## 2026-04-10 / Phase 6: Experimental Isolation
+## 2026-04-11 / Phase 6: Experimental Isolation
 
 ### Modifications
 - **Physical Isolation**: Moved secondary features (`knowledge-base`, `srs`, `streak`, `audio`, `telemetry`, `dashboard`, `repl`) to a dedicated `src/experimental/` directory to prevent architectural leakage.
@@ -12,19 +12,6 @@
 ### Architectural Impact
 - Core pillars (Dict, Coach, Content) are now clearly separated from experimental assets.
 - Reduced strict dependency graph size for core pipelines.
-
----
-
-## 2026-04-10 / Phase 4: Output Layer Consolidation
-
-### Modifications
-- **Canonical Output Standardization**: Enforced `outputs/` as the single source of truth for all persistent data. Relocated variables and updated references to eliminate ambiguity with `data/`.
-- **Sidecar Saving Logic**: Enhanced `OutputManager` with centralized methods (`saveDictionaryCard`, `saveCoachDiagnosis`, `saveContentDigest`) that handle both JSON artifacts and Markdown sidecars in a single transaction.
-- **Stable Schema Mapping**: Introduced a formal `dict-to-card` mapper to transform `Dictionary Pro` responses into standardized `ExpressionCard` objects before persistence. This ensures the knowledge base and SRS engine consume a stable contract rather than raw API reflections.
-
-### Architectural Impact
-- Persistence side-effects are now concentrated in `OutputManager`.
-- The `Dictionary Pro` internal schema is decoupled from the long-term knowledge base persistence format.
 
 ---
 
@@ -42,6 +29,19 @@
 ### Resolved Issues
 - Eliminated redundant architectural layers and improved code discoverability.
 - Consolidated the "Shared Floor" (Platform) into a implementation-heavy source of truth.
+
+---
+
+## 2026-04-10 / Phase 4: Output Layer Consolidation
+
+### Modifications
+- **Canonical Output Standardization**: Enforced `outputs/` as the single source of truth for all persistent data. Relocated variables and updated references to eliminate ambiguity with `data/`.
+- **Sidecar Saving Logic**: Enhanced `OutputManager` with centralized methods (`saveDictionaryCard`, `saveCoachDiagnosis`, `saveContentDigest`) that handle both JSON artifacts and Markdown sidecars in a single transaction.
+- **Stable Schema Mapping**: Introduced a formal `dict-to-card` mapper to transform `Dictionary Pro` responses into standardized `ExpressionCard` objects before persistence. This ensures the knowledge base and SRS engine consume a stable contract rather than raw API reflections.
+
+### Architectural Impact
+- Persistence side-effects are now concentrated in `OutputManager`.
+- The `Dictionary Pro` internal schema is decoupled from the long-term knowledge base persistence format.
 
 ---
 
