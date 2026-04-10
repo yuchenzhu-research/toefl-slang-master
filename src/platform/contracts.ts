@@ -120,5 +120,5 @@ export interface ExpressionCardSeed {
   seedExpression: string;
   seedContext: string;
   sourceOrigin: 'ContentParser' | 'TOEFLCoach' | 'Manual';
-  targetRegister: 'toefl-writing' | 'toefl-speaking' | 'general-academic' | 'daily-english' | 'ielts-academic';
+  targetRegister: 'toefl-writing' | 'toefl-speaking' | 'general-academic' | 'daily-english' | 'ielts-academic' | 'gre-verbal';
 }

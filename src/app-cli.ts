@@ -37,6 +37,7 @@ Usage:
   tsm backup
   tsm repl
   tsm speak "<word-or-sentence>"
+  tsm journal
 
 Commands:
   dict       Run Dictionary Pro.
@@ -56,6 +57,7 @@ Commands:
   backup     Create a silent snapshot zip of your outputs.
   repl       Launch an interactive continuous processing terminal.
   speak      Use native macOS TTS to read a card or text.
+  journal    Generate a beautiful Markdown digest of the week's cards.
   batch:coach Batch process essays for TOEFL coach.
   help       Show this message.
 
@@ -215,6 +217,12 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     if (!text) throw new Error("Usage: tsm speak <text-or-headword>");
     const { synthesizeSpeech } = require('./platform/audio');
     synthesizeSpeech(text);
+    return;
+  }
+
+  if (command === "journal") {
+    const { buildWeeklyJournal } = require('./knowledge-base/journal');
+    buildWeeklyJournal();
     return;
   }
 
