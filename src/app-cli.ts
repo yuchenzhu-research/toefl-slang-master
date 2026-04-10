@@ -35,6 +35,8 @@ Usage:
   tsm export anki
   tsm graph
   tsm backup
+  tsm repl
+  tsm speak "<word-or-sentence>"
 
 Commands:
   dict       Run Dictionary Pro.
@@ -52,6 +54,8 @@ Commands:
   export     Export knowledge base (e.g., export anki).
   graph      Build synonym graph across dictionary.
   backup     Create a silent snapshot zip of your outputs.
+  repl       Launch an interactive continuous processing terminal.
+  speak      Use native macOS TTS to read a card or text.
   batch:coach Batch process essays for TOEFL coach.
   help       Show this message.
 
@@ -197,6 +201,20 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (command === "backup") {
     const { runSnapshotBackup } = require('./platform/backup');
     runSnapshotBackup();
+    return;
+  }
+
+  if (command === "repl") {
+    const { startRepl } = require('./cli/repl');
+    await startRepl();
+    return;
+  }
+
+  if (command === "speak") {
+    const text = rest.join(" ");
+    if (!text) throw new Error("Usage: tsm speak <text-or-headword>");
+    const { synthesizeSpeech } = require('./platform/audio');
+    synthesizeSpeech(text);
     return;
   }
 
