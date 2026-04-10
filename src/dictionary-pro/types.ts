@@ -6,7 +6,8 @@ export type DictionaryProTarget =
   | "toefl-writing"
   | "toefl-speaking"
   | "general-academic"
-  | "daily-english";
+  | "daily-english"
+  | "ielts-academic";
 
 export interface DictionaryProQuery {
   text?: string;

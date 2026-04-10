@@ -126,15 +126,8 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   }
 
   if (command === "kb:status") {
-    console.log(">> Local Knowledge Base Status");
-    ['cards.json', 'sources.json', 'diagnoses.json'].forEach(file => {
-      const p = path.join(process.cwd(), 'outputs', 'indexes', file);
-      if (fs.existsSync(p)) {
-        console.log(`- ${file}: Found (${fs.statSync(p).size} bytes)`);
-      } else {
-        console.log(`- ${file}: Not found`);
-      }
-    });
+    const { renderDashboard } = require('./platform/dashboard');
+    renderDashboard();
     return;
   }
 
