@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-04-10 / Phase 5: Slimming Platform & Core Consolidation
+
+### Modifications
+- **Relocated Core Implementations**: Moved implementation files from root `src/` directly into `src/platform/`, fulfilling the mandate to consolidate shared infrastructure in the platform layer.
+  - `src/api/client.ts` -> [src/platform/client.ts](file:///Users/yuchenzhu/Desktop/github/toefl%20slang%20master/src/platform/client.ts)
+  - `src/auth/manager.ts` -> [src/platform/auth/manager.ts](file:///Users/yuchenzhu/Desktop/github/toefl%20slang%20master/src/platform/auth/manager.ts)
+  - `src/providers/` -> [src/platform/providers/](file:///Users/yuchenzhu/Desktop/github/toefl%20slang%20master/src/platform/providers/)
+  - `src/doctor.ts` & `src/init.ts` -> `src/platform/doctor.ts` & `src/platform/init.ts`
+- **Removed Empty Facades**: Deleted all "forwarder" files in `src/platform/` and root `src/` modules that were mere redirections.
+- **Dependency Guarding**: Updated `package.json` and all cross-module imports to ensure system-wide integrity after relocation.
+
+### Resolved Issues
+- Eliminated redundant architectural layers and improved code discoverability.
+- Consolidated the "Shared Floor" (Platform) into a implementation-heavy source of truth.
+
+---
+
 ## 2026-04-10 / Phase 3: Connector Refactoring & Side-Effect Decoupling
 
 ### Modifications

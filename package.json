@@ -12,8 +12,8 @@
   },
   "scripts": {
     "start": "ts-node src/dictionary-pro/index.ts",
-    "setup": "ts-node src/init.ts",
-    "doctor": "ts-node src/doctor.ts",
+    "setup": "ts-node src/platform/init.ts",
+    "doctor": "ts-node src/platform/doctor.ts",
     "tsm": "ts-node src/app-cli.ts",
     "dict": "ts-node src/dictionary-pro/index.ts",
     "dict:dry": "ts-node src/dictionary-pro/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",
