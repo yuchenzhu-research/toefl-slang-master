@@ -6,8 +6,8 @@ import { ToeflSlangClient } from "./platform/client";
 import { runDoctorCli } from "./platform/doctor";
 import { runInitCli } from "./platform/init";
 import { runToeflWritingModuleCli } from "./toefl-writing";
-import { runPipelineInput } from "./connectors/pipeline-input";
-import { runPipelineOutput } from "./connectors/pipeline-output";
+import { runPipelineInput } from "./pipelines/input-learning";
+import { runPipelineOutput } from "./pipelines/output-correction";
 import fs from "fs";
 import path from "path";
 
@@ -199,13 +199,13 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   }
 
   if (command === "export" && rest[0] === "anki") {
-    const { exportAnkiCsv } = require("./connectors/anki-exporter");
+    const { exportAnkiCsv } = require("./pipelines/exporters");
     await exportAnkiCsv();
     return;
   }
 
   if (command === "export" && rest[0] === "print") {
-    const { runPrintExport } = require("./connectors/print-exporter");
+    const { runPrintExport } = require("./pipelines/exporters");
     runPrintExport();
     return;
   }
@@ -213,7 +213,7 @@ async function runExperimentalCli(command: string, rest: string[]): Promise<void
   if (command === "batch:coach") {
     const dir = rest[0];
     if (!dir) throw new Error("Usage: tsm x batch:coach <dir>");
-    const { processBatchEssays } = require("./connectors/batch-coach");
+    const { processBatchEssays } = require("./pipelines/batch-coach");
     await processBatchEssays(path.resolve(process.cwd(), dir));
     return;
   }

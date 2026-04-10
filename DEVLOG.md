@@ -2,6 +2,37 @@
 
 ---
 
+## 2026-04-10 / Phase 3: Connector Refactoring & Side-Effect Decoupling
+
+### Modifications
+- **Established `src/pipelines/` Layer**: Moved all orchestration and side-effect logic (Disk I/O, Knowledge Base Indexing, Slug Generation) out of the connector layer.
+  - `input-learning.ts`: Orchestrates Link 1 (Content Parser -> Dict).
+  - `output-correction.ts`: Orchestrates Link 2 (TOEFL Coach -> Dict).
+  - `batch-coach.ts` & `exporters.ts`: Centralized batch processing and Anki/Print export routines.
+- **Thin Connector Pattern**: Standardized `src/connectors/` as pure bridging layers (object-to-object mapping only).
+  - Introduced `src/connectors/content-to-dict/` mapping layer.
+  - Refactored `src/connectors/coach-to-dict/` to remove active bridging logic.
+- **System-wide Integration**: Updated `app-cli.ts` and `src/cli/repl.ts` to consume the new pipeline orchestrators.
+
+### Resolved Issues
+- Stopped "connector leakage" where file saving and indexing logic were scattered in bridging files.
+- Clarified the functional contract of Link 1 (Content Candidates) and Link 2 (Weak Expressions) targeting `Dictionary Pro` seeds.
+
+---
+
+## 2026-04-10 / Phase 2: CLI Slimming & Experimental Namespace
+
+### Modifications
+- **Main CLI Entry Refactoring**: Slimmed the primary `tsm` help menu to focus exclusively on the core narrative: `dict`, `coach`, `content`, `init`, `doctor`, and `providers`.
+- **Experimental Namespace (`tsm x`)**: Introduced a dedicated namespace for auxiliary and experimental features, moving 15+ secondary commands (SRS, telemetry, pipelines, etc.) out of the main logic path.
+- **Improved Discoverability**: Added `tsm x --help` to provide a clear catalog for power-user features without cluttering the onboarding experience.
+
+### Resolved Issues
+- Fixed visual overwhelm in the CLI main entry-point.
+- Standardized the dispatching logic for experimental sub-commands in `app-cli.ts`.
+
+---
+
 ## 2026-04-10 / Phase 1: Engineering Baseline Stabilization
 
 ### Related Commits

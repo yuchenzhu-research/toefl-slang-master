@@ -1,5 +1,5 @@
 import * as readline from 'readline';
-import { runPipelineOutput } from '../connectors/pipeline-output';
+import { runPipelineOutput } from '../pipelines/output-correction';
 
 export async function startRepl() {
   console.log("\n========================================================");

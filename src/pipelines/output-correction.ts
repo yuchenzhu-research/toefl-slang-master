@@ -1,17 +1,17 @@
 import { runDictionaryProQuery } from "../dictionary-pro/runner";
 import type { ToeflSlangClientOptions } from "../platform/client";
-import type { ExpressionCardSeed, WeakExpressionSet } from "../platform/contracts";
 import { OutputManager } from "../platform/output-manager";
 import path from "path";
 import { indexKnowledgeBase } from "../knowledge-base/indexer";
 import { resolveToeflWritingSource } from "../toefl-writing/cli";
 import { runToeflWritingQuery } from "../toefl-writing/runner";
-import { buildCoachToDictBridgeBundle, toExpressionCardSeeds } from "./coach-to-dict";
+import { buildCoachToDictBridgeBundle } from "../connectors/coach-to-dict";
 
-export function mapCoachToDictSeeds(weakSet: WeakExpressionSet): ExpressionCardSeed[] {
-  return toExpressionCardSeeds(weakSet);
-}
-
+/**
+ * Pipeline 2: Output Correction Workflow
+ * Orchestrates TOEFL Coach -> Coach-to-Dict Mapping -> Dictionary Pro Card Generation
+ * Handles all side-effects (I/O, Indexing, Slugs)
+ */
 export async function runPipelineOutput(
   text: string,
   clientOptions: ToeflSlangClientOptions,
@@ -20,6 +20,7 @@ export async function runPipelineOutput(
   const outDir = OutputManager.getDiagnosisDir(slug);
   const source = resolveToeflWritingSource({ text });
 
+  // 1. Core Execution: TOEFL Coach
   console.log(">> [Pipeline 2] Running TOEFL Coach Diagnosis...");
   const coachResult = await runToeflWritingQuery({
     query: { text },
@@ -27,10 +28,13 @@ export async function runPipelineOutput(
     source,
   });
 
-  OutputManager.writeJson(path.join(outDir, "diagnosis.json"), coachResult.structured);
+  // 2. Bridge: Map Diagnosis to Seeds
   const bundle = buildCoachToDictBridgeBundle(coachResult.structured);
   const weakSet = bundle?.weakExpressionSet;
+  const seeds = bundle?.seeds ?? [];
+  const queries = bundle?.queries ?? [];
 
+  // 3. Side Effects: Enrich and Save Report
   let reportMd = coachResult.markdown;
   if (weakSet && weakSet.items.length > 0) {
     reportMd += `\n\n## 表达升级池\n\n`;
@@ -41,26 +45,30 @@ export async function runPipelineOutput(
     });
   }
 
+  OutputManager.writeJson(path.join(outDir, "diagnosis.json"), coachResult.structured);
   OutputManager.writeMarkdown(path.join(outDir, "report.md"), reportMd);
 
-  const seeds = bundle?.seeds ?? [];
-  const queries = bundle?.queries ?? [];
+  // 4. Core Execution: Dictionary Pro Loop
   console.log(`>> [Pipeline 2] Found ${seeds.length} weak expressions. Translating to Dictionary Cards...`);
 
   for (let index = 0; index < seeds.length; index += 1) {
     const seed = seeds[index];
     const dpQuery = queries[index];
 
-    if (!dpQuery) {
-      continue;
-    }
+    if (!dpQuery) continue;
 
     console.log(`   -> Generating card for weak expression: ${seed.query}`);
     const dpResult = await runDictionaryProQuery({
-      query: dpQuery,
+      query: {
+        text: dpQuery.text,
+        context: dpQuery.context,
+        mode: dpQuery.mode,
+        target: dpQuery.target,
+      },
       clientOptions,
     });
 
+    // 5. Side Effects: Save Dictionary Cards
     const cardDir = OutputManager.getCardDir(seed.target, "weak-expression-fix", seed.query);
     OutputManager.writeJson(path.join(cardDir, "card.json"), {
       ...dpResult.structured,
@@ -70,6 +78,7 @@ export async function runPipelineOutput(
     OutputManager.writeMarkdown(path.join(cardDir, "index.md"), dpResult.markdown + traceString);
   }
 
+  // 6. Side Effects: Update Knowledge Base Index
   indexKnowledgeBase();
 
   console.log(`>> [Pipeline 2] Output Correction Complete. Artifacts saved to outputs/coach/${slug}/`);
