@@ -1,5 +1,5 @@
 import * as readline from 'readline';
-import { runPipelineOutput } from '../connectors/coach-to-dict';
+import { runPipelineOutput } from '../connectors/pipeline-output';
 
 export async function startRepl() {
   console.log("\n========================================================");
@@ -27,7 +27,7 @@ export async function startRepl() {
 
     try {
       console.log(`\n>> Evaluating input...`);
-      await runPipelineOutput(input, {});
+      await runPipelineOutput(input, { provider: "openai" });
       console.log(`>> Pipeline execution completed successfully.\n`);
     } catch (e: any) {
       console.error(`\n[!] Error during pipeline evaluation: ${e.message}\n`);

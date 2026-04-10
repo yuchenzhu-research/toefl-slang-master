@@ -3,7 +3,7 @@ import {
   WEAK_EXPRESSION_SEVERITIES,
   WeakExpression,
   WeakExpressionSet,
-} from "../connectors/coach-to-dict";
+} from "../platform/contracts";
 import { ToeflWritingStructuredResponse, ToeflWritingScope, inferWritingScope } from "./schema";
 import { ToeflWritingQuery, ToeflWritingSourcePayload, ToeflWritingSourceType } from "./types";
 

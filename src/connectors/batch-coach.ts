@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { runPipelineOutput } from './coach-to-dict';
+import { runPipelineOutput } from './pipeline-output';
 
 export async function processBatchEssays(dirPath: string) {
   console.log(`>> [Batch Coach] Scanning directory: ${dirPath}`);
@@ -23,7 +23,7 @@ export async function processBatchEssays(dirPath: string) {
       const text = fs.readFileSync(fullPath, 'utf-8');
       console.log(`\n>> -------------------------------------`);
       console.log(`>> Processing: ${file}`);
-      await runPipelineOutput(text, {});
+      await runPipelineOutput(text, { provider: "openai" });
       successCount++;
     } catch (e: any) {
        console.error(`>> Failed to process ${file}: ${e.message}`);

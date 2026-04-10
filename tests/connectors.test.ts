@@ -1,48 +1,66 @@
 import test from "node:test";
 import assert from "node:assert";
-import { mapCoachToDictSeeds } from "../src/connectors/coach-to-dict";
+import { toExpressionCardSeeds } from "../src/connectors/coach-to-dict/index";
 import { WeakExpressionSet } from "../src/platform/contracts";
 import { TextChunker } from "../src/platform/text-chunker";
 import { LocaleManager } from "../src/platform/locale";
 
-test("mapCoachToDictSeeds correctly maps expressions to seeds", () => {
+test("toExpressionCardSeeds correctly maps expressions to seeds", () => {
   const weakSet: WeakExpressionSet = {
+    kind: "weak_expression_set",
+    title: "Essay weak expression extraction",
+    scope: "paragraph",
+    targetRegister: "toefl-writing",
+    sourceText: "It has good effects on society. I think this is true.",
+    summary: "The draft relies on vague and spoken-style expressions.",
     items: [
       {
-        weakExpression: "good effects",
-        contextSentence: "It has good effects on society.",
-        issueType: "vocabulary",
-        suggestedReplacement: "beneficial impacts",
+        text: "good",
+        category: "low_precision_word",
+        severity: "high",
+        reason: "The phrase is too vague for TOEFL writing.",
+        targetRegister: "toefl-writing",
+        sourceSentence: "It has good effects on society.",
+        sourceFragment: "good effects",
+        rewriteGoal: "Use a more precise academic collocation.",
       },
       {
-        weakExpression: "I think",
-        contextSentence: "I think this is true.",
-        issueType: "informal",
-        suggestedReplacement: "I maintain that",
-      }
-    ]
+        text: "I think",
+        category: "spoken_opinion_marker",
+        severity: "medium",
+        reason: "The phrase sounds speech-like.",
+        targetRegister: "toefl-writing",
+        sourceSentence: "I think this is true.",
+        rewriteGoal: "Use a stronger claim frame.",
+      },
+    ],
   };
 
-  const seeds = mapCoachToDictSeeds(weakSet);
+  const seeds = toExpressionCardSeeds(weakSet);
 
   assert.strictEqual(seeds.length, 2, "Should output exactly 2 seeds");
-  
-  assert.strictEqual(seeds[0].seedExpression, "good effects");
-  assert.strictEqual(seeds[0].seedContext, "It has good effects on society.");
-  assert.strictEqual(seeds[0].targetRegister, "toefl-writing", "Default register should be toefl-writing");
-  assert.strictEqual(seeds[0].sourceOrigin, "TOEFLCoach");
 
-  assert.strictEqual(seeds[1].seedExpression, "I think");
+  assert.strictEqual(seeds[0].query, "good effects");
+  assert.strictEqual(seeds[0].context, "It has good effects on society.");
+  assert.strictEqual(seeds[0].target, "toefl-writing");
+  assert.strictEqual(seeds[0].mode, "upgrade");
+  assert.strictEqual(seeds[0].source.module, "toefl-writing");
+
+  assert.strictEqual(seeds[1].query, "I think");
 });
 
-test("mapCoachToDictSeeds handles empty or undefined sets safely", () => {
-  const emptySet: WeakExpressionSet = { items: [] };
-  const emptySeeds = mapCoachToDictSeeds(emptySet);
+test("toExpressionCardSeeds handles empty sets safely", () => {
+  const emptySet: WeakExpressionSet = {
+    kind: "weak_expression_set",
+    title: "Sentence weak expression extraction",
+    scope: "sentence",
+    targetRegister: "general-academic",
+    sourceText: "This is a sentence.",
+    summary: "No expression issue.",
+    items: [],
+  };
+  const emptySeeds = toExpressionCardSeeds(emptySet);
   assert.strictEqual(emptySeeds.length, 0);
-
-  // @ts-ignore
-  const undefinedSeeds = mapCoachToDictSeeds(undefined);
-  assert.strictEqual(undefinedSeeds.length, 0);
 });
 
 test("TextChunker correct splitting behavior", () => {

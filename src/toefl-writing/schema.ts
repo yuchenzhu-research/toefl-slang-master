@@ -1,30 +1,8 @@
-import type { WeakExpressionSet } from "../platform/contracts";
-import { ToeflWritingSourcePayload } from "./types";
+import type { WritingDiagnosis } from "../platform/contracts";
 
 export type ToeflWritingScope = "sentence" | "paragraph" | "essay";
 
-export type ToeflWritingStructuredResponse = {
-  kind: "writing_diagnosis";
-  title: string;
-  scope: ToeflWritingScope;
-  sourceType: ToeflWritingSourcePayload["sourceType"];
-  charCount: number;
-  score: {
-    band: string;
-    reason: string;
-  };
-  logic: string[];
-  vocabulary: string[];
-  structure: string[];
-  optimization: {
-    rewrite: string;
-    explanations: string[];
-  };
-  weakExpressionSet?: WeakExpressionSet;
-  revisionFocus?: string[];
-  upgradePrioritySummary?: string;
-  notes?: string[];
-};
+export type ToeflWritingStructuredResponse = WritingDiagnosis;
 
 export function inferWritingScope(text: string): ToeflWritingScope {
   const normalized = text.trim();

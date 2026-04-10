@@ -7,7 +7,7 @@ import { runDoctorCli } from "./platform/doctor";
 import { runInitCli } from "./platform/init";
 import { runToeflWritingModuleCli } from "./toefl-writing";
 import { runPipelineInput } from "./connectors/pipeline-input";
-import { runPipelineOutput } from "./connectors/coach-to-dict";
+import { runPipelineOutput } from "./connectors/pipeline-output";
 import fs from "fs";
 import path from "path";
 

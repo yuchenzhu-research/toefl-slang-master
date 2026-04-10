@@ -1,14 +1,9 @@
+import type { TargetRegister } from "../platform/contracts";
 import { ProviderApi } from "../platform/providers/types";
 
 export type DictionaryProMode = "meaning" | "conversion" | "upgrade" | "comparison";
 
-export type DictionaryProTarget =
-  | "toefl-writing"
-  | "toefl-speaking"
-  | "general-academic"
-  | "daily-english"
-  | "ielts-academic"
-  | "gre-verbal";
+export type DictionaryProTarget = TargetRegister;
 
 export interface DictionaryProQuery {
   text?: string;

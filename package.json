@@ -25,7 +25,7 @@
     "content:dry": "ts-node src/content-parser/index.ts --file README.md --focus full --dry-run",
     "dict:eval": "ts-node src/dictionary-pro/eval-cli.ts",
     "test": "npm run test:ci",
-    "test:ci": "tsc && node --test dist/tests/*.test.js"
+    "test:ci": "rm -rf dist && tsc && node --test dist/tests/*.test.js"
   },
   "repository": {
     "type": "git",

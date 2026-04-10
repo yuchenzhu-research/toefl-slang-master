@@ -83,8 +83,24 @@ function validateContentParserResponse(
   const slang = readStringArray(record.slang, "slang", errors, 1);
   const culture = readStringArray(record.culture, "culture", errors, 1);
   const conversion = readStringArray(record.conversion, "conversion", errors, 1);
+  const expressionCandidates = readExpressionCandidates(
+    record.expressionCandidates,
+    "expressionCandidates",
+    errors,
+  );
 
-  if (!title || !sourceType || !focus || !extractionRecord || !overview || !breakdown || !slang || !culture || !conversion) {
+  if (
+    !title ||
+    !sourceType ||
+    !focus ||
+    !extractionRecord ||
+    !overview ||
+    !breakdown ||
+    !slang ||
+    !culture ||
+    !conversion ||
+    !expressionCandidates
+  ) {
     return { ok: false, errors, rawJson: input };
   }
 
@@ -131,10 +147,94 @@ function validateContentParserResponse(
       slang,
       culture,
       conversion,
+      expressionCandidates,
       notes: notes ?? undefined,
     },
     rawJson: input,
   };
+}
+
+function readExpressionCandidates(
+  value: unknown,
+  label: string,
+  errors: string[],
+): ContentParserStructuredResponse["expressionCandidates"] | null {
+  if (!Array.isArray(value)) {
+    errors.push(`${label} 必须是对象数组。`);
+    return null;
+  }
+
+  const items = value
+    .map((item, index) => {
+      const record = asRecord(item, `${label}[${index}]`, errors);
+      if (!record) {
+        return null;
+      }
+
+      const expression = readString(record.expression, `${label}[${index}].expression`, errors);
+      const sourceSentence = readString(
+        record.sourceSentence,
+        `${label}[${index}].sourceSentence`,
+        errors,
+      );
+      const whyWorthLearning = readString(
+        record.whyWorthLearning,
+        `${label}[${index}].whyWorthLearning`,
+        errors,
+      );
+      const registerHint = readString(
+        record.registerHint,
+        `${label}[${index}].registerHint`,
+        errors,
+      );
+      const category = readString(record.category, `${label}[${index}].category`, errors);
+      const transferPotential = readString(
+        record.transferPotential,
+        `${label}[${index}].transferPotential`,
+        errors,
+      );
+      const difficulty = readString(record.difficulty, `${label}[${index}].difficulty`, errors);
+      const downstreamTarget = readString(
+        record.downstreamTarget,
+        `${label}[${index}].downstreamTarget`,
+        errors,
+      );
+
+      if (
+        !expression ||
+        !sourceSentence ||
+        !whyWorthLearning ||
+        !registerHint ||
+        !category ||
+        !transferPotential ||
+        !difficulty ||
+        !downstreamTarget
+      ) {
+        return null;
+      }
+
+      return {
+        expression,
+        sourceSentence,
+        whyWorthLearning,
+        registerHint,
+        category,
+        transferPotential,
+        difficulty,
+        downstreamTarget,
+      };
+    })
+    .filter(
+      (
+        item,
+      ): item is ContentParserStructuredResponse["expressionCandidates"][number] => item !== null,
+    );
+
+  if (items.length !== value.length) {
+    return null;
+  }
+
+  return items;
 }
 
 function asRecord(
