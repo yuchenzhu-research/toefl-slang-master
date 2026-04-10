@@ -169,6 +169,12 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     return;
   }
 
+  if (command === "export" && rest[0] === "anki") {
+    const { exportAnkiCsv } = require('./connectors/anki-exporter');
+    await exportAnkiCsv();
+    return;
+  }
+
   throw new Error(
     `Unknown command "${command}". Use "tsm help" to see the available commands.`,
   );
