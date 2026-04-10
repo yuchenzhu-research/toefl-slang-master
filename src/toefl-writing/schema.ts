@@ -1,4 +1,4 @@
-import type { WeakExpressionSet } from "../connectors/coach-to-dict";
+import type { WeakExpressionSet } from "../platform/contracts";
 import { ToeflWritingSourcePayload } from "./types";
 
 export type ToeflWritingScope = "sentence" | "paragraph" | "essay";

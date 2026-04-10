@@ -1,42 +1,70 @@
-import { WeakExpressionSet, ExpressionCardSeed } from '../platform/contracts';
+import { runToeflWritingQuery } from "../toefl-writing/runner";
+import { runDictionaryProQuery } from "../dictionary-pro/runner";
+import { ToeflSlangClientOptions } from "../platform/client";
+import { WeakExpressionSet, ExpressionCardSeed } from "../platform/contracts";
+import { OutputManager } from "../platform/output-manager";
+import path from "path";
+import { indexKnowledgeBase } from "../knowledge-base/indexer";
 
 /**
- * Coach -> Dict Connector
- * 责任：将 TOEFL Coach 挖掘出的弱表达 (WeakExpressionSet)
- * 映射为 Dictionary Pro 生成词卡所需要的种子列表 (ExpressionCardSeed[])。
+ * Connector 转换纯函数
  */
 export function mapCoachToDictSeeds(weakSet: WeakExpressionSet): ExpressionCardSeed[] {
-  if (!weakSet || !weakSet.items) {
-    return [];
-  }
+  if (!weakSet || !weakSet.items) return [];
 
   return weakSet.items.map(item => {
-    // 根据问题的来源或当前需求，设定词卡的终极对标注册语域
-    const targetRegister = 'toefl-writing';
-
     return {
       seedExpression: item.weakExpression,
       seedContext: item.contextSentence || '',
       sourceOrigin: 'TOEFLCoach',
-      targetRegister: targetRegister,
+      targetRegister: 'toefl-writing',
     } as ExpressionCardSeed;
   });
 }
 
 /**
- * 示例伪代码流：
- * 
- * async function coachToDictWorkflow(essayText: string) {
- *   // 1. 调用 TOEFL Coach
- *   const coachResult = await runTOEFLCoach(essayText);
- *   const weakSet = extractWeakExpressions(coachResult);
- *   
- *   // 2. Connector 转换
- *   const seeds = mapCoachToDictSeeds(weakSet);
- *   
- *   // 3. 将 Seeds 批量传给 Dictionary Pro 提词造卡
- *   for (const seed of seeds) {
- *     await generateExpressionCard(seed);
- *   }
- * }
+ * Pipeline 2: Output Correction Workflow
  */
+export async function runPipelineOutput(
+  text: string,
+  clientOptions: ToeflSlangClientOptions
+) {
+  const slug = `essay-${Date.now()}`;
+  const outDir = OutputManager.getDiagnosisDir(slug);
+
+  console.log(">> [Pipeline 2] Running TOEFL Coach Diagnosis...");
+  const coachResult = await runToeflWritingQuery({ query: { text }, clientOptions });
+
+  OutputManager.writeJson(path.join(outDir, "diagnosis.json"), coachResult.structured);
+  OutputManager.writeMarkdown(path.join(outDir, "report.md"), coachResult.markdown);
+
+  const weakSet = coachResult.structured.weakExpressionSet || { items: [] };
+  OutputManager.writeJson(path.join(outDir, "weak-expressions.json"), weakSet);
+
+  const seeds = mapCoachToDictSeeds(weakSet);
+  console.log(`>> [Pipeline 2] Found ${seeds.length} weak expressions. Translating to Dictionary Cards...`);
+
+  for (const seed of seeds) {
+    const dpQuery = {
+      text: seed.seedExpression,
+      context: seed.seedContext,
+      target: seed.targetRegister,
+      mode: "conversion" as const,
+    };
+    
+    console.log(`   -> Generating card for weak expression: ${seed.seedExpression}`);
+    const dpResult = await runDictionaryProQuery({
+      query: dpQuery,
+      clientOptions,
+    });
+
+    const cardDir = OutputManager.getCardDir(seed.targetRegister, "weak-expression-fix", seed.seedExpression);
+    OutputManager.writeJson(path.join(cardDir, "card.json"), dpResult.structured);
+    OutputManager.writeMarkdown(path.join(cardDir, "index.md"), dpResult.markdown);
+  }
+
+  // Hook for pipeline 3 indexing
+  indexKnowledgeBase();
+
+  console.log(`>> [Pipeline 2] Output Correction Complete. Artifacts saved to data/diagnoses/${slug}/`);
+}
