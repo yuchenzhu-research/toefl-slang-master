@@ -41,6 +41,8 @@ Usage:
   tsm search "<keyword>"
   tsm archive
   tsm add "<word>" "<translation>" [context]
+  tsm trace "<word>"
+  tsm quiz
 
 Commands:
   dict       Run Dictionary Pro.
@@ -64,6 +66,8 @@ Commands:
   search     Global fast search across dictionary cards.
   archive    Move fully mastered flashcards (Rep > 5) to the archive.
   add        Manually create a dictionary card without AI processing.
+  trace      Cross-reference a word across your submitted essay reports.
+  quiz       Launch an interactive MCQ vocabulary challenge.
   batch:coach Batch process essays for TOEFL coach.
   help       Show this message.
 
@@ -253,6 +257,20 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     if (!word || !trans) throw new Error("Usage: tsm add <word> <translation> [context]");
     const { manuallyAddCard } = require('./connectors/manual');
     manuallyAddCard(word, trans, ctx);
+    return;
+  }
+
+  if (command === "trace") {
+    const word = rest.join(" ");
+    if (!word) throw new Error("Usage: tsm trace <word>");
+    const { runCrossRefTrace } = require('./knowledge-base/cross-ref');
+    runCrossRefTrace(word);
+    return;
+  }
+
+  if (command === "quiz") {
+    const { runMcqQuiz } = require('./knowledge-base/quiz');
+    runMcqQuiz();
     return;
   }
 
