@@ -33,6 +33,7 @@ Usage:
   tsm review
   tsm daily
   tsm export anki
+  tsm graph
 
 Commands:
   dict       Run Dictionary Pro.
@@ -48,6 +49,7 @@ Commands:
   daily      Run a quick 3-card daily challenge.
   review     Review due flashcards via SM2 algorithm.
   export     Export knowledge base (e.g., export anki).
+  graph      Build synonym graph across dictionary.
   batch:coach Batch process essays for TOEFL coach.
   help       Show this message.
 
@@ -181,6 +183,12 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (command === "daily") {
     const { runDailyChallenge } = require('./knowledge-base/daily');
     runDailyChallenge();
+    return;
+  }
+
+  if (command === "graph") {
+    const { buildSynonymsGraph } = require('./knowledge-base/graph-builder');
+    buildSynonymsGraph();
     return;
   }
 
