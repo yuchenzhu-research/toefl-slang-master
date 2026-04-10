@@ -39,6 +39,8 @@ Usage:
   tsm speak "<word-or-sentence>"
   tsm journal
   tsm search "<keyword>"
+  tsm archive
+  tsm add "<word>" "<translation>" [context]
 
 Commands:
   dict       Run Dictionary Pro.
@@ -60,6 +62,8 @@ Commands:
   speak      Use native macOS TTS to read a card or text.
   journal    Generate a beautiful Markdown digest of the week's cards.
   search     Global fast search across dictionary cards.
+  archive    Move fully mastered flashcards (Rep > 5) to the archive.
+  add        Manually create a dictionary card without AI processing.
   batch:coach Batch process essays for TOEFL coach.
   help       Show this message.
 
@@ -233,6 +237,22 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     if (!kw) throw new Error("Usage: tsm search <keyword>");
     const { runGlobalSearch } = require('./knowledge-base/search');
     runGlobalSearch(kw);
+    return;
+  }
+
+  if (command === "archive") {
+    const { archiveCards } = require('./knowledge-base/archiver');
+    archiveCards();
+    return;
+  }
+
+  if (command === "add") {
+    const word = rest[0];
+    const trans = rest[1];
+    const ctx = rest.slice(2).join(" ");
+    if (!word || !trans) throw new Error("Usage: tsm add <word> <translation> [context]");
+    const { manuallyAddCard } = require('./connectors/manual');
+    manuallyAddCard(word, trans, ctx);
     return;
   }
 
