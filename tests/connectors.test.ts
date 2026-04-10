@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert";
-import { mapCoachToDictSeeds } from "../../src/connectors/coach-to-dict";
-import { WeakExpressionSet } from "../../src/platform/contracts";
+import { mapCoachToDictSeeds } from "../src/connectors/coach-to-dict";
+import { WeakExpressionSet } from "../src/platform/contracts";
 
 test("mapCoachToDictSeeds correctly maps expressions to seeds", () => {
   const weakSet: WeakExpressionSet = {
