@@ -61,6 +61,18 @@ export interface ExpressionCard {
   frequency: string;
   analysis: string;
   tags: string[];
+  
+  /** Context origin pointing to Pipeline 1/2 output slug */
+  relatedSourceSlug?: string;
+  relatedDiagnosisSlug?: string;
+
+  /** Internal tracking for spaced repetition */
+  srsData?: {
+    efactor: number;
+    interval: number;
+    repetitions: number;
+    nextReview: string;
+  };
 }
 
 // ---------------------------------------------------------
