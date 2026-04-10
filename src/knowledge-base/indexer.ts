@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { OutputManager } from '../platform/output-manager';
 
-const DATA_ROOT = path.join(process.cwd(), 'data');
+const DATA_ROOT = path.join(process.cwd(), 'outputs');
 
 /**
  * Utility to safely fetch top-level directories
@@ -30,7 +30,7 @@ export function indexKnowledgeBase() {
   });
 
   // 2. Index diagnoses
-  const diagDir = path.join(DATA_ROOT, 'diagnoses');
+  const diagDir = path.join(DATA_ROOT, 'coach');
   const diagSlugs = getDirectories(diagDir);
   OutputManager.writeJson(path.join(indexesDir, 'diagnoses.json'), {
     lastIndexed: new Date().toISOString(),
@@ -38,26 +38,15 @@ export function indexKnowledgeBase() {
     slugs: diagSlugs,
   });
 
-  // 3. Index cards (traverse cards/[register]/[category]/[headword])
-  const cardsDir = path.join(DATA_ROOT, 'cards');
-  const registers = getDirectories(cardsDir);
-  let totalCards = 0;
-  const cardIndex: Record<string, any> = {};
-
-  for (const reg of registers) {
-    const categories = getDirectories(path.join(cardsDir, reg));
-    cardIndex[reg] = {};
-    for (const cat of categories) {
-      const headwords = getDirectories(path.join(cardsDir, reg, cat));
-      cardIndex[reg][cat] = headwords;
-      totalCards += headwords.length;
-    }
-  }
+  // 3. Index cards (traverse dict/[headword])
+  const cardsDir = path.join(DATA_ROOT, 'dict');
+  const headwords = getDirectories(cardsDir);
+  const totalCards = headwords.length;
 
   OutputManager.writeJson(path.join(indexesDir, 'cards.json'), {
     lastIndexed: new Date().toISOString(),
     totalFound: totalCards,
-    hierarchy: cardIndex,
+    slugs: headwords,
   });
 
   console.log(`>> [Knowledge Base] Indexed ${sourceSlugs.length} sources, ${diagSlugs.length} diagnoses, ${totalCards} cards.`);

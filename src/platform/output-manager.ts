@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const DATA_ROOT = path.join(process.cwd(), 'data');
+const DATA_ROOT = path.join(process.cwd(), 'outputs');
 
 export class OutputManager {
   static ensureDir(dirPath: string) {
@@ -19,7 +19,7 @@ export class OutputManager {
 
   // Pipeline 2 Base Output Dir
   static getDiagnosisDir(slug: string) {
-    const dir = path.join(DATA_ROOT, 'diagnoses', slug);
+    const dir = path.join(DATA_ROOT, 'coach', slug);
     this.ensureDir(dir);
     return dir;
   }
@@ -27,7 +27,7 @@ export class OutputManager {
   // Single dictionary card path
   static getCardDir(targetRegister: string, category: string, headword: string) {
     const safeHeadword = headword.replace(/[^a-zA-Z0-9_-]/g, '-').toLowerCase();
-    const dir = path.join(DATA_ROOT, 'cards', targetRegister, category, safeHeadword);
+    const dir = path.join(DATA_ROOT, 'dict', safeHeadword);
     this.ensureDir(dir);
     return dir;
   }
