@@ -6,6 +6,10 @@ import { ToeflSlangClient } from "./platform/client";
 import { runDoctorCli } from "./platform/doctor";
 import { runInitCli } from "./platform/init";
 import { runToeflWritingModuleCli } from "./toefl-writing";
+import { runPipelineInput } from "./connectors/pipeline-input";
+import { runPipelineOutput } from "./connectors/coach-to-dict";
+import fs from "fs";
+import path from "path";
 
 function printUsage(): void {
   const usage = `
@@ -20,7 +24,11 @@ Usage:
   tsm content --file <article.md> [options]
   tsm init [--force] [--json]
   tsm doctor [--json]
+  tsm doctor [--json]
   tsm providers
+  tsm pipeline:input <filepath>
+  tsm pipeline:output "<essay-text>"
+  tsm kb:status
 
 Commands:
   dict       Run Dictionary Pro.
@@ -30,6 +38,9 @@ Commands:
   init       Create .env from .env.example and print next steps.
   doctor     Check local environment, provider keys, and PDF extraction readiness.
   providers  List all supported model providers.
+  pipeline:input   Run Pipeline 1 (Input Learning flow).
+  pipeline:output  Run Pipeline 2 (Output Correction flow).
+  kb:status  Show knowledge base indexing status.
   help       Show this message.
 
 Examples:
@@ -91,6 +102,33 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
 
   if (command === "content") {
     await runContentParserModuleCli(rest);
+    return;
+  }
+
+  if (command === "pipeline:input") {
+    const file = rest[0];
+    if (!file) throw new Error("Usage: tsm pipeline:input <filepath>");
+    await runPipelineInput({ file, focus: "full", extractOnly: false }, {});
+    return;
+  }
+
+  if (command === "pipeline:output") {
+    const text = rest[0];
+    if (!text) throw new Error("Usage: tsm pipeline:output <text>");
+    await runPipelineOutput(text, {});
+    return;
+  }
+
+  if (command === "kb:status") {
+    console.log(">> Local Knowledge Base Status");
+    ['cards.json', 'sources.json', 'diagnoses.json'].forEach(file => {
+      const p = path.join(process.cwd(), 'data', 'indexes', file);
+      if (fs.existsSync(p)) {
+        console.log(`- ${file}: Found (${fs.statSync(p).size} bytes)`);
+      } else {
+        console.log(`- ${file}: Not found`);
+      }
+    });
     return;
   }
 
