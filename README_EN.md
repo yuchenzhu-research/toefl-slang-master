@@ -135,7 +135,7 @@ Powered by an OpenClaw-style multi-provider API engine, the project now has thre
 | Shared capability | Current location | Responsibility |
 | :--- | :--- | :--- |
 | **Unified CLI dispatch** | `src/app-cli.ts` | Routes `tsm` subcommands into module entrypoints |
-| **Shared facade** | `src/platform/` | Exposes unified `client / auth / providers / doctor / init` to business modules |
+| **Shared implementation base** | `src/platform/` | Exposes unified `client / auth / providers / doctor / init` to business modules |
 | **Multi-provider runtime** | `src/platform/providers/` | Adapters for OpenAI / Anthropic / Gemini / Ollama and related gateways |
 | **Environment management** | `src/platform/init.ts` / `src/platform/doctor.ts` | Initialize `.env` and validate local setup |
 | **Validated JSON runtime** | `src/platform/runtime/validated-json.ts` | Shared JSON validation, repair, and failure handling |
@@ -172,34 +172,15 @@ Powered by an OpenClaw-style multi-provider API engine, the project now has thre
 ## 🏗️ Technical Architecture
 
 ```text
-toefl-slang-master/
-├── skills/
-│   ├── dictionary-pro/
-│   ├── toefl-writing/
-│   └── content-parser/
-├── src/
-│   ├── app-cli.ts                  # Platform top-level entry (tsm)
-│   ├── platform/                   # Shared platform facade
-│   │   ├── client.ts
-│   │   ├── init.ts
-│   │   ├── doctor.ts
-│   │   ├── auth/
-│   │   ├── providers/
-│   │   └── runtime/
-│   ├── dictionary-pro/             # Standalone module: dictionary / eval / bench
-│   │   ├── index.ts
-│   │   ├── cli.ts
-│   │   ├── runner.ts
-│   │   └── ...
-│   ├── toefl-writing/              # Standalone module: writing diagnosis
-│   │   ├── index.ts
-│   │   ├── cli.ts
-│   │   ├── runner.ts
-│   │   └── ...
-│   ├── content-parser/             # Standalone module: extraction and parsing
-│   │   ├── index.ts
-│   │   ├── cli.ts
-│   │   ├── extractor.ts
+│   ├── pipelines/                   # Workflow orchestration & side-effects
+│   │   ├── input-learning.ts
+│   │   ├── output-correction.ts
+│   │   └── exporters.ts
+│   ├── experimental/                # [EXPERIMENTAL] SRS, Knowledge Base, Audio
+│   │   ├── knowledge-base/
+│   │   ├── srs.ts
+│   │   ├── streak.ts
+│   │   ├── audio.ts
 │   │   └── ...
 │   └── index.ts                    # Compatibility proxy for Dictionary Pro
 ├── bin/
@@ -444,6 +425,19 @@ This project is licensed under the MIT License.
 > "_TOEFL Slang Master boosted my writing score from 22 to 28, and now I can finally understand my coworkers' jokes while reading The Economist._"
 
 <div align="right">— An anonymous test prep student</div>
+
+---
+
+## 🧪 Experimental Features
+
+The following features are experimental and accessible via the `tsm x <command>` namespace:
+
+- **SRS Review System** (`tsm x review`): SM2 algorithm-based spaced repetition.
+- **Daily Challenge** (`tsm x daily`): Random 3-card quick test.
+- **Knowledge Base Indexing** (`tsm x kb:status`): Statistics on your current card library.
+- **Semantic Clustering** (`tsm x cluster`): Automatically finds near-synonym groups.
+- **Native TTS** (`tsm x speak`): Invokes system TTS engine to read expressions.
+- **Interactive REPL** (`tsm x repl`): Continuous terminal processing mode.
 
 ---
 

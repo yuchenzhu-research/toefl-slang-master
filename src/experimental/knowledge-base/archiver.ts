@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { OutputManager } from '../platform/output-manager';
+import { OutputManager } from '../../platform/output-manager';
 
 export function archiveCards() {
   console.log("\n>> [Archiver] Scanning dictionary for mastered cards...");

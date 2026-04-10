@@ -446,19 +446,17 @@ query
 未来推荐输出结构可逐步收口到：
 
 ```text
-data/
-  sources/
-  diagnoses/
-  cards/
-  indexes/
+outputs/
+  content/
+  coach/
+  dict/
 ```
 
 其中：
 
-- `sources/` 存材料级输出
-- `diagnoses/` 存诊断级输出
-- `cards/` 存表达卡
-- `indexes/` 存索引文件
+- `content/` 存材料级输出
+- `coach/` 存诊断级输出
+- `dict/` 存表达卡
 
 当前阶段不要求一步到位，但任何新增输出都应朝这个方向靠拢。
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { OutputManager } from '../platform/output-manager';
-import { ExpressionCard } from '../platform/contracts';
+import { OutputManager } from '../../platform/output-manager';
+import { ExpressionCard } from '../../platform/contracts';
 
 export function buildWeeklyJournal() {
   console.log(">> [Journal Generator] Aggregating weekly cards...");

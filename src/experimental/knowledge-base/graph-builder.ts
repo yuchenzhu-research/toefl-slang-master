@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { OutputManager } from '../platform/output-manager';
-import { ExpressionCard } from '../platform/contracts';
+import { OutputManager } from '../../platform/output-manager';
+import { ExpressionCard } from '../../platform/contracts';
 
 export function buildSynonymsGraph() {
   console.log(">> [Graph Builder] Traversing dictionary to build synonym graph...");
@@ -30,8 +30,8 @@ export function buildSynonymsGraph() {
       const c1 = allCards[i];
       const c2 = allCards[j];
       
-      const shareTags = c1.tags.some(t => c2.tags.includes(t));
-      const shareAlignment = c1.academicAlignment.some(a => c2.academicAlignment.includes(a));
+      const shareTags = c1.tags.some((t: string) => c2.tags.includes(t));
+      const shareAlignment = c1.academicAlignment.some((a: string) => c2.academicAlignment.includes(a));
       
       if (shareTags || shareAlignment) {
         graph[c1.headword].push(c2.headword);

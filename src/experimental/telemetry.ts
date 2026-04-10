@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { OutputManager } from './output-manager';
+import { OutputManager } from '../platform/output-manager';
 
 const telPath = path.join(process.cwd(), 'outputs', 'indexes', 'telemetry.json');
 

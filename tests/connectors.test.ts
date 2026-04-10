@@ -79,3 +79,40 @@ test("LocaleManager handles switcher flags correctly", () => {
   assert.strictEqual(LocaleManager.getLocale(), "en");
   assert.ok(LocaleManager.injectPrompt().includes("English"));
 });
+
+import { toExpressionCard } from "../src/connectors/dict-to-card/index";
+import { DictionaryProWordPhraseResponse } from "../src/dictionary-pro/schema";
+
+test("toExpressionCard maps word_phrase response correctly", () => {
+  const dictResponse: DictionaryProWordPhraseResponse = {
+    kind: "word_phrase",
+    query: "gonna",
+    mode: "conversion",
+    target: "toefl-writing",
+    translation: ["将要"],
+    slang: {
+      register: "Informal spoken",
+      tone: "Casual",
+      variants: ["going to", "bout to"]
+    },
+    alignment: [
+      { expression: "intend to", note: "Formal intent" },
+      { expression: "plan to", note: "Formal planning" }
+    ],
+    frequency: "Extremely high",
+    analysis: {
+      sourceExample: "I'm gonna do it.",
+      sourceExplanation: "very informal.",
+      toeflExample: "The researcher intends to do it.",
+      toeflExplanation: "very formal."
+    }
+  };
+
+  const card = toExpressionCard(dictResponse, { relatedSourceSlug: "test-slug" });
+  
+  assert.strictEqual(card.headword, "gonna");
+  assert.deepStrictEqual(card.academicAlignment, ["intend to", "plan to"]);
+  assert.deepStrictEqual(card.slangOrInformal, ["going to", "bout to"]);
+  assert.strictEqual(card.relatedSourceSlug, "test-slug");
+  assert.ok(card.analysis.includes("very formal."));
+});

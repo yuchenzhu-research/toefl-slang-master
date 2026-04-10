@@ -277,34 +277,41 @@ tsm init
 # 2.1 先体检当前环境
 npm run doctor
 
-# 3. 运行当前已完成的功能
-npm run dict -- --text "gonna"
-npm run content -- --file README.md --extract-only
-npm run coach -- --text "I think technology is good because it helps us communicate."
+# 3. 运行当前核心 Pipeline
+npm run tsm -- pipeline:input --file README.md
+npm run tsm -- pipeline:output --text "I think technology is good because it helps us communicate."
 
-# 4. 如果你想像 openclaw 一样直接输入命令
+# 4. 如果你想像 openclaw 一样全局使用（推荐）
 npm link
-dictpro "gonna"
-coachpro "I think technology is good because it helps us communicate."
-contentpro --file README.md --extract-only
-tsm dict "gonna"
+tsm pipeline:input --file README.md
+tsm pipeline:output --text "I think technology is good because it helps us communicate."
 ```
 
 > **说明**：当前可直接运行的是 `Dictionary Pro`、`TOEFL Coach` 和 `Content Parser`。三者都共用同一套多厂商 API runtime。
 
-### Dictionary Pro 操作示例
+### Pipeline CLI 操作示例
 
 ```bash
-# 最简查询（自动模式）
-npm run dict -- --text "a big deal"
-dictpro "a big deal"
+# Workflow 1: 从文本/外刊中提取表达并生成词卡
+tsm pipeline:input --text "This is a substantial improvement."
+tsm pipeline:input --file article.pdf
 
-# 查看当前支持的 provider
-npm run dict:providers
-dictpro providers
+# Workflow 2: 从写作中诊断弱表达并生成升级词卡
+tsm pipeline:output --text "This is a big improvement."
+tsm pipeline:output --file essay.txt
+```
+
+### 原子模块 CLI 操作示例
+
+```bash
+# Dictionary Pro：最简查词（自动模式）
+tsm dict "a big deal"
+
+# 第一时间查看支持的模型
+tsm providers
 
 # 指定模式 + 目标场景
-npm run dict -- --text "gonna" --mode conversion --target toefl-writing
+tsm dict "gonna" --mode conversion --target toefl-writing
 
 # 加上下文做消歧
 npm run dict -- --text "cap" --context "The proposal puts a cap on tuition increases."
@@ -317,29 +324,23 @@ npm run dict -- --provider anthropic --model claude-sonnet-4-5 --text "gonna"
 npm run dict:dry
 
 # 跑评测集（需要可用 API key）
-npm run dict:eval -- --provider openai --limit 3
-dictpro eval --provider openai --limit 3
+tsm dict:eval --provider openai --limit 3
 
 # 跑多 provider 基准比较
-npm run dict:bench -- --providers openai,anthropic,google --limit 2
-dictpro bench --providers openai,anthropic,google --limit 2
+tsm bench --providers openai,anthropic,google --limit 2
 
 # 按 case 过滤并输出 JSON 报告
-npm run dict:eval -- --provider anthropic --case DP-003 --json
+tsm dict:eval --provider anthropic --case DP-003 --json
 ```
 
 ### TOEFL Coach 操作示例
 
 ```bash
-# 诊断一段托福写作
-npm run coach -- --text "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
-coachpro "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
+# 诊断一段托福写作（仅诊断，不走 Pipeline 生成词卡）
+tsm coach "I think technology is good because it helps us communicate. But it also has some bad effects. So we should use it carefully."
 
 # 读取文件并输出结构化 JSON
-npm run coach -- --file ./essay.txt --json
-
-# 只看 prompt，不发 API
-npm run coach:dry
+tsm coach --file ./essay.txt --json
 ```
 
 ### 当前最推荐的命令行入口
@@ -376,20 +377,13 @@ tsm bench --providers openai,anthropic,google --limit 2
 
 ```bash
 # 只做 PDF / 文本抽取，不发模型
-npm run content -- --file README.md --extract-only
-contentpro --file README.md --extract-only
+tsm content --file README.md --extract-only
 
 # 读取 PDF 并生成结构化笔记
-npm run content -- --pdf ./article.pdf --provider openai --focus full
-
-# 只看 prompt，检查 PDF 提取后的素材如何进入模型
-npm run content -- --pdf ./article.pdf --focus syntax --dry-run
+tsm content --pdf ./article.pdf --provider openai --focus full
 
 # 输出 JSON
-npm run content -- --file README.md --provider openai --json
-
-# 查看当前支持的 provider
-contentpro providers
+tsm content --file README.md --provider openai --json
 ```
 
 **或者使用 Claude Code 直接调用技能：**

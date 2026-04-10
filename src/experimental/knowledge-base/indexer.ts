@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { OutputManager } from '../platform/output-manager';
+import { OutputManager } from '../../platform/output-manager';
 
 const DATA_ROOT = path.join(process.cwd(), 'outputs');
 
