@@ -42,3 +42,12 @@ test("mapCoachToDictSeeds handles empty or undefined sets safely", () => {
   const undefinedSeeds = mapCoachToDictSeeds(undefined);
   assert.strictEqual(undefinedSeeds.length, 0);
 });
+
+import { TextChunker } from "../src/platform/text-chunker";
+
+test("TextChunker correct splitting behavior", () => {
+  const longText = "Sentence one is here. ".repeat(50); 
+  const chunks = TextChunker.splitIntoChunks(longText, 50);
+  assert.ok(chunks.length > 1, "Should split text gracefully into multiple chunks.");
+  assert.ok(chunks[0].endsWith("."), "Should split logically along valid sentential boundaries");
+});
