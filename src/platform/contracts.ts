@@ -29,9 +29,14 @@ export interface SourceDigest {
  * 从外刊中筛选出的值得查、值得升级的表达。
  */
 export interface ExpressionCandidateItem {
-  originalText: string;
-  contextSentence: string;
-  reasonForExtraction: string; // 为什么值得学
+  expression: string;
+  sourceSentence: string;
+  whyWorthLearning: string;
+  registerHint: string;
+  category: string;
+  transferPotential: string;
+  difficulty: string;
+  downstreamTarget: string;
 }
 
 export interface ExpressionCandidates {

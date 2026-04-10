@@ -16,6 +16,16 @@ export type ContentParserStructuredResponse = {
   slang: string[];
   culture: string[];
   conversion: string[];
+  expressionCandidates: Array<{
+    expression: string;
+    sourceSentence: string;
+    whyWorthLearning: string;
+    registerHint: string;
+    category: string;
+    transferPotential: string;
+    difficulty: string;
+    downstreamTarget: string;
+  }>;
   notes?: string[];
 };
 
