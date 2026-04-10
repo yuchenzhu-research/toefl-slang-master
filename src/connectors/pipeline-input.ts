@@ -39,8 +39,12 @@ export async function runPipelineInput(
     });
 
     const cardDir = OutputManager.getCardDir("toefl-writing", c.category || "uncategorized", c.expression);
-    OutputManager.writeJson(path.join(cardDir, "card.json"), dpResult.structured);
-    OutputManager.writeMarkdown(path.join(cardDir, "index.md"), dpResult.markdown);
+    OutputManager.writeJson(path.join(cardDir, "card.json"), {
+      ...dpResult.structured,
+      relatedSourceSlug: slug
+    });
+    const traceString = `\n\n> 👋 本卡片提取自: ${slug}`;
+    OutputManager.writeMarkdown(path.join(cardDir, "index.md"), dpResult.markdown + traceString);
   }
   
   // Hook for pipeline 3 indexing
