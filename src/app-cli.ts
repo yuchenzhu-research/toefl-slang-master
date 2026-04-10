@@ -31,6 +31,7 @@ Usage:
   tsm kb:status
   tsm batch:coach <dir>
   tsm review
+  tsm daily
   tsm export anki
 
 Commands:
@@ -44,6 +45,7 @@ Commands:
   pipeline:input   Run Pipeline 1 (Input Learning flow).
   pipeline:output  Run Pipeline 2 (Output Correction flow).
   kb:status  Show knowledge base indexing status.
+  daily      Run a quick 3-card daily challenge.
   review     Review due flashcards via SM2 algorithm.
   export     Export knowledge base (e.g., export anki).
   batch:coach Batch process essays for TOEFL coach.
@@ -173,6 +175,12 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     if (!dir) throw new Error("Usage: tsm batch:coach <dir>");
     const { processBatchEssays } = require('./connectors/batch-coach');
     await processBatchEssays(path.resolve(process.cwd(), dir));
+    return;
+  }
+
+  if (command === "daily") {
+    const { runDailyChallenge } = require('./knowledge-base/daily');
+    runDailyChallenge();
     return;
   }
 
