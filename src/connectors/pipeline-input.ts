@@ -15,8 +15,8 @@ export async function runPipelineInput(
   const slug = `content-${Date.now()}`;
   const outDir = OutputManager.getContentDir(slug);
 
-  if (query.file && fs.existsSync(query.file)) {
-    const rawContent = fs.readFileSync(query.file, 'utf-8');
+  if (query.filePath && fs.existsSync(query.filePath)) {
+    const rawContent = fs.readFileSync(query.filePath, 'utf-8');
     if (rawContent.length > 6000) {
        console.log(">> [Pipeline 1] Document is unusually large. Activating Chunker...");
        const chunks = TextChunker.splitIntoChunks(rawContent, 2000);

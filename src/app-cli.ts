@@ -141,14 +141,14 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (command === "pipeline:input") {
     const file = rest[0];
     if (!file) throw new Error("Usage: tsm pipeline:input <filepath>");
-    await runPipelineInput({ file, focus: "full", extractOnly: false }, {});
+    await runPipelineInput({ filePath: file, focus: "full", extractOnly: false }, { provider: "openai" });
     return;
   }
 
   if (command === "pipeline:output") {
     const text = rest[0];
     if (!text) throw new Error("Usage: tsm pipeline:output <text>");
-    await runPipelineOutput(text, {});
+    await runPipelineOutput(text, { provider: "openai" });
     return;
   }
 
