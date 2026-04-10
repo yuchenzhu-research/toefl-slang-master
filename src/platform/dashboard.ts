@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { StreakEngine } from './streak';
 
 export function renderDashboard() {
   console.log("\n========================================================");
@@ -16,7 +17,10 @@ export function renderDashboard() {
   const indexData = JSON.parse(fs.readFileSync(idxPath, 'utf-8'));
   const headwords = indexData.slugs || [];
   
+  const streak = StreakEngine.getStreak();
+
   console.log(`    Total Expression Cards    : ${indexData.totalFound} `);
+  console.log(`    Current Streak 🔥         : ${streak.days} days (Last: ${streak.lastUpdate})`);
   console.log(`    Last Rebuilt              : ${indexData.lastIndexed} `);
   console.log("");
   

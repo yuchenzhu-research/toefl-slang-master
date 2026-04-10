@@ -1,5 +1,5 @@
-import fs from 'fs';
 import path from 'path';
+import { StreakEngine } from '../platform/streak';
 
 export function runDailyChallenge() {
   console.log("\n⚔️  TOEFL SLANG MASTER - DAILY CHALLENGE ⚔️\n");
@@ -35,4 +35,5 @@ export function runDailyChallenge() {
   });
 
   console.log("🎉  Challenge completed! Keep grinding!\n");
+  StreakEngine.increment();
 }

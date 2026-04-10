@@ -38,6 +38,7 @@ Usage:
   tsm repl
   tsm speak "<word-or-sentence>"
   tsm journal
+  tsm search "<keyword>"
 
 Commands:
   dict       Run Dictionary Pro.
@@ -58,6 +59,7 @@ Commands:
   repl       Launch an interactive continuous processing terminal.
   speak      Use native macOS TTS to read a card or text.
   journal    Generate a beautiful Markdown digest of the week's cards.
+  search     Global fast search across dictionary cards.
   batch:coach Batch process essays for TOEFL coach.
   help       Show this message.
 
@@ -223,6 +225,14 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (command === "journal") {
     const { buildWeeklyJournal } = require('./knowledge-base/journal');
     buildWeeklyJournal();
+    return;
+  }
+
+  if (command === "search") {
+    const kw = rest.join(" ");
+    if (!kw) throw new Error("Usage: tsm search <keyword>");
+    const { runGlobalSearch } = require('./knowledge-base/search');
+    runGlobalSearch(kw);
     return;
   }
 
