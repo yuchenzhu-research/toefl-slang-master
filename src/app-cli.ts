@@ -2,14 +2,11 @@ import "dotenv/config";
 
 import { runContentParserModuleCli } from "./content-parser";
 import { runDictionaryProBenchCli, runDictionaryProModuleCli } from "./dictionary-pro";
+import { printExperimentalUsage, runExperimentalCli } from "./experimental/cli";
 import { ToeflSlangClient } from "./platform/client";
 import { runDoctorCli } from "./platform/doctor";
 import { runInitCli } from "./platform/init";
 import { runToeflWritingModuleCli } from "./toefl-writing";
-import { runPipelineInput } from "./pipelines/input-learning";
-import { runPipelineOutput } from "./pipelines/output-correction";
-import fs from "fs";
-import path from "path";
 
 function printUsage(): void {
   const usage = `
@@ -43,40 +40,6 @@ Examples:
   console.log(usage.trim());
 }
 
-function printExperimentalUsage(): void {
-  const usage = `
-TOEFL Slang Master - Experimental & Auxiliary Commands
-
-Usage:
-  tsm x <command> [args]
-
-Commands:
-  tsm x <command> [args]
- 
- Commands:
--  pipeline:input   Run Pipeline 1 (Input Learning flow).
--  pipeline:output  Run Pipeline 2 (Output Correction flow).
--  kb:status        Show knowledge base indexing status.
--  daily            [EXPERIMENTAL] Run a quick 3-card daily challenge.
--  review           [EXPERIMENTAL] Review due flashcards via SM2 algorithm.
--  quiz             [EXPERIMENTAL] Launch an interactive MCQ vocabulary challenge.
--  telemetry        [EXPERIMENTAL] View API LLM usage and token tracking.
--  journal          [EXPERIMENTAL] Generate a weekly Markdown digest of cards.
--  search           [EXPERIMENTAL] Global fast search across dictionary cards.
--  archive          [EXPERIMENTAL] Move mastered flashcards to the archive.
--  graph            [EXPERIMENTAL] Build synonym graph across dictionary.
--  cluster          [EXPERIMENTAL] Find the largest semantic synonym clusters.
--  trace            [EXPERIMENTAL] Trace word usage across historical reports.
--  repl             [EXPERIMENTAL] Launch an interactive continuous processing terminal.
--  speak            [EXPERIMENTAL] Use native macOS TTS to read text.
--  batch:coach      Batch process essays for TOEFL coach.
--  backup           Create a silent snapshot zip of your outputs.
--  export           Export knowledge base (anki, print).
--  add              Manually create a dictionary card.
-`;
-  console.log(usage.trim());
-}
-
 export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (argv.length === 0) {
     printUsage();
@@ -85,231 +48,45 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
 
   const [command, ...rest] = argv;
 
-  // Help handling
   if (command === "help" || command === "--help" || command === "-h") {
     printUsage();
     return;
   }
 
-  // Core Pillars
-  if (command === "dict") {
-    await runDictionaryProModuleCli(rest);
-    return;
-  }
-  if (command === "coach") {
-    await runToeflWritingModuleCli(rest);
-    return;
-  }
-  if (command === "content") {
-    await runContentParserModuleCli(rest);
-    return;
-  }
-
-  // Essential Utilities
-  if (command === "init") {
-    runInitCli(rest);
-    return;
-  }
-  if (command === "doctor") {
-    runDoctorCli(rest);
-    return;
-  }
-  if (command === "providers") {
-    console.log(ToeflSlangClient.listProviders());
-    return;
-  }
-
-  // Legacy root command kept for scripting but hidden from main help
-  if (command === "bench") {
-    await runDictionaryProBenchCli(rest);
-    return;
-  }
-
-  // Experimental Namespace
-  if (command === "x") {
-    if (rest.length === 0 || rest[0] === "--help" || rest[0] === "-h" || rest[0] === "help") {
-      printExperimentalUsage();
+  switch (command) {
+    case "dict":
+      await runDictionaryProModuleCli(rest);
       return;
-    }
-    const [subCommand, ...subRest] = rest;
-    await runExperimentalCli(subCommand, subRest);
-    return;
+    case "coach":
+      await runToeflWritingModuleCli(rest);
+      return;
+    case "content":
+      await runContentParserModuleCli(rest);
+      return;
+    case "init":
+      runInitCli(rest);
+      return;
+    case "doctor":
+      runDoctorCli(rest);
+      return;
+    case "providers":
+      console.log(ToeflSlangClient.listProviders());
+      return;
+    case "bench":
+      await runDictionaryProBenchCli(rest);
+      return;
+    case "x":
+      if (rest.length === 0 || rest[0] === "--help" || rest[0] === "-h" || rest[0] === "help") {
+        printExperimentalUsage();
+        return;
+      }
+      await runExperimentalCli(rest[0], rest.slice(1));
+      return;
   }
 
   throw new Error(
     `Unknown command "${command}". Use "tsm help" to see core commands or "tsm x help" for experimental commands.`,
   );
-}
-
-async function runExperimentalCli(command: string, rest: string[]): Promise<void> {
-  if (command === "pipeline:input") {
-    const file = rest[0];
-    if (!file) throw new Error("Usage: tsm x pipeline:input <filepath>");
-    await runPipelineInput({ filePath: file, focus: "full", extractOnly: false }, { provider: "openai" });
-    return;
-  }
-
-  if (command === "pipeline:output") {
-    const text = rest[0];
-    if (!text) throw new Error("Usage: tsm x pipeline:output <text>");
-    await runPipelineOutput(text, { provider: "openai" });
-    return;
-  }
-
-  if (command === "kb:status") {
-    const { renderDashboard } = require("./experimental/dashboard");
-    renderDashboard();
-    return;
-  }
-
-  if (command === "review") {
-    console.log(">> [SRS Dashboard] Gathering cards due today...");
-    const cardsDir = path.join(process.cwd(), "outputs", "dict");
-    if (!fs.existsSync(cardsDir)) {
-      console.log("No dictionary cards found in outputs/dict.");
-      return;
-    }
-    const headwords = fs.readdirSync(cardsDir);
-    const dueCards: { file: string; headword: string }[] = [];
-    const now = new Date();
-    for (const hw of headwords) {
-      const cardPath = path.join(cardsDir, hw, "card.json");
-      if (fs.existsSync(cardPath)) {
-        const c = JSON.parse(fs.readFileSync(cardPath, "utf-8"));
-        if (!c.srsData) {
-          dueCards.push({ file: cardPath, headword: hw });
-          continue;
-        }
-        const rDate = new Date(c.srsData.nextReview);
-        if (rDate <= now) {
-          dueCards.push({ file: cardPath, headword: hw });
-        }
-      }
-    }
-    if (dueCards.length === 0) {
-      console.log(">> You're all caught up! No cards due today.");
-      return;
-    }
-    console.log(`>> You have ${dueCards.length} card(s) to review today. (Interactive mode mocked for testing)`);
-    const SrsModule = require("./experimental/srs");
-    const first = dueCards[0];
-    const cardData = JSON.parse(fs.readFileSync(first.file, "utf-8"));
-    const oldRec = cardData.srsData || SrsModule.SRSEngine.createDefault();
-    cardData.srsData = SrsModule.SRSEngine.SM2(4, oldRec);
-    fs.writeFileSync(first.file, JSON.stringify(cardData, null, 2), "utf-8");
-    console.log(`>> Simulated review for '${first.headword}' with Grade 4. Next review: ${cardData.srsData.nextReview}`);
-    return;
-  }
-
-  if (command === "export" && rest[0] === "anki") {
-    const { exportAnkiCsv } = require("./pipelines/exporters");
-    await exportAnkiCsv();
-    return;
-  }
-
-  if (command === "export" && rest[0] === "print") {
-    const { runPrintExport } = require("./pipelines/exporters");
-    runPrintExport();
-    return;
-  }
-
-  if (command === "batch:coach") {
-    const dir = rest[0];
-    if (!dir) throw new Error("Usage: tsm x batch:coach <dir>");
-    const { processBatchEssays } = require("./pipelines/batch-coach");
-    await processBatchEssays(path.resolve(process.cwd(), dir));
-    return;
-  }
-
-  if (command === "daily") {
-    const { runDailyChallenge } = require("./experimental/knowledge-base/daily");
-    runDailyChallenge();
-    return;
-  }
-
-  if (command === "graph") {
-    const { buildSynonymsGraph } = require("./experimental/knowledge-base/graph-builder");
-    buildSynonymsGraph();
-    return;
-  }
-
-  if (command === "backup") {
-    const { runSnapshotBackup } = require("./platform/backup");
-    runSnapshotBackup();
-    return;
-  }
-
-  if (command === "repl") {
-    const { startRepl } = require("./experimental/repl");
-    await startRepl();
-    return;
-  }
-
-  if (command === "speak") {
-    const text = rest.join(" ");
-    if (!text) throw new Error("Usage: tsm x speak <text-or-headword>");
-    const { synthesizeSpeech } = require("./experimental/audio");
-    synthesizeSpeech(text);
-    return;
-  }
-
-  if (command === "journal") {
-    const { buildWeeklyJournal } = require("./experimental/knowledge-base/journal");
-    buildWeeklyJournal();
-    return;
-  }
-
-  if (command === "search") {
-    const kw = rest.join(" ");
-    if (!kw) throw new Error("Usage: tsm x search <keyword>");
-    const { runGlobalSearch } = require("./experimental/knowledge-base/search");
-    runGlobalSearch(kw);
-    return;
-  }
-
-  if (command === "archive") {
-    const { archiveCards } = require("./experimental/knowledge-base/archiver");
-    archiveCards();
-    return;
-  }
-
-  if (command === "add") {
-    const word = rest[0];
-    const trans = rest[1];
-    const ctx = rest.slice(2).join(" ");
-    if (!word || !trans) throw new Error("Usage: tsm x add <word> <translation> [context]");
-    const { manuallyAddCard } = require("./connectors/manual");
-    manuallyAddCard(word, trans, ctx);
-    return;
-  }
-
-  if (command === "trace") {
-    const word = rest.join(" ");
-    if (!word) throw new Error("Usage: tsm x trace <word>");
-    const { runCrossRefTrace } = require("./experimental/knowledge-base/cross-ref");
-    runCrossRefTrace(word);
-    return;
-  }
-
-  if (command === "quiz") {
-    const { runMcqQuiz } = require("./experimental/knowledge-base/quiz");
-    runMcqQuiz();
-    return;
-  }
-
-  if (command === "cluster") {
-    const { runSemanticClusters } = require("./experimental/knowledge-base/cluster");
-    runSemanticClusters();
-    return;
-  }
-
-  if (command === "telemetry") {
-    const { Telemetry } = require("./experimental/telemetry");
-    Telemetry.printReport();
-    return;
-  }
-
-  throw new Error(`Unknown experimental command "${command}". Use "tsm x help" to see all.`);
 }
 
 async function main() {

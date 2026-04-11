@@ -58,10 +58,10 @@ tsm init
 
 ```bash
 # Workflow 1: Extract expressions from articles to generate flashcards
-tsm pipeline:input --file article.pdf
+tsm x pipeline:input --file article.pdf
 
 # Workflow 2: Diagnose writing and generate upgrade cards for Dictionary Pro
-tsm pipeline:output --text "This is a big improvement."
+tsm x pipeline:output --text "This is a big improvement."
 ```
 
 ### Standalone Commands

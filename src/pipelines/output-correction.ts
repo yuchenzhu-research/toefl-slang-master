@@ -2,7 +2,6 @@ import { runDictionaryProQuery } from "../dictionary-pro/runner";
 import { toExpressionCard } from "../connectors/dict-to-card";
 import type { ToeflSlangClientOptions } from "../platform/client";
 import { OutputManager } from "../platform/output-manager";
-import path from "path";
 import { resolveToeflWritingSource } from "../toefl-writing/cli";
 import { runToeflWritingQuery } from "../toefl-writing/runner";
 import { buildCoachToDictBridgeBundle } from "../connectors/coach-to-dict";
@@ -17,7 +16,6 @@ export async function runPipelineOutput(
   clientOptions: ToeflSlangClientOptions,
 ): Promise<void> {
   const slug = `essay-${Date.now()}`;
-  const outDir = OutputManager.getDiagnosisDir(slug);
   const source = resolveToeflWritingSource({ text });
 
   // 1. Core Execution: TOEFL Coach

@@ -13,7 +13,7 @@
 2. 再阅读：
    - `MANUAL.md`
    - `README.md`
-   - `README_EN.md`
+   - `README_zh-CN.md`
    - `docs/vision.md`
    - `docs/pipeline.md`
    - `docs/i18n.md`
@@ -148,9 +148,9 @@
 ### 5.2 平台层
 
 - `src/platform/`
-- `src/api/`
-- `src/auth/`
-- `src/providers/`
+- `src/platform/auth/`
+- `src/platform/providers/`
+- `src/platform/runtime/`
 
 这些目录共同构成共享底盘。处理原则：
 
@@ -219,11 +219,11 @@
 建议文档职责固定如下：
 
 - `README.md`
+  英文对外入口（当前根 README）
+- `README_zh-CN.md`
   简体中文对外入口
-- `README_EN.md`
-  英文对外入口
-- `README_ZH_HANT.md`
-  繁体中文对外入口（未来）
+- `README_zh-TW.md`
+  繁体中文对外入口
 - `MANUAL.md`
   面向维护者的内部说明书
 - `AGENTS.md`
@@ -244,7 +244,7 @@
 修改代码时，默认检查以下内容是否需要同步：
 
 - `README.md`
-- `README_EN.md`
+- `README_zh-CN.md`
 - `MANUAL.md`
 - `docs/vision.md`
 - `docs/pipeline.md`
@@ -345,7 +345,8 @@
 - `AGENTS.md`
 - `MANUAL.md`
 - `README.md`
-- `README_EN.md`
+- `README_zh-CN.md`
+- `README_zh-TW.md`
 - 对应 `docs/`
 
 ---

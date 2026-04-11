@@ -44,9 +44,11 @@
 ## 2. README、MANUAL、docs 的分工
 
 - `README.md`
-  简体中文对外入口。负责项目介绍、当前能力、最小运行方式、命令入口。
-- `README_EN.md`
-  英文对外入口。内容边界应与中文 README 一致。
+  英文对外入口。负责项目介绍、当前能力、最小运行方式、命令入口。
+- `README_zh-CN.md`
+  简体中文对外入口。内容边界应与英文 README 对齐。
+- `README_zh-TW.md`
+  繁体中文对外入口。内容边界应与英文 README 对齐。
 - `MANUAL.md`
   内部维护说明书。负责记录架构、边界、运行方式、文档职责、已知限制和维护规则。
 - `AGENTS.md`
@@ -75,7 +77,8 @@
 ├─ AGENTS.md
 ├─ MANUAL.md
 ├─ README.md
-├─ README_EN.md
+├─ README_zh-CN.md
+├─ README_zh-TW.md
 ├─ CHANGELOG.md
 ├─ DEVLOG.md
 ├─ package.json
@@ -101,12 +104,12 @@
   顶层 CLI 分发入口
 - `src/platform/`
   共享 facade 和运行时桥接
-- `src/api/`
-  统一客户端封装
-- `src/auth/`
+- `src/platform/auth/`
   API key、本地配置和 provider 认证信息解析
-- `src/providers/`
+- `src/platform/providers/`
   provider catalog、runtime 和协议实现
+- `src/platform/runtime/`
+  共享运行时能力（如 validated-json）
 - `src/dictionary-pro/`
   表达升级模块
 - `src/toefl-writing/`
@@ -342,10 +345,10 @@ connector 当前应被视为：
 
 当前项目已经具备 OpenClaw-style 的 provider runtime 雏形：
 
-- `src/api/client.ts`
-- `src/providers/runtime.ts`
-- `src/providers/catalog.ts`
-- `src/auth/manager.ts`
+- `src/platform/client.ts`
+- `src/platform/providers/runtime.ts`
+- `src/platform/providers/catalog.ts`
+- `src/platform/auth/manager.ts`
 
 当前模式大致是：
 
@@ -385,7 +388,8 @@ query
 如果后续修改认证或 provider 逻辑，应同步更新：
 
 - `README.md`
-- `README_EN.md`
+- `README_zh-CN.md`
+- `README_zh-TW.md`
 - 对应 docs
 - CI / test surface
 

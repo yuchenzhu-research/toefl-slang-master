@@ -32,9 +32,7 @@ export async function processBatchEssays(
       source: resolveToeflWritingSource({ text, filePath })
     });
 
-    const outDir = OutputManager.getDiagnosisDir(slug);
-    OutputManager.writeJson(path.join(outDir, "diagnosis.json"), result.structured);
-    OutputManager.writeMarkdown(path.join(outDir, "report.md"), result.markdown);
+    OutputManager.saveCoachDiagnosis(slug, result.structured, result.markdown);
   }
 
   console.log(">> [Batch Coach] Batch processing complete.");

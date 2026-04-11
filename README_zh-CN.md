@@ -58,10 +58,10 @@ tsm init
 
 ```bash
 # 工作流 1：从材料中提取表达并生成词卡
-tsm pipeline:input --file article.pdf
+tsm x pipeline:input --file article.pdf
 
 # 工作流 2：诊断写作中的弱表达并生成对应的升级词卡
-tsm pipeline:output --text "This is a big improvement."
+tsm x pipeline:output --text "This is a big improvement."
 ```
 
 ### 原子模块独立调用

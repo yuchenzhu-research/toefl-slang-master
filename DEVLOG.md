@@ -2,6 +2,90 @@
 
 ---
 
+## 2026-04-11 / Phase 12: Guardrail Lock-In For Ongoing Slimming
+
+### Modifications
+- **CLI Boundary Guard**: Extended the CLI test suite so it no longer checks only visible help text. The new structural assertion also verifies that `src/app-cli.ts` routes through `src/experimental/cli.ts` instead of directly importing pipeline or experimental implementation files again.
+- **Output Contract Guard**: Kept the output-layer regression checks introduced in Phase 10 as part of the new baseline, ensuring canonical content artifact names remain `digest.json`, `index.md`, and `candidates.json`.
+- **Refactor Safety Baseline**: With CLI surface tests, app-cli structural tests, and output contract tests all living in `test:ci`, the next round of slimming work has a concrete regression floor instead of relying on DEVLOG memory.
+
+### Architectural Impact
+- Phase 9-11 changes are now protected by executable guardrails rather than just code review discipline.
+- The repository is in a better position to continue slimming without accidentally reintroducing top-level CLI bloat or output naming drift.
+
+---
+
+## 2026-04-11 / Phase 11: Documentation Realignment With Current Runtime
+
+### Modifications
+- **README Command Sync**: Updated `README.md` and `README_zh-CN.md` so pipeline examples now match the actual CLI surface (`tsm x pipeline:input` / `tsm x pipeline:output`) instead of the pre-namespace form.
+- **Maintainer Docs Sync**: Corrected `AGENTS.md` and `MANUAL.md` to reflect the current repository layout:
+  - root `README.md` as the English entry
+  - `README_zh-CN.md` and `README_zh-TW.md` as the Chinese localized entries
+  - `src/platform/*` as the real home of auth/provider/runtime code after the platform consolidation work
+- **Stale File Reference Removal**: Removed active-process references that still treated `README_EN.md`, `README_ZH_HANT.md`, `src/api/`, `src/auth/`, and `src/providers/` as current source-of-truth locations.
+
+### Architectural Impact
+- The repo instructions for humans and agents now point at the files and commands that actually exist.
+- Future refactors can rely on the maintenance docs without having to first translate old path names into the post-consolidation layout.
+
+---
+
+## 2026-04-11 / Phase 10: Output Contract Tightening
+
+### Modifications
+- **Canonical Content Filenames**: Standardized Content Parser artifacts on `digest.json`, `index.md`, and `candidates.json` through `src/platform/output-manager.ts`, replacing the previous `source.json` / `source.md` future-write behavior.
+- **Single Output Entry Point**: Extended `OutputManager` so content candidates, coach batch results, and manual dictionary additions all flow through the same saver layer instead of scattering file names across pipelines and connectors.
+- **Runtime Path Stability**: Removed the module-load-time output root constant and resolved the output root from `process.cwd()` dynamically, making the output layer safer under tests and any future workspace switching.
+- **Safer Output Tests**: Reworked `tests/outputs.test.ts` to use temporary directories rather than the repository root, then added a regression check that asserts the canonical content filenames are written and the old `source.json` / `source.md` names are no longer treated as the standard.
+- **Docs Sync (Output Layer Only)**: Updated `docs/outputs.md` so the documented file layout matches the actual writer implementation and explicitly points future changes back to `OutputManager` as the source of truth.
+
+### Architectural Impact
+- The output contract is now materially closer to "Markdown-first + JSON sidecar" discipline instead of being partly encoded in docs and partly encoded in ad hoc writers.
+- Future pipeline changes have a narrower place to edit and a smaller chance of silently drifting from the documented layout.
+
+---
+
+## 2026-04-11 / Phase 9: CLI Tree Extraction & Guardrails
+
+### Modifications
+- **Experimental CLI Extraction**: Moved the `tsm x` command catalog and dispatch logic out of `src/app-cli.ts` into `src/experimental/cli.ts`, so the top-level CLI entry returns to being a thin router around the core command surface.
+- **Dependency Thinning**: Replaced eager imports of pipeline and backup/manual helpers inside the experimental command handler with command-local `require` calls. This keeps the top-level CLI from loading more orchestration code than it needs on every invocation.
+- **CLI Surface Tests**: Added `tests/cli.test.ts` to lock two key guardrails in place:
+  - root help stays focused on the main narrative (`dict`, `coach`, `content`, setup utilities, and `tsm x`)
+  - experimental commands remain discoverable only through the `tsm x` namespace
+
+### Architectural Impact
+- `src/app-cli.ts` is now materially thinner and easier to keep stable during later refactors.
+- The command tree is clearer: core entry at the top, experimental surface in its own namespace module.
+- CLI slimming is no longer just a help-text cleanup; the dispatch structure now matches the intended architecture.
+
+---
+
+## 2026-04-11 / Phase 8: Baseline Realignment Before Further Refactoring
+
+### Related Baseline Commits
+- `99747cc` Stabilize stage 1 contracts and connector baseline
+- `f89ee4f` chore(cli): slim main entry, unify experimental namespace, and sync manual
+- `60fa7d8` chore(arch): slim CLI main entry and refactor connectors into pure mappers
+- `9d818ae` chore: implement Phase 4 (Output Consolidation) and Phase 6 (Experimental Isolation)
+- `b26fdf5` chore(platform): consolidate core implementations and remove empty facades
+- `ba1ea7a` docs: synchronize documentation and fix test guardrails for Phase 7
+- `c969112` docs: simplify READMEs and finalize multilingual support
+- `72853d7` docs: optimize multilingual READMEs using standard generator skill
+
+### Modifications
+- **Phase Baseline Audit**: Re-read `DEVLOG.md`, compared it against the actual git history, and confirmed that antigravity already landed the structural work for Phase 1 through Phase 7. New refactors must continue from that baseline rather than restarting the earlier slimming passes.
+- **Commit-to-Phase Alignment**: Mapped the current repository state back to the commits that materially implemented each phase, so later reports can distinguish "already landed yesterday" from "new work added on 2026-04-11".
+- **Documentation Drift Identified**: Confirmed that `README_EN.md` was deleted in `c969112`, while `AGENTS.md` and `MANUAL.md` still reference it as an active file. The root `README.md` currently acts as the English entry, and this mismatch must be resolved in the next documentation sync phase.
+- **Refactor Continuation Boundary**: Marked the current local CLI extraction draft as a continuation of the earlier CLI slimming work, not a parallel redesign. Subsequent phases will build on the antigravity layout (`tsm` core surface + `tsm x` namespace + `src/pipelines/` + `src/experimental/`).
+
+### Architectural Impact
+- Prevents duplicated work and incorrect phase numbering before deeper refactors continue.
+- Establishes a clean 2026-04-11 baseline for the next steps: CLI tree extraction, output contract tightening, and docs/runtime realignment.
+
+---
+
 ## 2026-04-11 / Phase 7: Multilingual Documentation Standardization
 
 ### Related Commits

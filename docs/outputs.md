@@ -8,6 +8,11 @@
 1. **`*.json` (Sidecar)**：包含未经格式化的、符合 Contract 定义的 JSON 实体（如 `ExpressionCard`）。供程序复用、批量处理。
 2. **`*.md` 或 `index.md`**：易于人类阅读和复习的视图文件，基于统一骨架渲染而来。
 
+说明：
+
+- 当前未来写入规则以 [`src/platform/output-manager.ts`](/Users/yuchenzhu/Desktop/github/toefl slang master/src/platform/output-manager.ts) 为唯一事实来源。
+- 新增或重构输出逻辑时，优先扩展 `OutputManager`，不要在 pipeline、connector、experimental 模块里继续散写文件名。
+
 ## 统一目录结构 (`outputs/`)
 
 系统根目录下的 `outputs/` 将成为所有持久化学习产物的汇总地：
@@ -31,6 +36,14 @@ outputs/
         ├── diagnosis.json
         └── report.md
 ```
+
+当前约定：
+
+- `content/*`: `digest.json` + `index.md` + `candidates.json`
+- `dict/*`: `card.json` + `index.md`
+- `coach/*`: `diagnosis.json` + `report.md`
+
+不要继续把旧的 `source.json` / `source.md` 作为未来写入标准。
 
 ## Markdown 输出统一样式
 

@@ -3,7 +3,6 @@ import { runDictionaryProQuery } from "../dictionary-pro/runner";
 import { ToeflSlangClientOptions } from "../platform/client";
 import { ContentParserQuery } from "../content-parser/types";
 import { OutputManager } from "../platform/output-manager";
-import path from "path";
 import fs from "fs";
 import { TextChunker } from "../platform/text-chunker";
 import { toExpressionCardSeeds } from "../connectors/content-to-dict";
@@ -19,7 +18,6 @@ export async function runPipelineInput(
   clientOptions: ToeflSlangClientOptions
 ) {
   const slug = `content-${Date.now()}`;
-  const outDir = OutputManager.getContentDir(slug);
 
   // 1. Initial Content Handling
   if (query.filePath && fs.existsSync(query.filePath)) {
@@ -39,7 +37,7 @@ export async function runPipelineInput(
   OutputManager.saveContentDigest(slug, cpResult.structured, cpResult.markdown);
 
   const candidates = cpResult.structured.expressionCandidates || [];
-  OutputManager.writeJson(path.join(outDir, "candidates.json"), { candidates });
+  OutputManager.saveContentCandidates(slug, { candidates });
 
   // 4. Bridge: Map Candidates to Seeds
   console.log(`>> [Pipeline 1] Found ${candidates.length} expression candidates. Translating to Seeds...`);
@@ -48,8 +46,7 @@ export async function runPipelineInput(
   // 5. Core Execution: Dictionary Pro Loop
   for (let i = 0; i < seeds.length; i++) {
     const seed = seeds[i];
-    const candidate = candidates[i];
-    
+
     console.log(`   -> Generating card for: ${seed.query}`);
     const dpResult = await runDictionaryProQuery({
       query: {
