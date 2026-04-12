@@ -4,30 +4,26 @@ import type { ToeflSlangClientOptions } from "../platform/client";
 import { runStudio } from "./runner";
 
 const STUDIO_USAGE = `
-SPARK Studio — Guided Learning Session
+SPARK Studio — Terminal UI (TUI)
 
 Usage:
   spark studio [options]
 
 Options:
-  --file <path>     Pre-select a source file (.pdf / .md / .txt)
+  --file <path>     Reserved (WIP). Pre-select a source file (.pdf / .md / .txt)
   --provider <id>   Provider to use (default: openai)
   --model <id>      Model id override
   --api-key <key>   API key override
   --base-url <url>  Base URL override
-  --dry-run         Walk through the flow without calling APIs
+  --dry-run         Launch the TUI without calling APIs
   --help            Show this help
 
 Description:
-  An interactive, step-by-step learning session that guides you through:
+  Studio currently runs as an interactive TUI focused on Dictionary Pro lookups.
+  Type any word or expression and press Enter to query. Press Ctrl+C to exit.
 
-    [1] Source file selection (.pdf, .md, .txt)
-    [2] Content parsing and digest preview
-    [3] Expression candidate review and selection
-    [4] Learning target selection (TOEFL / Economist / Spoken)
-    [5] Dictionary card generation and output
-
-  All results are saved to your local outputs/ directory.
+  The full guided pipeline (content parsing, candidate review, card generation)
+  is work in progress.
 `;
 
 function readFlag(argv: string[], flag: string): string | undefined {

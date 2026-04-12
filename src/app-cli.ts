@@ -14,7 +14,7 @@ function printUsage(): void {
 SPARK CLI (Speech, Phrase, and Artful Resonance Kinship)
 
 Usage:
-  spark studio [--file <path>] [--dry-run]   ← Guided learning session
+  spark studio [--file <path>] [--dry-run]   ← Studio TUI (Dictionary Pro lookups; pipeline WIP)
   spark dict "<expression>" [options]
   spark coach "<essay-or-paragraph>" [options]
   spark content --file <article.md> [options]
@@ -24,7 +24,7 @@ Usage:
   spark x --help      (Experimental / Auxiliary commands)
 
 Guided Mode:
-  studio     Start an interactive guided learning session (recommended).
+  studio     Launch Studio TUI for interactive Dictionary Pro lookups.
 
 Core Commands:
   dict       Run Dictionary Pro to upgrade informal English (Informal -> TOEFL).

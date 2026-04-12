@@ -4,7 +4,6 @@ import { ChatLog } from "./components/ChatLog";
 import { CustomEditor } from "./components/CustomEditor";
 import type { ToeflSlangClientOptions } from "../../platform/client";
 import { runDictionaryProQuery } from "../../dictionary-pro/runner";
-import { OutputManager } from "../../platform/output-manager";
 
 export async function runTui(options: {
   clientOptions: ToeflSlangClientOptions;
@@ -49,7 +48,13 @@ export async function runTui(options: {
   editor.onCtrlD = exitTui;
   editor.onEscape = exitTui;
 
-  chatLog.addSystem("Welcome to SPARK Studio TUI. Type a word to look it up using Dictionary Pro. Note: /coach and /content integrations are WIP.");
+  chatLog.addSystem(
+    "Welcome to SPARK Studio TUI. Type a word to look it up using Dictionary Pro. Note: /coach and /content integrations are WIP.",
+  );
+
+  if (options.dryRun) {
+    chatLog.addSystem("Dry-run mode is enabled: no API calls will be made.");
+  }
 
   const handleSubmit = async () => {
     const text = editor.getText().trim();
@@ -63,11 +68,19 @@ export async function runTui(options: {
       return;
     }
 
-    const runId = chatLog.addUser(text);
+    chatLog.addUser(text);
     statusText.setText(theme.dim("running..."));
 
     try {
-      const astId = chatLog.addAssistant("Thinking...");
+      const astId = chatLog.addAssistant(options.dryRun ? "Dry-run..." : "Thinking...");
+
+      if (options.dryRun) {
+        chatLog.updateAssistant(
+          astId,
+          `[Dry Run] Dictionary Pro lookup skipped.\n\n[Query]: ${text}\n\nRun without --dry-run to generate results.`,
+        );
+        return;
+      }
       
       const dpResult = await runDictionaryProQuery({
         query: {
