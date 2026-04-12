@@ -74,7 +74,7 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
       await runContentParserModuleCli(rest);
       return;
     case "init":
-      runInitCli(rest);
+      await runInitCli(rest);
       return;
     case "doctor":
       runDoctorCli(rest);

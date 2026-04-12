@@ -1,3 +1,4 @@
+import { resolveDefaultProvider } from "./auth/selector";
 import {
   formatProviderCatalog,
   formatResolvedProviderPreview,
@@ -9,7 +10,12 @@ import { ProviderApi, ProviderResolutionOptions, ResolvedProvider } from "./prov
 export interface ToeflSlangClientOptions extends ProviderResolutionOptions {}
 
 export class ToeflSlangClient {
-  constructor(private readonly options: ToeflSlangClientOptions = { provider: "openai" }) {}
+  constructor(private readonly options: ToeflSlangClientOptions) {}
+
+  static async create(options: Partial<ToeflSlangClientOptions> = {}): Promise<ToeflSlangClient> {
+    const effectiveProvider = options.provider || (await resolveDefaultProvider());
+    return new ToeflSlangClient({ ...options, provider: effectiveProvider });
+  }
 
   async chatStreaming(systemPrompt: string, userInput: string): Promise<void> {
     const response = await generateTextWithProvider({

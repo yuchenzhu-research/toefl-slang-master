@@ -1,5 +1,5 @@
-import * as fs from "fs";
 import * as path from "path";
+import { resolveDefaultProvider } from "./auth/selector";
 
 type InitResult = {
   cwd: string;
@@ -22,17 +22,23 @@ Usage:
   spark init --json
 
 Options:
-  --force   Overwrite an existing .env with .env.example.
-  --json    Print machine-readable JSON output.
-  --help    Show help.
+  --force           Overwrite an existing .env with .env.example.
+  --reset-provider  Re-run the intelligent provider selection menu.
+  --json            Print machine-readable JSON output.
+  --help            Show help.
 `;
 
   console.log(usage.trim());
 }
 
-export function runInitCli(argv: string[]): void {
+export async function runInitCli(argv: string[]): Promise<void> {
   if (argv.includes("--help") || argv.includes("-h")) {
     printUsage();
+    return;
+  }
+
+  if (argv.includes("--reset-provider")) {
+    await resolveDefaultProvider({ forcePrompt: true });
     return;
   }
 

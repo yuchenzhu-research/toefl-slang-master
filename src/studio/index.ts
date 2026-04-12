@@ -45,7 +45,7 @@ export async function runStudioModuleCli(argv: string[]): Promise<void> {
   const filePathHint = readFlag(argv, "--file");
 
   const clientOptions: ToeflSlangClientOptions = {
-    provider: readFlag(argv, "--provider") ?? "openai",
+    provider: readFlag(argv, "--provider"),
     model: readFlag(argv, "--model"),
     apiKey: readFlag(argv, "--api-key"),
     baseUrl: readFlag(argv, "--base-url"),

@@ -25,7 +25,7 @@ export async function runToeflWritingQuery(params: {
   clientOptions: ToeflSlangClientOptions;
   source: ToeflWritingSourcePayload;
 }): Promise<ToeflWritingRunResult> {
-  const client = new ToeflSlangClient(params.clientOptions);
+  const client = await ToeflSlangClient.create(params.clientOptions);
   const validated = await runValidatedJsonGeneration({
     maxAttempts: MAX_GENERATION_ATTEMPTS,
     failureLabel: "TOEFL Coach",

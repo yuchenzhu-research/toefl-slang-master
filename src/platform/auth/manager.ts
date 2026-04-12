@@ -5,7 +5,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { normalizeProviderId } from "../providers/catalog";
+import { getProviderCatalogEntry, listProviderCatalog, normalizeProviderId } from "../providers/catalog";
 
 export const CONFIG_PATH = path.join(process.env.HOME || "~", ".toefl-slang", "config.json");
 
@@ -16,7 +16,8 @@ export interface ProviderConfig {
 }
 
 export interface Config {
-  apiKey?: string;
+  defaultProvider?: string;
+  apiKey?: string; // Legacy
   providers?: Record<string, ProviderConfig>;
 }
 
@@ -44,6 +45,33 @@ export function readConfig(): Config {
   } catch {
     return {};
   }
+}
+
+export function writeConfig(config: Config): void {
+  const configDir = path.dirname(CONFIG_PATH);
+  if (!fs.existsSync(configDir)) {
+    fs.mkdirSync(configDir, { recursive: true });
+  }
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
+}
+
+/**
+ * Scans .env and process.env for all known provider keys.
+ */
+export function detectAvailableProviders(): string[] {
+  const catalog = listProviderCatalog();
+  const available: string[] = [];
+
+  for (const entry of catalog) {
+    // Only match against the primary environment variable to avoid
+    // cross-matching (e.g. siliconflow-minimax matching a standalone MINIMAX_API_KEY)
+    const primaryKey = entry.envVars[0];
+    if (primaryKey && process.env[primaryKey]?.trim()) {
+      available.push(entry.id);
+    }
+  }
+
+  return available;
 }
 
 export function getLocalProviderConfig(provider: string): ProviderConfig | undefined {

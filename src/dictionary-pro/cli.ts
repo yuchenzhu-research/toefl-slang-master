@@ -30,7 +30,7 @@ Options:
   --context, -c   Optional. Extra context for disambiguation.
   --mode, -m      Optional. meaning | conversion | upgrade | comparison
   --target, -g    Optional. toefl-writing | toefl-speaking | general-academic | daily-english
-  --provider, -p  Optional. Gateway/provider runtime. Default: openai
+  --provider, -p  Optional. Gateway/provider runtime. Default: (auto-detected from .env)
   --model         Optional. Provider model id.
   --api-key       Optional. API key override.
   --base-url      Optional. Provider base URL override.
@@ -213,8 +213,8 @@ export async function runDictionaryProCli(argv: string[]): Promise<void> {
   }
 
   const prompts = buildDictionaryProPrompts(query, { outputMode: "json" });
-  const client = new ToeflSlangClient({
-    provider: query.provider ?? "openai",
+  const client = await ToeflSlangClient.create({
+    provider: query.provider,
     model: query.model,
     apiKey: query.apiKey,
     baseUrl: query.baseUrl,
@@ -245,7 +245,7 @@ export async function runDictionaryProCli(argv: string[]): Promise<void> {
   const result = await runDictionaryProQuery({
     query,
     clientOptions: {
-      provider: query.provider ?? "openai",
+      provider: query.provider,
       model: query.model,
       apiKey: query.apiKey,
       baseUrl: query.baseUrl,

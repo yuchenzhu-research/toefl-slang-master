@@ -26,7 +26,7 @@ export async function runDictionaryProQuery(params: {
   query: DictionaryProQuery;
   clientOptions: ToeflSlangClientOptions;
 }): Promise<DictionaryProRunResult> {
-  const client = new ToeflSlangClient(params.clientOptions);
+  const client = await ToeflSlangClient.create(params.clientOptions);
   const validated = await runValidatedJsonGeneration({
     maxAttempts: MAX_GENERATION_ATTEMPTS,
     failureLabel: "Dictionary Pro",
