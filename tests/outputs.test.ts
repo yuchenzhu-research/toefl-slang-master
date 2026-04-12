@@ -7,7 +7,7 @@ import path from "path";
 
 test("OutputManager generates correct canonical output directories", () => {
   const originalCwd = process.cwd();
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "tsm-outputs-"));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "spark-outputs-"));
 
   try {
     process.chdir(tempDir);
@@ -29,7 +29,7 @@ test("OutputManager generates correct canonical output directories", () => {
 
 test("OutputManager writes canonical content filenames", () => {
   const originalCwd = process.cwd();
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "tsm-content-"));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "spark-content-"));
 
   try {
     process.chdir(tempDir);
