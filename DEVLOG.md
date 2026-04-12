@@ -2,20 +2,38 @@
 
 ---
 
-## 2026-04-12 / Phase 13: Rebranding to SPARK
+## 2026-04-12 / Full Project Rebranding: TOEFL Slang Master to SPARK
+
+### Related commits
+- `e576845` (chore(rebrand): rebrand project to SPARK and update CLI entry to spark)
 
 ### Modifications
-- **Project Renaming**: Officially rebranded the project from `TOEFL Slang Master` (TSM) to **SPARK** (Speech, Phrase, and Artful Resonance Kinship).
+- **Project Rebranding**: Officially rebranded the project from `TOEFL Slang Master` to **SPARK** (Speech, Phrase, and Artful Resonance Kinship).
 - **CLI Migration**: Changed the primary CLI command from `tsm` to `spark`.
-- **Entry Point Refactoring**: Renamed `bin/tsm.cjs` to `bin/spark.cjs` and updated its internal error handling strings.
-- **Global Documentation Sync**: Updated `AGENTS.md`, `MANUAL.md`, and all `README*.md` files across 8 languages to reflect the new identity.
-- **Source Code Realignment**: Updated `src/app-cli.ts`, `src/platform/init.ts`, and `src/platform/doctor.ts` usage text, title strings, and error messages.
-- **Test Suite Updates**: Adjusted `tests/cli.test.ts` assertions to verify the new `spark` command surface and help output.
+- **Entry Point Refactoring**: Renamed `bin/tsm.cjs` to `bin/spark.cjs` and synchronized internal error handling logic.
+- **Multilingual Documentation Sync**:
+  - Updated README files across all 8 supported languages.
+  - Synchronized `AGENTS.md`, `MANUAL.md`, and all architectural documentation under `docs/`.
+- **Source Code & Test Alignment**:
+  - Updated `src/app-cli.ts` with the new SPARK title and usage information.
+  - Adjusted diagnostic text in `src/platform/init.ts` and `src/platform/doctor.ts`.
+  - Updated `tests/cli.test.ts` assertions to match the new `spark` command namespace.
 
-### Architectural Impact
-- Improved project memorability and brand identity with a catchy, paper-like acronym (SPARK).
-- Standardized the CLI entry point to match the new brand name.
-- Ensured consistency across the entire documentation ecosystem and source code.
+### Issues Resolved
+- Resolved the memorability and branding issues with the legacy `TSM` acronym.
+- Aligned the command-line identity with a "research paper style" catchy name (SPARK).
+
+### Impact Range
+- `bin/spark.cjs`
+- `package.json`
+- `src/app-cli.ts`
+- `src/platform/init.ts`, `src/platform/doctor.ts`
+- `AGENTS.md`, `MANUAL.md`, `README*.md`
+- `docs/*.md`
+- `tests/cli.test.ts`
+
+### Next Steps
+- Recommend users to run `npm link` to register the new `spark` command.
 
 ---
 
