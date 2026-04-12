@@ -2,6 +2,58 @@
 
 ---
 
+## 2026-04-13 / Engineering Audit: P0 & P1 Fix Sprint
+
+### Related commits
+- `335e380` refactor: replace all tsm remnants with spark across CLI and docs
+- `a1323f7` fix(p0-4): complete connectors barrel with content-to-dict and dict-to-card exports
+- `d2318cc` fix(p0-3): remove deceptive chunker block that split but never used chunks
+- `225e7eb` fix(p0-2): remove dead imports from studio/runner.ts replaced by TUI path
+- `5467800` fix(p0-1): sync Studio section in README to reflect actual TUI state (WIP note)
+- `f35c286` chore(p1): rename temp dir prefixes in tests from tsm to spark
+- `7230def` fix(p1): make spark studio --dry-run truly no-op and sync CLI help with TUI state
+- `bfbef09` docs(p1): update CHANGELOG CLI examples from tsm to spark
+- `14d55fa` chore(p1): finish rebranding strings (TOEFL Slang Master → SPARK) in docs and experimental outputs
+- `e72ff0f` docs(p1): add missing connector contracts for content-to-dict and dict-to-card
+- `273beee` chore(p1): archive minimax_mvp.ts under references/
+- `f4db7b5` feat(p1): add --locale flag and inject locale hints into prompts
+
+### P0 Fixes (Critical)
+- **Incomplete connectors barrel:** `src/connectors/index.ts` only exported `coach-to-dict`. Added namespace exports for `content-to-dict` and `dict-to-card` to avoid naming conflicts.
+- **Deceptive chunker block:** `src/pipelines/input-learning.ts` contained a chunking block that split documents but silently discarded the chunks. Removed the dead code along with unused `fs` / `TextChunker` imports.
+- **Dead imports in runner:** `src/studio/runner.ts` retained 10+ unused imports (path, resolveContentParserSource, prompts, etc.) left over from the TUI migration. Cleaned up entirely.
+- **README out of sync:** Studio sections in `README.md` and `README_zh-CN.md` described a six-step guided flow that was never implemented. Rewritten to reflect the current TUI-based Dictionary Pro lookup with a WIP note for the full pipeline.
+
+### P1 Fixes (Important)
+- **Legacy branding cleanup:** Replaced all remaining `TOEFL Slang Master` / `TOEFL SLANG MASTER` strings across `src/` and `docs/` (DEVLOG historical entries preserved). Affected: `contracts.ts`, `exporters.ts`, `dashboard.ts`, `daily.ts`, `journal.ts`, `quiz.ts`, `plan.md`, `docs/outputs.md`.
+- **`tsm` remnants:** Renamed test temp-dir prefixes from `tsm-*` to `spark-*`; updated CHANGELOG CLI examples from `tsm dict` to `spark dict`.
+- **Studio `--dry-run` made truly no-op:** TUI now intercepts lookup requests and returns a dry-run message instead of calling the API. Synced `spark studio --help` and `spark --help` descriptions accordingly.
+- **Connector docs completed:** Added `docs/connectors/content-to-dict.md` and `docs/connectors/dict-to-card.md`, completing the full trio alongside existing `coach-to-dict.md`.
+- **`minimax_mvp.ts` archived:** Moved from project root to `references/`.
+- **Locale support landed:** Added `--locale` flag to all three module CLIs; injected `LocaleManager.injectPrompt()` into prompt builders for Dictionary Pro, TOEFL Coach, and Content Parser per `docs/i18n.md` spec.
+- **`docs/outputs.md` link fix:** Replaced absolute local path with repo-relative path.
+
+### Verification
+- `npm test` — all 24 tests passing, no regressions.
+
+### Impact Range
+- `src/connectors/index.ts`, `src/connectors/README.md`
+- `src/pipelines/input-learning.ts`
+- `src/studio/runner.ts`, `src/studio/index.ts`, `src/studio/tui/SPARKTui.ts`
+- `src/app-cli.ts`
+- `src/platform/contracts.ts`
+- `src/dictionary-pro/{cli,prompt}.ts`
+- `src/toefl-writing/{cli,prompt}.ts`
+- `src/content-parser/{cli,prompt}.ts`
+- `src/pipelines/exporters.ts`
+- `src/experimental/{dashboard,knowledge-base/*}.ts`
+- `README.md`, `README_zh-CN.md`, `CHANGELOG.md`, `plan.md`
+- `docs/outputs.md`, `docs/connectors/{content-to-dict,dict-to-card}.md` (New)
+- `tests/outputs.test.ts`
+- `references/minimax_mvp.ts` (Moved)
+
+---
+
 ## 2026-04-12 / SPARK TUI Studio: OpenClaw-Style Interactive Interface
 
 ### Related commits
