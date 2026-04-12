@@ -31,7 +31,7 @@
 - Added **Pipeline 2 (Output Correction Pipeline)**: Enables TOEFL Coach to diagnose user essays, extracting low-level expressions directly into Dictionary Pro to be upgraded into high-score revision cards.
 - Added **Pipeline 3 (Knowledge Base Pipeline)**: Introduced the `OutputManager` unit to manage the `data/` directory, along with a lightweight `indexer.ts` statistical indexing engine.
 - Added safety testing layer `tests/connectors.test.ts`, fully establishing local Node `--test` integration and automated unit tests within `.github/workflows/ci.yml`.
-- Added CLI exposure layer: Enabled direct integration for `tsm pipeline:input`, `tsm pipeline:output`, and `tsm kb:status` dashboard commands.
+- Added CLI exposure layer: Enabled direct integration for `spark x pipeline:input`, `spark x pipeline:output`, and `spark x kb:status` dashboard commands.
 
 ### Changed
 - Comprehensively reinforced the underlying `contracts.ts` system, introducing `relatedSourceSlug` and `relatedDiagnosisSlug` attributes for parent document/text traceability.
@@ -45,7 +45,7 @@
 - The `data/` directory has been automatically protected via `.gitignore`. If any pre-existing local data was scattered arbitrarily at the root, it must be manually transitioned to the new directory hierarchy.
 
 ### Migration Notes
-- Users are advised to gradually transition all terminal interactions from primitive standalone commands (e.g., `tsm dict`) toward scenario-driven syntax (e.g. `pipeline:xx`).
+- Users are advised to gradually transition all terminal interactions from primitive standalone commands (e.g., `spark dict`) toward scenario-driven syntax (e.g. `spark x pipeline:input`).
 
 ---
 
@@ -54,7 +54,7 @@
 ### Added
 - Established three main model deduction units: Dictionary Pro, Content Parser, and TOEFL Writing Coach.
 - Created the core component `runValidatedJsonGeneration` to implement a robust "Generation + Strict Schema Validation" dual-safety mechanism.
-- Built explicit execution layers via terminal basic commands: `tsm dict` / `tsm content` / `tsm coach`.
+- Built explicit execution layers via terminal basic commands: `spark dict` / `spark content` / `spark coach`.
 - Completed multi-provider interfaces with capabilities driven dynamically securely by environment variables.
 
 ### Changed
