@@ -6,6 +6,7 @@ import { printExperimentalUsage, runExperimentalCli } from "./experimental/cli";
 import { ToeflSlangClient } from "./platform/client";
 import { runDoctorCli } from "./platform/doctor";
 import { runInitCli } from "./platform/init";
+import { runStudioModuleCli } from "./studio";
 import { runToeflWritingModuleCli } from "./toefl-writing";
 
 function printUsage(): void {
@@ -13,6 +14,7 @@ function printUsage(): void {
 SPARK CLI (Speech, Phrase, and Artful Resonance Kinship)
 
 Usage:
+  spark studio [--file <path>] [--dry-run]   ← Guided learning session
   spark dict "<expression>" [options]
   spark coach "<essay-or-paragraph>" [options]
   spark content --file <article.md> [options]
@@ -20,6 +22,9 @@ Usage:
   spark doctor
   spark providers
   spark x --help      (Experimental / Auxiliary commands)
+
+Guided Mode:
+  studio     Start an interactive guided learning session (recommended).
 
 Core Commands:
   dict       Run Dictionary Pro to upgrade informal English (Informal -> TOEFL).
@@ -32,6 +37,8 @@ Setup Commands:
   providers  List all supported model providers.
 
 Examples:
+  spark studio                               ← Start guided session
+  spark studio --file article.md --dry-run   ← Preview without API calls
   spark dict "gonna" --target toefl-writing
   spark coach "I think technology is good..." --dry-run
   spark content --file essay.md --json
@@ -54,6 +61,9 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
   }
 
   switch (command) {
+    case "studio":
+      await runStudioModuleCli(rest);
+      return;
     case "dict":
       await runDictionaryProModuleCli(rest);
       return;
