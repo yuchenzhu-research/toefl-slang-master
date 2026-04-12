@@ -3,8 +3,6 @@ import { runDictionaryProQuery } from "../dictionary-pro/runner";
 import { ToeflSlangClientOptions } from "../platform/client";
 import { ContentParserQuery } from "../content-parser/types";
 import { OutputManager } from "../platform/output-manager";
-import fs from "fs";
-import { TextChunker } from "../platform/text-chunker";
 import { toExpressionCardSeeds } from "../connectors/content-to-dict";
 import { toExpressionCard } from "../connectors/dict-to-card";
 
@@ -19,31 +17,21 @@ export async function runPipelineInput(
 ) {
   const slug = `content-${Date.now()}`;
 
-  // 1. Initial Content Handling
-  if (query.filePath && fs.existsSync(query.filePath)) {
-    const rawContent = fs.readFileSync(query.filePath, 'utf-8');
-    if (rawContent.length > 6000) {
-       console.log(">> [Pipeline 1] Document is unusually large. Activating Chunker...");
-       const chunks = TextChunker.splitIntoChunks(rawContent, 2000);
-       console.log(`>> [Pipeline 1] Splitting document into ${chunks.length} processing chunks.`);
-    }
-  }
-
-  // 2. Core Execution: Content Parser
+  // 1. Core Execution: Content Parser
   console.log(">> [Pipeline 1] Running Content Parser...");
   const cpResult = await runContentParserQuery({ query, clientOptions });
 
-  // 3. Side Effects: Save Parser Outputs via Sidecar Saver
+  // 2. Side Effects: Save Parser Outputs via Sidecar Saver
   OutputManager.saveContentDigest(slug, cpResult.structured, cpResult.markdown);
 
   const candidates = cpResult.structured.expressionCandidates || [];
   OutputManager.saveContentCandidates(slug, { candidates });
 
-  // 4. Bridge: Map Candidates to Seeds
+  // 3. Bridge: Map Candidates to Seeds
   console.log(`>> [Pipeline 1] Found ${candidates.length} expression candidates. Translating to Seeds...`);
   const seeds = toExpressionCardSeeds(candidates);
 
-  // 5. Core Execution: Dictionary Pro Loop
+  // 4. Core Execution: Dictionary Pro Loop
   for (let i = 0; i < seeds.length; i++) {
     const seed = seeds[i];
 
@@ -58,7 +46,7 @@ export async function runPipelineInput(
       clientOptions,
     });
 
-    // 6. Side Effects: Map to Standard ExpressionCard and Save with Sidecar
+    // 5. Side Effects: Map to Standard ExpressionCard and Save with Sidecar
     const traceMetadata = { relatedSourceSlug: slug };
     const standardizedCard = toExpressionCard(dpResult.structured, traceMetadata);
     
@@ -69,7 +57,7 @@ export async function runPipelineInput(
     );
   }
   
-  // 7. Side Effects: Update Knowledge Base Index (Optional/Experimental)
+  // 6. Side Effects: Update Knowledge Base Index (Optional/Experimental)
   try {
     const { indexKnowledgeBase } = require("../experimental/knowledge-base/indexer");
     indexKnowledgeBase();
