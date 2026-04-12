@@ -3,6 +3,7 @@ import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import { ToeflSlangClient } from "../platform/client";
+import { LocaleManager } from "../platform/locale";
 import { PROVIDER_APIS } from "../platform/providers/types";
 import { buildToeflWritingPrompts } from "./prompt";
 import { inferWritingScope } from "./schema";
@@ -25,6 +26,7 @@ Options:
   --text            Optional. Inline essay, paragraph, or sentence. You can also pass it as the first positional argument.
   --file            Optional. Markdown or plain-text file path.
   --title           Optional. Override source title.
+  --locale          Optional. Output locale for user-facing text. (zh-Hans | zh-Hant | en)
   --provider, -p    Optional. Gateway/provider runtime. Default: openai
   --model           Optional. Provider model id.
   --api-key         Optional. API key override.
@@ -67,6 +69,12 @@ export function parseToeflWritingArgs(argv: string[]): ToeflWritingQuery {
 
     if (token === "--dry-run") {
       draft.dryRun = true;
+      continue;
+    }
+
+    if (token === "--locale") {
+      LocaleManager.setLocale(parseArgValue(argv, i, token));
+      i += 1;
       continue;
     }
 

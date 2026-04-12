@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { ContentParserSourcePayload, ContentParserQuery } from "./types";
 import { resolveActiveFocus } from "./schema";
+import { LocaleManager } from "../platform/locale";
 
 interface PromptBundle {
   systemPrompt: string;
@@ -69,6 +70,7 @@ export function buildContentParserPrompts(
         ].join("\n");
 
   const userLines = buildSourceSummary(query, source);
+  userLines.push(LocaleManager.injectPrompt());
   userLines.push("请优先抽取最有学习价值的内容，不要机械复述整篇文章。");
   userLines.push(
     outputMode === "json"
@@ -103,6 +105,7 @@ export function buildContentParserRepairPrompts(params: {
   ].join("\n");
 
   const userLines = buildSourceSummary(params.query, params.source);
+  userLines.push(LocaleManager.injectPrompt());
   userLines.push("上一次输出没有通过校验，请修复而不是改写任务目标。");
   userLines.push("校验错误:");
   userLines.push(...params.validationErrors.map((error, index) => `${index + 1}. ${error}`));

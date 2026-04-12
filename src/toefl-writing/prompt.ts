@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { ToeflWritingSourcePayload, ToeflWritingQuery } from "./types";
 import { inferWritingScope } from "./schema";
+import { LocaleManager } from "../platform/locale";
 
 interface PromptBundle {
   systemPrompt: string;
@@ -63,6 +64,7 @@ export function buildToeflWritingPrompts(
       : [skillPrompt, "", "---", "Output Contract (Must Follow)", outputContract].join("\n");
 
   const userLines = buildSourceSummary(query, source);
+  userLines.push(LocaleManager.injectPrompt());
   userLines.push("请先诊断再改写，保持原文观点方向，不要替作者改立场。");
   if (outputMode === "json") {
     userLines.push(
@@ -105,6 +107,7 @@ export function buildToeflWritingRepairPrompts(params: {
   ].join("\n");
 
   const userLines = buildSourceSummary(params.query, params.source);
+  userLines.push(LocaleManager.injectPrompt());
   userLines.push("上一次输出没有通过校验，请修复而不是改写任务目标。");
   userLines.push("如果存在表达级问题，请保留或补全 weakExpressionSet、revisionFocus 和 upgradePrioritySummary。");
   userLines.push("校验错误:");

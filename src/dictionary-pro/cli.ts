@@ -1,4 +1,5 @@
 import { ToeflSlangClient } from "../platform/client";
+import { LocaleManager } from "../platform/locale";
 import { PROVIDER_APIS } from "../platform/providers/types";
 import { buildDictionaryProPrompts } from "./prompt";
 import { runDictionaryProQuery } from "./runner";
@@ -30,6 +31,7 @@ Options:
   --context, -c   Optional. Extra context for disambiguation.
   --mode, -m      Optional. meaning | conversion | upgrade | comparison
   --target, -g    Optional. toefl-writing | toefl-speaking | general-academic | daily-english
+  --locale        Optional. Output locale for user-facing text. (zh-Hans | zh-Hant | en)
   --provider, -p  Optional. Gateway/provider runtime. Default: (auto-detected from .env)
   --model         Optional. Provider model id.
   --api-key       Optional. API key override.
@@ -79,6 +81,12 @@ export function parseDictionaryProArgs(argv: string[]): DictionaryProQuery {
 
     if (token === "--dry-run") {
       draft.dryRun = true;
+      continue;
+    }
+
+    if (token === "--locale") {
+      LocaleManager.setLocale(parseArgValue(argv, i, token));
+      i += 1;
       continue;
     }
 

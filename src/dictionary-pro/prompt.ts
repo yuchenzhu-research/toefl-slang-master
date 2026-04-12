@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import { LocaleManager } from "../platform/locale";
 import { DictionaryProQuery } from "./types";
 
 interface PromptBundle {
@@ -67,6 +68,7 @@ export function buildDictionaryProPrompts(
         ].join("\n");
 
   const userLines = buildRequestSummary(query);
+  userLines.push(LocaleManager.injectPrompt());
   userLines.push("请优先保证语义准确和搭配自然，再做语域提升。");
   userLines.push(
     outputMode === "json"
@@ -100,6 +102,7 @@ export function buildDictionaryProRepairPrompts(params: {
   ].join("\n");
 
   const userLines = buildRequestSummary(params.query);
+  userLines.push(LocaleManager.injectPrompt());
   userLines.push("上一次输出没有通过校验，请修复而不是改写任务目标。");
   userLines.push("校验错误:");
   userLines.push(...params.validationErrors.map((error, index) => `${index + 1}. ${error}`));

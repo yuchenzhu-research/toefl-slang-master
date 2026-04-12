@@ -1,6 +1,7 @@
 import "dotenv/config";
 
 import { ToeflSlangClient } from "../platform/client";
+import { LocaleManager } from "../platform/locale";
 import { PROVIDER_APIS } from "../platform/providers/types";
 import { resolveContentParserSource } from "./extractor";
 import { buildContentParserPrompts } from "./prompt";
@@ -36,6 +37,7 @@ Options:
   --text            Optional. Inline text content.
   --title           Optional. Override source title.
   --focus           Optional. full | syntax | slang | culture | conversion
+  --locale          Optional. Output locale for user-facing text. (zh-Hans | zh-Hant | en)
   --provider, -p    Optional. Gateway/provider runtime. Default: openai
   --model           Optional. Provider model id.
   --api-key         Optional. API key override.
@@ -79,6 +81,12 @@ export function parseContentParserArgs(argv: string[]): ContentParserQuery {
 
     if (token === "--dry-run") {
       draft.dryRun = true;
+      continue;
+    }
+
+    if (token === "--locale") {
+      LocaleManager.setLocale(parseArgValue(argv, i, token));
+      i += 1;
       continue;
     }
 
