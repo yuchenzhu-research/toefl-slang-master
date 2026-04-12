@@ -39,6 +39,37 @@
 
 ---
 
+## 🎬 Studio 引导模式
+
+不需要手动拼命令，直接启动一个完整的引导式学习 session：
+
+```bash
+spark studio
+```
+
+Studio 会带你走过六个步骤：
+
+1. **选择文件** — 支持 `.pdf`、`.md`、`.txt`
+2. **解析预览** — 查看标题、类型、字数、候选表达数量
+3. **筛选候选** — 选择你想学的表达（`all`、`top 5`、`1,3,5` …）
+4. **学习目标** — 选择 TOEFL 写作、《经济学人》风格或美式口语
+5. **生成词卡** — Dictionary Pro 对选中条目生成完整词卡
+6. **总结报告** — 确认输出路径
+
+```bash
+# 不调用 API，只预览流程
+spark studio --dry-run
+
+# 直接指定文件跳过第一步
+spark studio --file ./article.md
+```
+
+> **注意**：《经济学人》风格和美式口语当前为保守映射（分别对应 `general-academic` 和 `daily-english` 寄存器），并非独立的风格引擎。session 运行时会明确提示。
+
+所有产物路径与原子命令一致（`outputs/dict/`、`outputs/content/`）。
+
+---
+
 ## 🚀 快速开始
 
 ### 安装

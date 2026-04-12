@@ -118,6 +118,14 @@
   内容解析模块
 - `src/connectors/`
   模块间桥接和中间对象映射
+- `src/studio/`
+  引导式终端工作台入口，编排三模块形成完整的 session 流程
+  - `session.ts` — StudioSession 类型与生命周期
+  - `target-map.ts` — 用户可见学习目标 → 内部 TargetRegister 的保守映射层
+  - `prompts.ts` — 终端交互（readline，无外部依赖）
+  - `runner.ts` — 引导式流程编排，调用现有 runner + OutputManager
+  - `index.ts` — CLI 入口，暴露 runStudioModuleCli
+
 
 ### 3.3 `skills/`
 

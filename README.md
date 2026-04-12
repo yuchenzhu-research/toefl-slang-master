@@ -39,6 +39,41 @@ Analyzes high-quality foreign publications (PDF/MD/TXT) to extract structured le
 
 ---
 
+## 🎬 Studio Mode (Guided Session)
+
+Instead of running standalone commands, you can start a fully guided session:
+
+```bash
+spark studio
+```
+
+The Studio walks you through six steps interactively:
+
+1. **File selection** — pick any `.pdf`, `.md`, or `.txt` source
+2. **Parse preview** — see title, type, char count, and candidate count before committing
+3. **Candidate review** — view extracted expressions and choose what to study (`all`, `top 5`, `1,3,5` …)
+4. **Learning target** — choose TOEFL Writing, Economist Style, or American Spoken
+5. **Card generation** — Dictionary Pro runs on your selected items
+6. **Summary** — see what was saved and where
+
+```bash
+# Preview the flow without making any API calls
+spark studio --dry-run
+
+# Jump straight to a file
+spark studio --file ./article.md
+```
+
+> [!NOTE]
+> Economist Style and American Spoken are currently mapped to the closest internal
+> register (`general-academic` and `daily-english` respectively). A dedicated style
+> engine for each is not yet implemented. The session will display a note when a
+> fallback mapping is applied.
+
+All outputs follow the same discipline as standalone commands (`outputs/dict/`, `outputs/content/`).
+
+---
+
 ## 🚀 Quick Start
 
 ### Installation
