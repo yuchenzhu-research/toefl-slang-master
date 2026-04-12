@@ -31,7 +31,7 @@ export function resolveProviderConfig(
   options: ProviderResolutionOptions,
   config?: { requireApiKey?: boolean },
 ): ResolvedProvider {
-  const providerId = normalizeProviderId(options.provider);
+  const providerId = normalizeProviderId(options.provider || "");
   const entry = getProviderCatalogEntry(providerId);
 
   if (!entry) {

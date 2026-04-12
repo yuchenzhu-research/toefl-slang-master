@@ -28,7 +28,7 @@ export type ProviderCatalogEntry = {
 };
 
 export type ProviderResolutionOptions = {
-  provider: string;
+  provider?: string;
   model?: string;
   apiKey?: string;
   baseUrl?: string;

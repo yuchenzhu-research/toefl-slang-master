@@ -217,7 +217,7 @@ export async function runDictionaryProEvaluation(
   const passed = results.filter((result) => result.passed).length;
 
   return {
-    provider: options.clientOptions.provider,
+    provider: options.clientOptions?.provider || "unknown",
     model: options.clientOptions.model,
     total: results.length,
     passed,

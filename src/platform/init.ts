@@ -1,4 +1,5 @@
 import * as path from "path";
+import * as fs from "fs";
 import { resolveDefaultProvider } from "./auth/selector";
 
 type InitResult = {

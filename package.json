@@ -16,7 +16,6 @@
     "doctor": "ts-node src/platform/doctor.ts",
     "spark": "ts-node src/app-cli.ts",
     "studio": "ts-node src/studio/index.ts",
-
     "dict": "ts-node src/dictionary-pro/index.ts",
     "dict:dry": "ts-node src/dictionary-pro/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",
     "dict:providers": "ts-node src/dictionary-pro/index.ts providers",
@@ -42,6 +41,9 @@
   },
   "homepage": "https://github.com/yuchenzhu-research/toefl-slang-master#readme",
   "dependencies": {
+    "@mariozechner/pi-tui": "^0.66.1",
+    "chalk": "^5.6.2",
+    "cli-highlight": "^2.1.11",
     "dotenv": "^17.3.1",
     "openai": "^6.25.0"
   },
