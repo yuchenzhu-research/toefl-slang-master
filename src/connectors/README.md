@@ -9,4 +9,14 @@
 
 ## 当前 Connector
 
-- `coach-to-dict`: 接收来自写作评估的弱表达集合，将其转化为表达卡片种子，从而打通输入到复习卡片的闭环。
+- `coach-to-dict`: 接收来自写作评估的弱表达集合（`WeakExpressionSet`），将其转化为表达卡片种子（`ExpressionCardSeed`）。
+- `content-to-dict`: 接收来自内容解析的候选表达（`ExpressionCandidates`），将其映射为表达卡片种子，供 Dictionary Pro 消费。
+- `dict-to-card`: 接收 Dictionary Pro 的结构化输出（`DictionaryProStructuredResponse`），将其展平为稳定的 `ExpressionCard` 合约对象。
+
+## 使用方式
+
+统一出口通过 namespace 导出，避免同名函数冲突：
+
+```ts
+import { coachToDictConnector, contentToDictConnector, dictToCardConnector } from "../connectors";
+```
