@@ -1,31 +1,5 @@
-import * as path from "path";
 import type { ToeflSlangClientOptions } from "../platform/client";
-import { resolveContentParserSource } from "../content-parser/extractor";
-import { runContentParserQuery } from "../content-parser/runner";
-import { toExpressionCardSeeds } from "../connectors/content-to-dict";
-import { toExpressionCard } from "../connectors/dict-to-card";
-import { runDictionaryProQuery } from "../dictionary-pro/runner";
-import { OutputManager } from "../platform/output-manager";
-import { createStudioSession, type StudioSession } from "./session";
-import {
-  promptFilePath,
-  promptCandidateSelection,
-  promptLearningTarget,
-  confirmProceed,
-} from "./prompts";
-import { resolveStudioTarget } from "./target-map";
-
-const SEPARATOR = "─".repeat(60);
-
-function printSeparator() {
-  console.log(`\n  ${SEPARATOR}`);
-}
-
-function printStep(n: number, label: string) {
-  console.log(`\n  ◆ Step ${n}: ${label}`);
-  console.log(`  ${"─".repeat(label.length + 10)}`);
-}
-
+import type { StudioSession } from "./session";
 import { runTui } from "./tui/SPARKTui";
 
 /**
