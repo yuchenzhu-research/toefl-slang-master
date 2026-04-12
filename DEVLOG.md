@@ -2,17 +2,66 @@
 
 ---
 
-## 2026-04-12 / SPARK Studio: Guided Terminal Workflow (Phase 1)
+## 2026-04-12 / SPARK TUI Studio: OpenClaw-Style Interactive Interface
 
 ### Related commits
-- `2cbb6de` (feat(studio): add StudioSession types and learning target mapping layer)
-- `a2fce07` (feat(studio): add interactive terminal prompts with readline)
-- `e4eb410` (feat(studio): add studio orchestration runner with step-by-step guided flow)
-- `185f82c` (feat(studio): add studio module CLI entry with --help, --file, --dry-run flags)
-- `228612b` (feat(cli): wire spark studio command into top-level CLI dispatcher)
-- `e80463d` (chore(scripts): add studio npm script to package.json)
-- `c23efa8` (test(studio): add target mapping, candidate selection, and session object tests)
-- `d7a37b2` (docs: add Studio Mode documentation to README and MANUAL)
+- `54b6b35` feat(studio): implement advanced OpenClaw-style TUI interface
+
+### Modifications
+- **Advanced TUI Integration:** Ported core TUI components from the OpenClaw reference, replacing the legacy `readline` sequential wizard with a persistent, full-screen grid interface.
+- **Component Architecture (`src/studio/tui/`):** 
+  - Implemented `ChatLog.ts` for handling scrollable conversation streams and inline assistant updates.
+  - Implemented `CustomEditor.ts` for multi-line input with custom keybindings (Ctrl+C, Alt+Enter).
+  - Adopted the `@mariozechner/pi-tui` library for low-level terminal rendering.
+- **Visual Rebranding & Theme:** Applied a high-contrast dark palette to match OpenClaw's aesthetics, including ANSI-based syntax highlighting and glassmorphism-inspired layout cues.
+- **Engine Wiring:** Connected the TUI interface to the `Dictionary Pro` core, allowing real-time word lookups and academic upgrades within the persistent session.
+
+### Issues Resolved
+- Transformed the "step-by-step" CLI bottleneck into a fluid, "Always-on" chat interface.
+- Standardized the visual language of SPARK to align with professional-grade agentic terminal tools.
+
+### Impact Range
+- `src/studio/tui/*` (New)
+- `src/studio/runner.ts`
+- `package.json`
+
+---
+
+## 2026-04-12 / Intelligent Provider Detection & Auto-Resolution
+
+### Related commits
+- `01bc421` feat(auth): implement intelligent provider selection and expand global provider catalog
+
+### Modifications
+- **Auto-Detection Engine (`src/platform/auth/manager.ts`):** Implemented logic to scan `.env` for known provider keys. It now intelligently filters out irrelevant providers based on primary environment variables to avoid cross-matching.
+- **Interactive Selector (`src/platform/auth/selector.ts`):** Created a native `readline`-based TUI menu that triggers only when multiple providers are detected without a persistent default.
+- **Expanded Provider Catalog (`src/platform/providers/catalog.ts`):** Added a comprehensive list of high-performance global providers, including DeepSeek, Groq, Perplexity, Fireworks AI, Cerebras, and Novita.
+- **Persistent Configuration:** Added support for `defaultProvider` in `~/.toefl-slang/config.json`, allowing the system to remember user preferences across sessions.
+- **CLI Reset Hook:** Added `--reset-provider` to `spark init` to allow users to force re-run the auto-detection and selection menu.
+
+### Issues Resolved
+- Eliminated hardcoded `openai` defaults that caused crashes when users only configured alternative providers (e.g., MiniMax).
+- Reduced onboarding friction by automatically resolving the model client if only one key is present.
+
+### Impact Range
+- `src/platform/auth/*`
+- `src/platform/providers/catalog.ts`
+- `src/platform/init.ts`
+- `src/platform/client.ts`
+
+---
+
+## 2026-04-12 / SPARK Studio: Guided Terminal Workflow
+
+### Related commits
+- `2cbb6de` feat(studio): add StudioSession types and learning target mapping layer
+- `a2fce07` feat(studio): add interactive terminal prompts with readline
+- `e4eb410` feat(studio): add studio orchestration runner with step-by-step guided flow
+- `185f82c` feat(studio): add studio module CLI entry with --help, --file, --dry-run flags
+- `228612b` feat(cli): wire spark studio command into top-level CLI dispatcher
+- `e80463d` chore(scripts): add studio npm script to package.json
+- `c23efa8` test(studio): add target mapping, candidate selection, and session object tests
+- `d737b2` docs: add Studio Mode documentation to README and MANUAL
 
 ### Modifications
 - **Guided Studio Mode:** Introduced `spark studio` as the primary interactive workflow, orchestrating existing modules (Content Parser → Dictionary Pro) into a cohesive session.
@@ -32,15 +81,12 @@
 - `tests/studio.test.ts` (New), `tests/cli.test.ts`
 - `README.md`, `README_zh-CN.md`, `MANUAL.md`
 
-### Next Steps
-- Implement Economist and Spoken English targeted engines to move them off the fallback mappings.
-- Consider adding the TOEFL Coach output-correction flow to the studio orchestrator.
-
 ---
+
 ## 2026-04-12 / Full Project Rebranding: TOEFL Slang Master to SPARK
 
 ### Related commits
-- `e576845` (chore(rebrand): rebrand project to SPARK and update CLI entry to spark)
+- `e576845` chore(rebrand): rebrand project to SPARK and update CLI entry to spark
 
 ### Modifications
 - **Project Rebranding**: Officially rebranded the project from `TOEFL Slang Master` to **SPARK** (Speech, Phrase, and Artful Resonance Kinship).
