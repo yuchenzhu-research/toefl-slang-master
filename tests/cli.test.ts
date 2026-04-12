@@ -26,8 +26,10 @@ test("top-level help stays focused on core command surface", async () => {
 
   assert.ok(output.includes('spark dict "<expression>" [options]'));
   assert.ok(output.includes("spark x --help"));
+  assert.ok(output.includes("spark studio"), "Expected spark studio to appear in top-level help");
   assert.ok(!output.includes("pipeline:input"));
 });
+
 
 test("experimental help stays namespaced under spark x", async () => {
   const output = await captureConsoleLog(() => runTopLevelCli(["x", "help"]));
