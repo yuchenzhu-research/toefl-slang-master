@@ -2,6 +2,30 @@
 
 ---
 
+## 2026-04-13 / Fix CI: Lazy-Import ESM-Only pi-tui Dependency
+
+### Related commits
+- `5c04a39` fix(ci): lazy-import pi-tui to fix ERR_REQUIRE_ESM in CJS test runner; drop Node 18 from matrix
+
+### Root Cause
+- `cli.test.ts` imports `app-cli.ts` → `studio/runner.ts` → `SPARKTui.ts` → `@mariozechner/pi-tui` (ESM-only).
+- Under CJS mode on Node 18, this triggers `ERR_REQUIRE_ESM` because `require()` cannot load an ES Module.
+- All CI runs on `main` were failing with 1 test failure (`cli.test.js`).
+
+### Fixes
+- **`src/studio/runner.ts`:** Changed static `import { runTui }` to dynamic `await import("./tui/SPARKTui")`, so `pi-tui` is only resolved at runtime when Studio is actually launched — not at module load time during tests.
+- **`.github/workflows/ci.yml`:** Dropped EOL Node 18.x from the matrix. Now testing `[20.x, 22.x]`.
+
+### Verification
+- Local: `npm test` — 24/24 pass.
+- CI: GitHub Actions run `24311413054` — green on both Node 20.x and 22.x.
+
+### Impact Range
+- `src/studio/runner.ts`
+- `.github/workflows/ci.yml`
+
+---
+
 ## 2026-04-13 / Engineering Audit: P0 & P1 Fix Sprint
 
 ### Related commits
