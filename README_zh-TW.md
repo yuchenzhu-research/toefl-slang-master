@@ -1,4 +1,4 @@
-# TOEFL Slang Master
+# SPARK
 
 > **打破學術英語 (TOEFL) 與道地美式表達 (Slang) 的高牆。**
 > 讓《經濟學人》等閱讀素材一魚兩吃：既能提分，又能像 Local 一樣說話。
@@ -50,17 +50,17 @@ npm install
 npm link
 
 # 初始化本地環境 (.env)
-tsm init
+spark init
 ```
 
 ### 核心 Pipeline
 
 ```bash
 # 工作流 1：從材料中提取表達並生成詞卡
-tsm x pipeline:input --file article.pdf
+spark x pipeline:input --file article.pdf
 
 # 工作流 2：診斷寫作中的弱表達並生成對應的升級詞卡
-tsm x pipeline:output --text "This is a big improvement."
+spark x pipeline:output --text "This is a big improvement."
 ```
 
 ### Provider 路由說明
@@ -69,23 +69,23 @@ tsm x pipeline:output --text "This is a big improvement."
 
 ```bash
 # 官方 MiniMax 直連
-tsm dict "gonna" --provider minimax
+spark dict "gonna" --provider minimax
 
 # 透過 SiliconFlow 承載的 MiniMax
-tsm dict "gonna" --provider siliconflow-minimax
+spark dict "gonna" --provider siliconflow-minimax
 ```
 
 ---
 
 ## 🧪 實驗性擴展功能
 
-可透過 `tsm x` 訪問的極客能力：
+可透過 `spark x` 訪問的極客能力：
 
-- **SRS 間隔複習** (`tsm x review`)
-- **每日挑戰** (`tsm x daily`)
-- **語義聚類** (`tsm x cluster`)
-- **原生 TTS** (`tsm x speak`)
-- **命令行 REPL** (`tsm x repl`)
+- **SRS 間隔複習** (`spark x review`)
+- **每日挑戰** (`spark x daily`)
+- **語義聚類** (`spark x cluster`)
+- **原生 TTS** (`spark x speak`)
+- **命令行 REPL** (`spark x repl`)
 
 ---
 

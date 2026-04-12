@@ -1,5 +1,5 @@
 {
-  "name": "toefl-slang-master",
+  "name": "spark-lang",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,13 +8,13 @@
     "contentpro": "./bin/contentpro.cjs",
     "dictpro": "./bin/dictpro.cjs",
     "dictpro-eval": "./bin/dictpro-eval.cjs",
-    "tsm": "./bin/tsm.cjs"
+    "spark": "./bin/spark.cjs"
   },
   "scripts": {
     "start": "ts-node src/dictionary-pro/index.ts",
     "setup": "ts-node src/platform/init.ts",
     "doctor": "ts-node src/platform/doctor.ts",
-    "tsm": "ts-node src/app-cli.ts",
+    "spark": "ts-node src/app-cli.ts",
     "dict": "ts-node src/dictionary-pro/index.ts",
     "dict:dry": "ts-node src/dictionary-pro/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",
     "dict:providers": "ts-node src/dictionary-pro/index.ts providers",

@@ -24,12 +24,12 @@ async function captureConsoleLog(run: () => Promise<void>): Promise<string> {
 test("top-level help stays focused on core command surface", async () => {
   const output = await captureConsoleLog(() => runTopLevelCli(["help"]));
 
-  assert.ok(output.includes('tsm dict "<expression>" [options]'));
-  assert.ok(output.includes("tsm x --help"));
+  assert.ok(output.includes('spark dict "<expression>" [options]'));
+  assert.ok(output.includes("spark x --help"));
   assert.ok(!output.includes("pipeline:input"));
 });
 
-test("experimental help stays namespaced under tsm x", async () => {
+test("experimental help stays namespaced under spark x", async () => {
   const output = await captureConsoleLog(() => runTopLevelCli(["x", "help"]));
 
   assert.ok(output.includes("Workflow Commands:"));

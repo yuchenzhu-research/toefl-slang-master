@@ -1,4 +1,4 @@
-# TOEFL Slang Master
+# SPARK
 
 > **Rompiendo el muro entre el inglés académico (TOEFL) y el argot estadounidense (Slang).**
 > Maximiza el rendimiento de tus lecturas: mejora tu puntaje Y habla como un nativo.
@@ -49,29 +49,29 @@ npm install
 npm link
 
 # Inicializar entorno local (.env)
-tsm init
+spark init
 ```
 
 ### Pipelines Principales
 
 ```bash
 # Workflow 1: Extraer frases de artículos y generar flashcards
-tsm pipeline:input --file article.pdf
+spark pipeline:input --file article.pdf
 
 # Workflow 2: Diagnosticar escritura y generar tarjetas de mejora
-tsm pipeline:output --text "This is a big improvement."
+spark pipeline:output --text "This is a big improvement."
 ```
 
 ---
 
 ## 🧪 Extensiones Experimentales
 
-Accesibles vía `tsm x`:
-- **Repetición Espaciada** (`tsm x review`)
-- **Reto Diario** (`tsm x daily`)
-- **Clúster Semántico** (`tsm x cluster`)
-- **TTS Nativo** (`tsm x speak`)
-- **Modo REPL** (`tsm x repl`)
+Accesibles vía `spark x`:
+- **Repetición Espaciada** (`spark x review`)
+- **Reto Diario** (`spark x daily`)
+- **Clúster Semántico** (`spark x cluster`)
+- **TTS Nativo** (`spark x speak`)
+- **Modo REPL** (`spark x repl`)
 
 ---
 

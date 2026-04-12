@@ -1,4 +1,4 @@
-# TOEFL Slang Master
+# SPARK
 
 > **打破学术英语 (TOEFL) 与地道美式表达 (Slang) 的围墙。**
 > 让《经济学人》素材一鱼两吃：既能提分，又能像 Local 一样说话。
@@ -51,30 +51,30 @@ npm install
 npm link
 
 # 初始化本地环境 (.env)
-tsm init
+spark init
 ```
 
 ### 核心 Pipeline
 
 ```bash
 # 工作流 1：从材料中提取表达并生成词卡
-tsm x pipeline:input --file article.pdf
+spark x pipeline:input --file article.pdf
 
 # 工作流 2：诊断写作中的弱表达并生成对应的升级词卡
-tsm x pipeline:output --text "This is a big improvement."
+spark x pipeline:output --text "This is a big improvement."
 ```
 
 ### 原子模块独立调用
 
 ```bash
 # 直接查词
-tsm dict "a big deal"
+spark dict "a big deal"
 
 # 独立写作诊断
-tsm coach --file ./essay.txt --json
+spark coach --file ./essay.txt --json
 
 # 独立素材提取（不调用 AI）
-tsm content --file article.pdf --extract-only
+spark content --file article.pdf --extract-only
 ```
 
 ### Provider 路由说明
@@ -83,23 +83,23 @@ tsm content --file article.pdf --extract-only
 
 ```bash
 # 官方 MiniMax 直连
-tsm dict "gonna" --provider minimax
+spark dict "gonna" --provider minimax
 
 # 通过 SiliconFlow 承载的 MiniMax
-tsm dict "gonna" --provider siliconflow-minimax
+spark dict "gonna" --provider siliconflow-minimax
 ```
 
 ---
 
 ## 🧪 实验性扩展功能
 
-可通过 `tsm x` 访问的极客能力：
+可通过 `spark x` 访问的极客能力：
 
-- **SRS 间隔复习** (`tsm x review`)：基于 SM2 算法的闪卡记忆测试。
-- **每日挑战** (`tsm x daily`)：从你的库中随机抽取 3 张卡片进行碎片化快测。
-- **语义聚类** (`tsm x cluster`)：基于图算法将你的词卡网自动编织为同源义群。
-- **原生 TTS** (`tsm x speak`)：调用系统语音引擎精准朗读单词与例句。
-- **命令行 REPL** (`tsm x repl`)：高效率连续发问不断流。
+- **SRS 间隔复习** (`spark x review`)：基于 SM2 算法的闪卡记忆测试。
+- **每日挑战** (`spark x daily`)：从你的库中随机抽取 3 张卡片进行碎片化快测。
+- **语义聚类** (`spark x cluster`)：基于图算法将你的词卡网自动编织为同源义群。
+- **原生 TTS** (`spark x speak`)：调用系统语音引擎精准朗读单词与例句。
+- **命令行 REPL** (`spark x repl`)：高效率连续发问不断流。
 
 ---
 

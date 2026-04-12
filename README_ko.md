@@ -1,4 +1,4 @@
-# TOEFL Slang Master
+# SPARK
 
 > **아카데믹 영어(TOEFL)와 진짜 미국 영어(Slang)의 장벽을 허물다.**
 > 『이코노미스트』 같은 자료를 200% 활용하세요. 점수뿐만 아니라 원어민 같은 표현력도 얻을 수 있습니다.
@@ -49,29 +49,29 @@ npm install
 npm link
 
 # 로컬 환경 초기화 (.env)
-tsm init
+spark init
 ```
 
 ### 핵심 Pipeline
 
 ```bash
 # Workflow 1: 아티클에서 새로운 표현 추출 및 학습 카드 생성
-tsm pipeline:input --file article.pdf
+spark pipeline:input --file article.pdf
 
 # Workflow 2: 작성한 글에서 부족한 표현을 진단 후 업그레이드 카드 생성
-tsm pipeline:output --text "This is a big improvement."
+spark pipeline:output --text "This is a big improvement."
 ```
 
 ---
 
 ## 🧪 실험적 확장 기능
 
-`tsm x` 커맨드로 공개되는 기능:
-- **SRS 반복 학습** (`tsm x review`)
-- **데일리 챌린지** (`tsm x daily`)
-- **의미망 클러스터링** (`tsm x cluster`)
-- **원어민 TTS 오디오** (`tsm x speak`)
-- **명령어 REPL** (`tsm x repl`)
+`spark x` 커맨드로 공개되는 기능:
+- **SRS 반복 학습** (`spark x review`)
+- **데일리 챌린지** (`spark x daily`)
+- **의미망 클러스터링** (`spark x cluster`)
+- **원어민 TTS 오디오** (`spark x speak`)
+- **명령어 REPL** (`spark x repl`)
 
 ---
 

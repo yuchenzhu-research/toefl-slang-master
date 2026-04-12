@@ -1,4 +1,4 @@
-# TOEFL Slang Master - Pipeline Architecture
+# SPARK - Pipeline Architecture
 
 本项目由三大主线模块构成，它们不是孤立的功能，而是系统流转中的三个主要环节。
 

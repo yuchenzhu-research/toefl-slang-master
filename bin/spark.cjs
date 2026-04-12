@@ -10,7 +10,7 @@ async function main() {
 
 main().catch((error) => {
   console.error(
-    "TOEFL Slang Master CLI error:",
+    "SPARK CLI error:",
     error instanceof Error ? error.message : String(error),
   );
   process.exit(1);

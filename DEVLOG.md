@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-04-12 / Phase 13: Rebranding to SPARK
+
+### Modifications
+- **Project Renaming**: Officially rebranded the project from `TOEFL Slang Master` (TSM) to **SPARK** (Speech, Phrase, and Artful Resonance Kinship).
+- **CLI Migration**: Changed the primary CLI command from `tsm` to `spark`.
+- **Entry Point Refactoring**: Renamed `bin/tsm.cjs` to `bin/spark.cjs` and updated its internal error handling strings.
+- **Global Documentation Sync**: Updated `AGENTS.md`, `MANUAL.md`, and all `README*.md` files across 8 languages to reflect the new identity.
+- **Source Code Realignment**: Updated `src/app-cli.ts`, `src/platform/init.ts`, and `src/platform/doctor.ts` usage text, title strings, and error messages.
+- **Test Suite Updates**: Adjusted `tests/cli.test.ts` assertions to verify the new `spark` command surface and help output.
+
+### Architectural Impact
+- Improved project memorability and brand identity with a catchy, paper-like acronym (SPARK).
+- Standardized the CLI entry point to match the new brand name.
+- Ensured consistency across the entire documentation ecosystem and source code.
+
+---
+
 ## 2026-04-11 / Phase 12: Guardrail Lock-In For Ongoing Slimming
 
 ### Modifications

@@ -1,4 +1,4 @@
-# TOEFL Slang Master
+# SPARK
 
 > **Bridging the gap between academic TOEFL English and authentic American slang.**
 > Extract maximum value from reading materials: boost your scores AND speak like a local.
@@ -51,30 +51,30 @@ npm install
 npm link
 
 # Initialize local environment (.env)
-tsm init
+spark init
 ```
 
 ### Core Pipelines
 
 ```bash
 # Workflow 1: Extract expressions from articles to generate flashcards
-tsm x pipeline:input --file article.pdf
+spark x pipeline:input --file article.pdf
 
 # Workflow 2: Diagnose writing and generate upgrade cards for Dictionary Pro
-tsm x pipeline:output --text "This is a big improvement."
+spark x pipeline:output --text "This is a big improvement."
 ```
 
 ### Standalone Commands
 
 ```bash
 # Direct dictionary lookup
-tsm dict "a big deal"
+spark dict "a big deal"
 
 # Standalone writing diagnosis
-tsm coach --file ./essay.txt --json
+spark coach --file ./essay.txt --json
 
 # Standalone content extraction (no AI call)
-tsm content --file article.pdf --extract-only
+spark content --file article.pdf --extract-only
 ```
 
 ### Provider Routing
@@ -83,23 +83,23 @@ Use `--provider` for the access gateway/runtime, and `--model` for the hosted mo
 
 ```bash
 # Official MiniMax direct endpoint
-tsm dict "gonna" --provider minimax
+spark dict "gonna" --provider minimax
 
 # MiniMax hosted on SiliconFlow
-tsm dict "gonna" --provider siliconflow-minimax
+spark dict "gonna" --provider siliconflow-minimax
 ```
 
 ---
 
 ## 🧪 Experimental Extensions
 
-Special features accessible via the `tsm x` namespace:
+Special features accessible via the `spark x` namespace:
 
-- **Spaced Repetition** (`tsm x review`): SM2-based flashcard memory tests.
-- **Daily Challenge** (`tsm x daily`): Randomized quick tests from your saved card bank.
-- **Semantic Clustering** (`tsm x cluster`): Graph-based mapping of synonym relationships.
-- **Native TTS** (`tsm x speak`): System-engine pronunciation for saved expressions.
-- **REPL Mode** (`tsm x repl`): High-efficiency terminal interaction loop.
+- **Spaced Repetition** (`spark x review`): SM2-based flashcard memory tests.
+- **Daily Challenge** (`spark x daily`): Randomized quick tests from your saved card bank.
+- **Semantic Clustering** (`spark x cluster`): Graph-based mapping of synonym relationships.
+- **Native TTS** (`spark x speak`): System-engine pronunciation for saved expressions.
+- **REPL Mode** (`spark x repl`): High-efficiency terminal interaction loop.
 
 ---
 

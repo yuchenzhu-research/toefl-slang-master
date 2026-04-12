@@ -50,7 +50,7 @@ function buildDoctorReport(): DoctorReport {
     status: isWorkspace ? "ok" : "warn",
     detail: isWorkspace
       ? cwd
-      : `Current cwd does not look like a TOEFL Slang Master workspace: ${cwd}`,
+      : `Current cwd does not look like a SPARK workspace: ${cwd}`,
   });
   checks.push({
     label: ".env.example",
@@ -95,7 +95,7 @@ function buildDoctorReport(): DoctorReport {
   checks.push({
     label: "global cli",
     status: "ok",
-    detail: "tsm / dictpro / coachpro / contentpro are registered in package bin",
+    detail: "spark / dictpro / coachpro / contentpro are registered in package bin",
   });
 
   return {
@@ -210,7 +210,7 @@ function resolvePythonBinary(): string | null {
 
 function formatDoctorReport(report: DoctorReport): string {
   const lines = [
-    "TOEFL Slang Master Doctor",
+    "SPARK Doctor",
     `generatedAt: ${report.generatedAt}`,
     `cwd: ${report.cwd}`,
     "",
@@ -237,7 +237,7 @@ if (require.main === module) {
   try {
     runDoctorCli(process.argv.slice(2));
   } catch (error) {
-    console.error("TOEFL Slang Master Doctor error:", error instanceof Error ? error.message : String(error));
+    console.error("SPARK Doctor error:", error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 }
