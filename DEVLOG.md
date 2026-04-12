@@ -2,6 +2,41 @@
 
 ---
 
+## 2026-04-12 / SPARK Studio: Guided Terminal Workflow (Phase 1)
+
+### Related commits
+- `2cbb6de` (feat(studio): add StudioSession types and learning target mapping layer)
+- `a2fce07` (feat(studio): add interactive terminal prompts with readline)
+- `e4eb410` (feat(studio): add studio orchestration runner with step-by-step guided flow)
+- `185f82c` (feat(studio): add studio module CLI entry with --help, --file, --dry-run flags)
+- `228612b` (feat(cli): wire spark studio command into top-level CLI dispatcher)
+- `e80463d` (chore(scripts): add studio npm script to package.json)
+- `c23efa8` (test(studio): add target mapping, candidate selection, and session object tests)
+- `d7a37b2` (docs: add Studio Mode documentation to README and MANUAL)
+
+### Modifications
+- **Guided Studio Mode:** Introduced `spark studio` as the primary interactive workflow, orchestrating existing modules (Content Parser → Dictionary Pro) into a cohesive session.
+- **Session Types & Mapping (`src/studio/session.ts`, `src/studio/target-map.ts`):** Added in-memory session state management and a conservative style mapping layer (`economist-style` -> `general-academic`, `american-spoken` -> `daily-english`), ensuring no premature decoupling of internal contracts.
+- **Interactive Prompts (`src/studio/prompts.ts`):** Built robust terminal I/O using only Node.js `readline`, eliminating external dependencies for file selection, candidate filtering, and target selection.
+- **Studio Orchestrator (`src/studio/runner.ts`):** Bridged existing modular runners and the OutputManager without altering core engine boundaries or logic.
+- **Testing & Documentation:** Added dedicated `tests/studio.test.ts` for mapping and filtering logic, updated CLI tests, and synchronized `README.md`, `README_zh-CN.md`, and `MANUAL.md` with the new capability.
+
+### Issues Resolved
+- Solved the fragmented UX of standalone CLI commands by consolidating the input learning sequence (Parse → Pick → Generate) into one guided flow.
+- Reduced the learning curve for new users while maintaining existing output discipline.
+
+### Impact Range
+- `src/studio/*` (New)
+- `src/app-cli.ts`
+- `package.json`
+- `tests/studio.test.ts` (New), `tests/cli.test.ts`
+- `README.md`, `README_zh-CN.md`, `MANUAL.md`
+
+### Next Steps
+- Implement Economist and Spoken English targeted engines to move them off the fallback mappings.
+- Consider adding the TOEFL Coach output-correction flow to the studio orchestrator.
+
+---
 ## 2026-04-12 / Full Project Rebranding: TOEFL Slang Master to SPARK
 
 ### Related commits
