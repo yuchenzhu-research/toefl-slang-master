@@ -41,32 +41,21 @@
 
 ## 🎬 Studio 引导模式
 
-不需要手动拼命令，直接启动一个完整的引导式学习 session：
+直接启动 SPARK Studio 终端：
 
 ```bash
 spark studio
 ```
 
-Studio 会带你走过六个步骤：
-
-1. **选择文件** — 支持 `.pdf`、`.md`、`.txt`
-2. **解析预览** — 查看标题、类型、字数、候选表达数量
-3. **筛选候选** — 选择你想学的表达（`all`、`top 5`、`1,3,5` …）
-4. **学习目标** — 选择 TOEFL 写作、《经济学人》风格或美式口语
-5. **生成词卡** — Dictionary Pro 对选中条目生成完整词卡
-6. **总结报告** — 确认输出路径
+Studio 当前以**交互式 TUI（终端 UI）**运行。输入任意单词或表达，Dictionary Pro 会实时查询并返回结果。按 `Ctrl+C` 退出。
 
 ```bash
-# 不调用 API，只预览流程
-spark studio --dry-run
-
-# 直接指定文件跳过第一步
-spark studio --file ./article.md
+spark studio --dry-run   # 不调用 API，仅预览界面布局
 ```
 
-> **注意**：《经济学人》风格和美式口语当前为保守映射（分别对应 `general-academic` 和 `daily-english` 寄存器），并非独立的风格引擎。session 运行时会明确提示。
-
-所有产物路径与原子命令一致（`outputs/dict/`、`outputs/content/`）。
+> **注意**：完整的引导式 pipeline（文件选择 → 解析预览 → 候选筛选 → 词卡生成）
+> 正在开发中（WIP）。当前 TUI 专注于 Dictionary Pro 查词功能。
+> `/coach` 和 `/content` 的集成将在后续版本中加入。
 
 ---
 
