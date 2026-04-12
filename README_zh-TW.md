@@ -57,10 +57,22 @@ tsm init
 
 ```bash
 # 工作流 1：從材料中提取表達並生成詞卡
-tsm pipeline:input --file article.pdf
+tsm x pipeline:input --file article.pdf
 
 # 工作流 2：診斷寫作中的弱表達並生成對應的升級詞卡
-tsm pipeline:output --text "This is a big improvement."
+tsm x pipeline:output --text "This is a big improvement."
+```
+
+### Provider 路由說明
+
+`--provider` 表示接入網關 / provider runtime，`--model` 才是具體模型 ID。
+
+```bash
+# 官方 MiniMax 直連
+tsm dict "gonna" --provider minimax
+
+# 透過 SiliconFlow 承載的 MiniMax
+tsm dict "gonna" --provider siliconflow-minimax
 ```
 
 ---
@@ -79,4 +91,4 @@ tsm pipeline:output --text "This is a big improvement."
 
 ## 💂 安全隱私
 
-**純 API 模式**：本工具不設中心化伺服器。你的 API Key (OpenAI, Gemini, Anthropic) 和所有學習數據均嚴格保留在你的本地機器上。
+**純 API 模式**：本工具不設中心化伺服器。你的 API Key (OpenAI, Gemini, Anthropic, SiliconFlow) 和所有學習數據均嚴格保留在你的本地機器上。

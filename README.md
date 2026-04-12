@@ -77,6 +77,18 @@ tsm coach --file ./essay.txt --json
 tsm content --file article.pdf --extract-only
 ```
 
+### Provider Routing
+
+Use `--provider` for the access gateway/runtime, and `--model` for the hosted model when needed.
+
+```bash
+# Official MiniMax direct endpoint
+tsm dict "gonna" --provider minimax
+
+# MiniMax hosted on SiliconFlow
+tsm dict "gonna" --provider siliconflow-minimax
+```
+
 ---
 
 ## 🧪 Experimental Extensions
@@ -93,4 +105,4 @@ Special features accessible via the `tsm x` namespace:
 
 ## 💂 Security & Privacy
 
-**API-Only Mode**: This project operates without a centralized server. Your API Keys (OpenAI, Gemini, Anthropic) and learning data stay entirely on your local machine.
+**API-Only Mode**: This project operates without a centralized server. Your API keys (OpenAI, Gemini, Anthropic, SiliconFlow) and learning data stay entirely on your local machine.

@@ -36,7 +36,7 @@ Options:
   --text            Optional. Inline text content.
   --title           Optional. Override source title.
   --focus           Optional. full | syntax | slang | culture | conversion
-  --provider, -p    Optional. Model provider. Default: openai
+  --provider, -p    Optional. Gateway/provider runtime. Default: openai
   --model           Optional. Provider model id.
   --api-key         Optional. API key override.
   --base-url        Optional. Provider base URL override.

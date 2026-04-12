@@ -376,6 +376,14 @@ query
    - structured response
    - markdown output
 
+补充约定：
+
+- `provider` 默认表示接入网关 / provider runtime，不等于模型家族名
+- `model` 表示实际调用的模型 ID
+- 对于托管模型场景，优先用网关 provider，例如 `siliconflow`
+- 如果需要保留高频预设，可提供少量 preset provider，例如 `siliconflow-minimax`
+- 不要再把“模型来源”和“接入网关”混成同一个默认概念
+
 ### 7.3 配置优先级
 
 当前 provider 配置优先级应保持为：

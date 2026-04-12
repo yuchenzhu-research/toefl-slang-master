@@ -30,7 +30,7 @@ Options:
   --context, -c   Optional. Extra context for disambiguation.
   --mode, -m      Optional. meaning | conversion | upgrade | comparison
   --target, -g    Optional. toefl-writing | toefl-speaking | general-academic | daily-english
-  --provider, -p  Optional. Model provider. Default: openai
+  --provider, -p  Optional. Gateway/provider runtime. Default: openai
   --model         Optional. Provider model id.
   --api-key       Optional. API key override.
   --base-url      Optional. Provider base URL override.

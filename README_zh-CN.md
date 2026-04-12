@@ -77,6 +77,18 @@ tsm coach --file ./essay.txt --json
 tsm content --file article.pdf --extract-only
 ```
 
+### Provider 路由说明
+
+`--provider` 表示接入网关 / provider runtime，`--model` 才是具体模型 ID。
+
+```bash
+# 官方 MiniMax 直连
+tsm dict "gonna" --provider minimax
+
+# 通过 SiliconFlow 承载的 MiniMax
+tsm dict "gonna" --provider siliconflow-minimax
+```
+
 ---
 
 ## 🧪 实验性扩展功能
@@ -93,4 +105,4 @@ tsm content --file article.pdf --extract-only
 
 ## 💂 安全隐私
 
-**纯 API 模式**：本工具不设中心化服务器。你的 API Key (OpenAI, Gemini, Anthropic) 和所有学习数据均严格保留在你的本地机器上。
+**纯 API 模式**：本工具不设中心化服务器。你的 API Key (OpenAI, Gemini, Anthropic, SiliconFlow) 和所有学习数据均严格保留在你的本地机器上。

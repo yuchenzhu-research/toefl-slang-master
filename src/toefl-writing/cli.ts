@@ -25,7 +25,7 @@ Options:
   --text            Optional. Inline essay, paragraph, or sentence. You can also pass it as the first positional argument.
   --file            Optional. Markdown or plain-text file path.
   --title           Optional. Override source title.
-  --provider, -p    Optional. Model provider. Default: openai
+  --provider, -p    Optional. Gateway/provider runtime. Default: openai
   --model           Optional. Provider model id.
   --api-key         Optional. API key override.
   --base-url        Optional. Provider base URL override.
