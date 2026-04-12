@@ -3,7 +3,7 @@ import fs from 'fs';
 import { StreakEngine } from '../streak';
 
 export function runDailyChallenge() {
-  console.log("\n⚔️  TOEFL SLANG MASTER - DAILY CHALLENGE ⚔️\n");
+  console.log("\n⚔️  SPARK - DAILY CHALLENGE ⚔️\n");
   
   const dictDir = path.join(process.cwd(), 'outputs', 'dict');
   if (!fs.existsSync(dictDir)) {

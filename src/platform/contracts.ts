@@ -1,6 +1,6 @@
 /**
  * Core Domain Contracts
- * 这些是贯穿 TOEFL Slang Master 的标准数据对象（契约）。
+ * 这些是贯穿 SPARK 的标准数据对象（契约）。
  * JSON keys、schema 字段名、enum、内部 ID 一律保持英文。
  */
 

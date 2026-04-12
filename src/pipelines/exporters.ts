@@ -41,7 +41,7 @@ export function runPrintExport() {
   const exportPath = path.join(process.cwd(), 'outputs', 'printable-study-sheet.md');
   console.log(">> [Print Export] Generating consolidated study sheet...");
   // Implementation logic for gathering all cards into one MD
-  let sheet = "# TOEFL Slang Master - Consolidated Study Sheet\n\n";
+  let sheet = "# SPARK - Consolidated Study Sheet\n\n";
   const cardsDir = path.join(process.cwd(), 'outputs', 'dict');
   
   if (fs.existsSync(cardsDir)) {

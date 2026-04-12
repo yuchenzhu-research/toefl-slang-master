@@ -4,7 +4,7 @@ import { StreakEngine } from './streak';
 
 export function renderDashboard() {
   console.log("\n========================================================");
-  console.log("       TOEFL SLANG MASTER - KNOWLEDGE DASHBOARD         ");
+  console.log("                 SPARK - KNOWLEDGE DASHBOARD            ");
   console.log("========================================================\n");
 
   const idxPath = path.join(process.cwd(), 'outputs', 'indexes', 'cards.json');

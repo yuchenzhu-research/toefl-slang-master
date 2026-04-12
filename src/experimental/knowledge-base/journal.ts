@@ -37,7 +37,7 @@ export function buildWeeklyJournal() {
   const dateStr = new Date().toISOString().split('T')[0];
   const journalPath = path.join(outDir, `weekly-${dateStr}.md`);
 
-  let md = `# TOEFL Slang Master - Weekly Digest (${dateStr})\n\n`;
+  let md = `# SPARK - Weekly Digest (${dateStr})\n\n`;
   md += `## You have accumulated ${validCards.length} new expressions this week!\n\n`;
 
   validCards.forEach(c => {

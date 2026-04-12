@@ -3,7 +3,7 @@ import path from 'path';
 import { StreakEngine } from '../streak';
 
 export function runMcqQuiz() {
-  console.log("\n🎮 TOEFL SLANG MASTER - MCQ ARENA 🎮\n");
+  console.log("\n🎮 SPARK - MCQ ARENA 🎮\n");
   
   const dictDir = path.join(process.cwd(), 'outputs', 'dict');
   if (!fs.existsSync(dictDir)) {

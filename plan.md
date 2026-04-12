@@ -1,4 +1,4 @@
-# TOEFL Slang Master Product Plan
+# SPARK Product Plan
 
 > 这个文件不是对外 README，而是项目内部的产品蓝图。
 > 目标不是解释“现在能跑什么”，而是定义“最终要做成什么”。

@@ -10,7 +10,7 @@
 
 说明：
 
-- 当前未来写入规则以 [`src/platform/output-manager.ts`](/Users/yuchenzhu/Desktop/github/toefl slang master/src/platform/output-manager.ts) 为唯一事实来源。
+- 当前未来写入规则以 [`src/platform/output-manager.ts`](../src/platform/output-manager.ts) 为唯一事实来源。
 - 新增或重构输出逻辑时，优先扩展 `OutputManager`，不要在 pipeline、connector、experimental 模块里继续散写文件名。
 
 ## 统一目录结构 (`outputs/`)
