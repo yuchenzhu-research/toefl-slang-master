@@ -3,10 +3,10 @@ import path from "path";
 import type { ToeflSlangClientOptions } from "../platform/client";
 
 const EXPERIMENTAL_USAGE = `
-TOEFL Slang Master - Experimental / Auxiliary Commands
+SPARK - Experimental / Auxiliary Commands
 
 Usage:
-  tsm x <command> [args]
+  spark x <command> [args]
 
 Workflow Commands:
   pipeline:input <filepath>      Run the Input Learning flow.
@@ -49,7 +49,7 @@ export async function runExperimentalCli(
     case "pipeline:input": {
       const filePath = readFlagValue(rest, "--file") ?? rest[0];
       if (!filePath) {
-        throw new Error("Usage: tsm x pipeline:input <filepath> | --file <filepath>");
+        throw new Error("Usage: spark x pipeline:input <filepath> | --file <filepath>");
       }
       const { runPipelineInput } = require("../pipelines/input-learning");
       await runPipelineInput({ filePath, focus: "full", extractOnly: false }, clientOptions);
@@ -59,7 +59,7 @@ export async function runExperimentalCli(
     case "pipeline:output": {
       const text = readFlagValue(rest, "--text") ?? rest.join(" ").trim();
       if (!text) {
-        throw new Error("Usage: tsm x pipeline:output <text> | --text <text>");
+        throw new Error("Usage: spark x pipeline:output <text> | --text <text>");
       }
       const { runPipelineOutput } = require("../pipelines/output-correction");
       await runPipelineOutput(text, clientOptions);
@@ -88,12 +88,12 @@ export async function runExperimentalCli(
         runPrintExport();
         return;
       }
-      throw new Error("Usage: tsm x export <anki|print>");
+      throw new Error("Usage: spark x export <anki|print>");
     }
 
     case "batch:coach": {
       const dir = rest[0];
-      if (!dir) throw new Error("Usage: tsm x batch:coach <dir>");
+      if (!dir) throw new Error("Usage: spark x batch:coach <dir>");
       const { processBatchEssays } = require("../pipelines/batch-coach");
       await processBatchEssays(path.resolve(process.cwd(), dir));
       return;
@@ -124,7 +124,7 @@ export async function runExperimentalCli(
 
     case "speak": {
       const text = rest.join(" ").trim();
-      if (!text) throw new Error("Usage: tsm x speak <text-or-headword>");
+      if (!text) throw new Error("Usage: spark x speak <text-or-headword>");
       const { synthesizeSpeech } = require("./audio");
       synthesizeSpeech(text);
       return;
@@ -138,7 +138,7 @@ export async function runExperimentalCli(
 
     case "search": {
       const keyword = rest.join(" ").trim();
-      if (!keyword) throw new Error("Usage: tsm x search <keyword>");
+      if (!keyword) throw new Error("Usage: spark x search <keyword>");
       const { runGlobalSearch } = require("./knowledge-base/search");
       runGlobalSearch(keyword);
       return;
@@ -155,7 +155,7 @@ export async function runExperimentalCli(
       const translation = rest[1];
       const context = rest.slice(2).join(" ");
       if (!word || !translation) {
-        throw new Error("Usage: tsm x add <word> <translation> [context]");
+        throw new Error("Usage: spark x add <word> <translation> [context]");
       }
       const { manuallyAddCard } = require("../connectors/manual");
       manuallyAddCard(word, translation, context);
@@ -164,7 +164,7 @@ export async function runExperimentalCli(
 
     case "trace": {
       const word = rest.join(" ").trim();
-      if (!word) throw new Error("Usage: tsm x trace <word>");
+      if (!word) throw new Error("Usage: spark x trace <word>");
       const { runCrossRefTrace } = require("./knowledge-base/cross-ref");
       runCrossRefTrace(word);
       return;
@@ -189,7 +189,7 @@ export async function runExperimentalCli(
     }
   }
 
-  throw new Error(`Unknown experimental command "${command}". Use "tsm x help" to see all.`);
+  throw new Error(`Unknown experimental command "${command}". Use "spark x help" to see all.`);
 }
 
 function readFlagValue(args: string[], flag: string): string | undefined {

@@ -28,8 +28,8 @@ function printUsage(): void {
   console.log(`Dictionary Pro Benchmark
 
 Usage:
-  tsm bench [--providers <provider[:model],...>] [--case <id-or-text>] [--limit <n>] [--json]
-  tsm dict bench [--providers <provider[:model],...>] [--case <id-or-text>] [--limit <n>] [--json]
+  spark bench [--providers <provider[:model],...>] [--case <id-or-text>] [--limit <n>] [--json]
+  spark dict bench [--providers <provider[:model],...>] [--case <id-or-text>] [--limit <n>] [--json]
   dictpro bench [--providers <provider[:model],...>] [--case <id-or-text>] [--limit <n>] [--json]
   npm run dict:bench -- [--providers <provider[:model],...>] [--case <id-or-text>] [--limit <n>] [--json]
 

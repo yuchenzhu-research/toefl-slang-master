@@ -3,7 +3,7 @@ import { runPipelineOutput } from '../pipelines/output-correction';
 
 export async function startRepl() {
   console.log("\n========================================================");
-  console.log("       ⚡ TOEFL SLANG MASTER - CONTINUOUS REPL ⚡      ");
+  console.log("            ⚡ SPARK - CONTINUOUS REPL ⚡            ");
   console.log("========================================================");
   console.log(" Type any paragraph or sentence to have it instantly");
   console.log(" processed by the TOEFL Coach & Dictionary pipelines.");
@@ -13,7 +13,7 @@ export async function startRepl() {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: '📝 TSM » '
+    prompt: '📝 SPARK » '
   });
 
   rl.prompt();

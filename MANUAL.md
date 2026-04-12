@@ -486,9 +486,9 @@ outputs/
 
 ### 10.1 当前主要入口
 
-当前项目以 `tsm` 为顶层 CLI，辅以模块级 bin：
+当前项目以 `spark` 为顶层 CLI，辅以模块级 bin：
 
-- `tsm`
+- `spark`
 - `dictpro`
 - `coachpro`
 - `contentpro`

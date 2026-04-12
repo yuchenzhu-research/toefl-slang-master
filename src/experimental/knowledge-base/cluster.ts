@@ -6,7 +6,7 @@ export function runSemanticClusters() {
   const graphPath = path.join(process.cwd(), 'outputs', 'indexes', 'graph.json');
   
   if (!fs.existsSync(graphPath)) {
-    console.log("   [!] graph.json missing. Run 'tsm graph' first.");
+    console.log("   [!] graph.json missing. Run 'spark x graph' first.");
     return;
   }
 
