@@ -1,68 +1,55 @@
 # MANUAL.md
 
 本文件是 `SPARK` 的内部维护说明书，面向维护者、未来协作者和后续重构任务。  
-它不替代 `README.md`，而是负责记录项目定位、架构边界、模块职责、运行方式、文档层级、已知风险和后续演进方向。
+它不替代 `CONSTITUTION.md`、`AGENTS.md` 或 `README.md`，而是负责记录仓库结构、权威来源、运行方式、维护检查点、已知风险和演进建议。
 
 ---
 
-## 1. 项目定位
+## 1. 本文件的职责
 
-### 1.1 目标
+本文件只回答维护者真正需要反复确认的问题：
 
-本项目的长期目标，是逐步演化为一个：
+- 仓库里什么是权威来源
+- 目录和模块分别承担什么职责
+- 改动某类内容时应检查哪些地方
+- 当前工程有哪些已知限制与风险
+- 后续演进建议应按什么顺序推进
 
-**面向华语学习者的、CLI-first、Markdown-first、contract-first 的英语学习 pipeline 平台**
+顶层原则请读：
 
-当前主线不是 GUI，不是 SaaS，也不是 prompt 集合，而是三个逐步收口的业务模块：
-
-1. `Content Parser`
-2. `Dictionary Pro`
-3. `TOEFL Coach`
-
-这三个模块最终应形成两条主链路：
-
-- 输入型学习链路：
-  `Content Parser -> Dictionary Pro`
-- 输出型纠偏链路：
-  `TOEFL Coach -> Dictionary Pro`
-
-### 1.2 非目标
-
-以下内容不属于当前第一优先级：
-
-- Web UI / GUI-first 产品
-- 移动端 App
-- 用户系统 / 登录体系
-- 云端数据库 / SaaS 化
-- 复杂复习算法
-- 长期记忆系统
-- 大量 provider 扩张
-- 多 agent 自动化编排
+- `CONSTITUTION.md`：项目身份、不变量、架构守卫、质量门禁、反模式
+- `AGENTS.md`：默认读取顺序、执行流程、验证基线、文档同步纪律
 
 ---
 
-## 2. README、MANUAL、docs 的分工
+## 2. 文档栈与权威来源
 
-- `README.md`
-  英文对外入口。负责项目介绍、当前能力、最小运行方式、命令入口。
-- `README_zh-CN.md`
-  简体中文对外入口。内容边界应与英文 README 对齐。
-- `README_zh-TW.md`
-  繁体中文对外入口。内容边界应与英文 README 对齐。
-- `MANUAL.md`
-  内部维护说明书。负责记录架构、边界、运行方式、文档职责、已知限制和维护规则。
+- `CONSTITUTION.md`
+  最高治理文件；定义项目身份、不变量、架构守卫、质量门禁与反模式。
 - `AGENTS.md`
-  代码代理执行规范。所有代理在执行任务前优先阅读。
+  面向代码代理的共享运行手册；定义读取顺序、执行流程、验证基线与同步纪律。
+- `MANUAL.md`
+  面向维护者的操作型手册；记录目录结构、权威来源、维护清单与风险。
+- `README.md`
+  英文对外入口；负责项目介绍、当前能力、最小运行方式、命令入口。
+- `README_zh-CN.md` / `README_zh-TW.md`
+  中文对外入口；内容边界应与英文 README 对齐，不得长期偏离工程现实。
 - `docs/vision.md`
-  记录项目终局方向。
+  项目终局方向。
 - `docs/pipeline.md`
-  记录三段式 pipeline 和主链路关系。
+  三段式 pipeline、主链路与 connector 位置。
 - `docs/i18n.md`
-  记录 locale / i18n 规则。
+  locale / i18n 规则。
 - `docs/outputs.md`
-  记录 Markdown / JSON 本地产物设计。
+  Markdown / JSON 本地产物设计与输出纪律。
 - `docs/connectors/*`
-  记录 connector contract 和中间对象边界。
+  connector contract、中间对象映射与桥接边界。
+
+维护原则：
+
+- 当某项规则已经进入 `CONSTITUTION.md`，不要再在 `MANUAL.md` 里复制整段原则
+- 当某项流程已经进入 `AGENTS.md`，不要再在 `MANUAL.md` 里复制整套执行说明
+- `MANUAL.md` 只保留维护者做判断时必须反复查看的操作信息
 
 ---
 
@@ -162,188 +149,115 @@
 
 ---
 
-## 4. 三模块边界
+## 4. 维护者视角下的模块地图
+
+模块定位和不变量以 `CONSTITUTION.md` 为准；本节只保留维护者需要快速定位的权威来源。
 
 ### 4.1 `Content Parser`
 
-定位：
-
-- 上游素材入口
-- 输入型学习链路的起点
-
-负责：
-
-- 读取 PDF / Markdown / TXT / text
-- 形成标准 `SourcePayload`
-- 输出内容级结构化结果
-- 输出下游可消费的表达候选
-
-不负责：
-
-- 直接生成最终表达卡
-- 整篇作文评分
-- 用户长期记忆管理
-
-当前工程方向：
-
-- 继续把“内容笔记结果”和“下游表达候选结果”区分开
-- 未来应进一步显式化 `SourceDigest` 与 `ExpressionCandidates`
+- 代码边界：`src/content-parser/`
+- 相关专题：`docs/pipeline.md`
+- 输出纪律：`docs/outputs.md`
+- 维护关注点：素材读取、结构化摘要、表达候选、下游可消费性
 
 ### 4.2 `Dictionary Pro`
 
-定位：
-
-- 表达升级核心
-- 整个系统最稳定的复用层
-
-负责：
-
-- 词、短语、弱表达的语域转换
-- 对标学术表达
-- 生成表达卡
-- 形成可复习 Markdown / JSON 产物
-
-不负责：
-
-- 解析整篇材料
-- 做整篇作文评分
-- 代替 connector 做桥接映射
-
-当前工程方向：
-
-- 继续以 `ExpressionCard` 为核心对象收口
-- 避免把外部模块逻辑直接塞进 Dictionary Pro
+- 代码边界：`src/dictionary-pro/`
+- 相关专题：`docs/pipeline.md`
+- 输出纪律：`docs/outputs.md`
+- 维护关注点：表达升级、稳定词卡对象、Markdown / JSON sidecar 一致性
 
 ### 4.3 `TOEFL Coach`
 
-定位：
+- 代码边界：`src/toefl-writing/`
+- 相关专题：`docs/pipeline.md`
+- 输出纪律：`docs/outputs.md`
+- 维护关注点：结构化诊断、弱表达提取、下游桥接输入稳定性
 
-- 输出型纠偏链路的诊断核心
+### 4.4 `connectors`
 
-负责：
-
-- 句子 / 段落 / 作文级诊断
-- 逻辑、词汇、结构问题分析
-- 生成结构化 `WritingDiagnosis`
-- 额外提炼 `WeakExpressionSet`
-
-不负责：
-
-- 直接代替用户重写整篇作文
-- 直接生成最终词卡
-- 代替 `Content Parser` 做材料抽取
-
-当前工程方向：
-
-- 继续让 `WritingDiagnosis` 面向人读
-- 继续让 `WeakExpressionSet` 面向下游消费
+- 代码边界：`src/connectors/`
+- 文档边界：`docs/connectors/*`
+- 维护关注点：映射规则、桥接边界、不要过早平台化
 
 ---
 
-## 5. 当前最重要的中间对象
+## 5. 维护检查清单
 
-当前最值得稳定化的对象包括：
+当你修改某一类内容时，优先检查这些权威来源是否需要一起调整：
 
-- `SourceDigest`
-- `ExpressionCandidates`
-- `ExpressionCard`
-- `WritingDiagnosis`
-- `WeakExpressionSet`
-- `ExpressionCardSeed`
+### 5.1 如果改动模块边界或主链路
 
-设计原则：
+- `CONSTITUTION.md`
+- `docs/pipeline.md`
+- `docs/connectors/*`
+- 对应模块代码与测试
 
-1. 这些对象优先于 prompt 耦合
-2. 模块间应优先通过中间对象通信
-3. connector 只在稳定对象存在时继续推进
+### 5.2 如果改动中间对象 / schema / validator
 
-### 5.1 `SourceDigest`
+- `CONSTITUTION.md`
+- `src/platform/contracts.ts`
+- 对应模块 `schema` / `types` / `validator`
+- connector mapping
+- tests
 
-表示材料级结构化摘要。  
-主要来自 `Content Parser`。
+### 5.3 如果改动 locale / i18n
 
-### 5.2 `ExpressionCandidates`
+- `docs/i18n.md`
+- 对应 CLI、prompt、render
+- README 帮助说明
+- tests
 
-表示从材料中抽出的可学习表达候选。  
-主要来自 `Content Parser`，供 `Dictionary Pro` 继续处理。
+### 5.4 如果改动 Markdown / JSON 输出
 
-### 5.3 `ExpressionCard`
+- `docs/outputs.md`
+- `src/platform/output-manager.ts`
+- 对应 render / exporter / pipeline
+- tests
 
-表示表达升级后的标准学习单元。  
-主要由 `Dictionary Pro` 生成。  
-它应同时拥有：
+### 5.5 如果改动 CLI / scripts / provider 配置
 
-- 一个 JSON sidecar
-- 一个可读 Markdown 文件
-
-### 5.4 `WritingDiagnosis`
-
-表示用户写作的整体诊断结果。  
-主要由 `TOEFL Coach` 生成。
-
-### 5.5 `WeakExpressionSet`
-
-表示从写作诊断中提炼出的弱表达集合。  
-这是 `TOEFL Coach -> Dictionary Pro` 的核心桥接对象之一。
-
-### 5.6 `ExpressionCardSeed`
-
-表示送入 `Dictionary Pro` 的稳定种子输入。  
-它通常不直接给用户看，而是供 connector 和卡片引擎消费。
+- `package.json`
+- `README*.md`
+- `.github/workflows/ci.yml`
+- CLI tests
 
 ---
 
-## 6. pipeline 关系
+## 6. 主链路与调试入口
+
+主链路的定义以 `docs/pipeline.md` 为准；本节只保留维护调试时最常用的入口。
 
 ### 6.1 输入型学习链路
 
 ```text
-用户输入 PDF / MD / TXT / text
+source file / text
 -> Content Parser
--> SourceDigest
--> ExpressionCandidates
+-> candidates / digest
 -> Dictionary Pro
 -> ExpressionCard
--> Markdown / JSON 本地资产
+-> Markdown / JSON artifacts
 ```
-
-说明：
-
-- 这条链路的目标是把输入材料沉淀成学习资产
-- 它不只是“读懂文章”，而是“把文章里的表达沉淀出来”
 
 ### 6.2 输出型纠偏链路
 
 ```text
-用户输入句子 / 段落 / 作文
+essay / paragraph / sentence
 -> TOEFL Coach
--> WritingDiagnosis
--> WeakExpressionSet
+-> WritingDiagnosis / WeakExpressionSet
 -> connector mapping
 -> ExpressionCardSeed
 -> Dictionary Pro
 -> ExpressionCard
--> Markdown / JSON 本地资产
+-> Markdown / JSON artifacts
 ```
 
-说明：
+### 6.3 调试时优先看的位置
 
-- 这条链路的目标是把写作问题沉淀成可复习对象
-- 它不只是“告诉用户哪里不好”，而是“把坏表达变成升级任务”
-
-### 6.3 connector 层的真实定位
-
-connector 当前应被视为：
-
-- 模块间桥接层
-- 中间对象映射层
-- 保守演进层
-
-不应被视为：
-
-- 提前做大的工作流平台
-- 模块逻辑汇总垃圾场
-- 新的 prompt 杂糅层
+- 业务链路：对应模块 `runner` / `index` / `render`
+- 中间对象：`src/platform/contracts.ts`
+- 桥接映射：`src/connectors/*` + `docs/connectors/*`
+- 输出纪律：`src/platform/output-manager.ts` + `docs/outputs.md`
 
 ---
 
@@ -411,74 +325,29 @@ query
 
 ---
 
-## 8. locale / i18n 规则
+## 8. locale / i18n 维护说明
 
-本项目当前定位面向华语用户，因此支持：
+locale 的根本规则以 `docs/i18n.md` 和 `CONSTITUTION.md` 为准。
 
-- `zh-Hans`
-- `zh-Hant`
-- `en`
+维护时重点检查：
 
-必须遵守以下规则：
-
-1. JSON keys、schema 字段名、enum、内部标识一律英文
-2. locale 只影响展示层内容
-3. locale 不允许影响：
-   - contract shape
-   - enum
-   - provider runtime
-   - connector mapping
-4. 简体和繁体不能各长一套业务逻辑
-
-当前最推荐的做法是：
-
-- 先让 query / render / markdown 支持 locale
-- 后续再补专门的本地化资源层
-
-不推荐的做法是：
-
-- 复制三套 prompt 系统
-- 复制三套 schema
-- 让 `zh-Hans` 和 `zh-Hant` 在业务层分叉
+- locale 是否只影响展示层而未污染 schema / enum / connector mapping
+- CLI 帮助、prompt 注入、render 文案是否一致
+- `zh-Hans` / `zh-Hant` 是否只做展示差异，而没有长出业务逻辑分叉
+- 新增 locale 时是否同步 README 与对应说明文档
 
 ---
 
-## 9. Markdown / JSON 本地产物
+## 9. 输出资产维护说明
 
-本项目长期坚持：
+输出规则的规范定义以 `docs/outputs.md` 为准，运行时事实来源以 `src/platform/output-manager.ts` 为准。
 
-**Markdown-first + JSON sidecar**
+维护时重点检查：
 
-这意味着：
-
-- 面向人的最终结果，优先以 Markdown 落地
-- 面向系统的稳定结构，优先以 JSON 落地
-
-### 9.1 原则
-
-每个核心结果对象，尽量对应：
-
-- `something.json`
-- `something.md` 或 `index.md`
-
-### 9.2 理想产物层级
-
-未来推荐输出结构可逐步收口到：
-
-```text
-outputs/
-  content/
-  coach/
-  dict/
-```
-
-其中：
-
-- `content/` 存材料级输出
-- `coach/` 存诊断级输出
-- `dict/` 存表达卡
-
-当前阶段不要求一步到位，但任何新增输出都应朝这个方向靠拢。
+- 是否同时落地 Markdown 与 JSON sidecar
+- 文件名与目录是否收口在 `OutputManager`
+- pipeline / connector / experimental 代码是否绕开了统一输出管理
+- 新增输出是否与现有 `outputs/content|coach|dict` 结构兼容
 
 ---
 
@@ -589,19 +458,10 @@ outputs/
 
 ## 14. 维护者判断一个改动是否正确的标准
 
-一个改动通常是正确方向，如果它：
+最终判断标准以 `CONSTITUTION.md` 为准；维护层面可快速使用以下检查：
 
-- 让三模块定位更清楚
-- 让中间对象更稳定
-- 让 Markdown / JSON 产物更统一
-- 让 locale 处理更独立
-- 让 provider runtime 更少泄漏到业务层
-- 让 docs / tests / scripts / CI 更一致
-
-一个改动通常值得警惕，如果它：
-
-- 新增更复杂 prompt，却没有更稳定 contract
-- 继续复制一份相似 CLI / validator / render 逻辑
-- 让 connector 过早膨胀
-- 因为繁体中文而复制业务逻辑
-- 让 README 愿景继续领先于真实代码边界
+- 是否让权威来源更清楚，而不是新增一个平行说明文件
+- 是否让 docs / tests / scripts / CI 更一致，而不是更分散
+- 是否把规则收口到已有 authoritative source，而不是到处复制
+- 是否减少跨模块重复，而不是制造新的 facade 或万能 util
+- 是否让 README 更接近工程现实，而不是继续超前描述
