@@ -75,6 +75,16 @@ Accesibles vía `spark x`:
 
 ---
 
+## 🧭 Documentos de Gobernanza
+
+Para la gobernanza y el mantenimiento del proyecto, empieza aquí:
+
+- `CONSTITUTION.md`: archivo de gobernanza superior para identidad del proyecto, invariantes, guardrails de arquitectura y puertas de calidad.
+- `AGENTS.md`: manual compartido cross-agent para orden de lectura, flujo de ejecución, línea base de verificación y disciplina de sincronización documental.
+- `MANUAL.md`: manual de mantenimiento para estructura del repositorio, listas operativas y limitaciones conocidas.
+
+---
+
 ## 💂 Seguridad y Privacidad
 
 **Modo Solo API**: Sin servidor central. Tus claves API y datos permanecen en tu máquina local.

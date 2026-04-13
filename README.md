@@ -124,6 +124,16 @@ Special features accessible via the `spark x` namespace:
 
 ---
 
+## 🧭 Governance Docs
+
+For project governance and maintenance, start here:
+
+- `CONSTITUTION.md`: highest governance file for project identity, invariants, architecture guardrails, and quality gates.
+- `AGENTS.md`: shared cross-agent handbook for read order, execution workflow, verification baseline, and documentation sync discipline.
+- `MANUAL.md`: maintainer handbook for repo structure, operational checklists, and known limitations.
+
+---
+
 ## 💂 Security & Privacy
 
 **API-Only Mode**: This project operates without a centralized server. Your API keys (OpenAI, Gemini, Anthropic, SiliconFlow) and learning data stay entirely on your local machine.

@@ -123,6 +123,18 @@ spark dict "gonna" --provider siliconflow-minimax
 
 ---
 
-## 💂 安全隐私
+## 🧭 治理文档入口
 
-**纯 API 模式**：本工具不设中心化服务器。你的 API Key (OpenAI, Gemini, Anthropic, SiliconFlow) 和所有学习数据均严格保留在你的本地机器上。
+如需了解项目治理与维护，请优先阅读：
+
+### 项目治理文件
+
+- `CONSTITUTION.md`：最高治理文件，定义项目身份、不变量、架构守卫与质量门禁。
+- `AGENTS.md`：共享 cross-agent 手册，定义读取顺序、执行流程、验证基线与文档同步纪律。
+- `MANUAL.md`：维护者手册，记录仓库结构、维护检查清单与已知限制。
+
+---
+
+## 💂 安全和隐私
+
+ **纯 API 模式**：本工具不设中心化服务器。你的 API Key (OpenAI, Gemini, Anthropic, SiliconFlow) 和所有学习数据均严格保留在你的本地机器上。

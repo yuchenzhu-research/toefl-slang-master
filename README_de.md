@@ -74,6 +74,16 @@ Erreichbar über `spark x`:
 
 ---
 
+## 🧭 Governance-Dokumente
+
+Für Projekt-Governance und Wartung beginnen Sie hier:
+
+- `CONSTITUTION.md`: höchste Governance-Datei für Projektidentität, Invarianten, Architektur-Leitplanken und Qualitätsgrenzen.
+- `AGENTS.md`: gemeinsames Cross-Agent-Handbuch für Lesereihenfolge, Ausführungsablauf, Verifikationsbasis und Dokumentationssynchronisation.
+- `MANUAL.md`: Wartungshandbuch für Repository-Struktur, operative Checklisten und bekannte Einschränkungen.
+
+---
+
 ## 💂 Sicherheit & Datenschutz
 
 **API-Only Modus**: Kein zentraler Server. Ihre API-Keys und Daten bleiben lokal auf Ihrem Rechner.
