@@ -2,6 +2,49 @@
 
 ---
 
+## 2026-04-13 / Governance Normalization: Constitution Layer + README Sync
+
+### Related commits
+- `3370ac0` docs(governance): normalize constitution, agent handbook, and maintainer manual
+- `665c6ce` docs(readme): sync governance doc entry across all README variants
+
+### Problem
+- `AGENTS.md` and `MANUAL.md` had grown into partially parallel documents.
+- The repository lacked a true top-level governance file, so `AGENTS.md` was carrying both constitutional rules and agent workflow rules.
+- User-facing README files did not yet reflect the normalized governance stack.
+
+### Changes
+- **Created `CONSTITUTION.md`:** Introduced a highest-governance file for project identity, invariants, architecture guardrails, quality gates, risk register, and anti-patterns.
+- **Refactored `AGENTS.md`:** Reduced it to a shared cross-agent playbook focused on read order, execution workflow, verification baseline, documentation sync discipline, and reporting expectations.
+- **Refactored `MANUAL.md`:** Repositioned it as a maintainer handbook focused on repo structure, authoritative sources, maintenance checklists, debugging entry points, and known limitations.
+- **Synced all `README*.md`:** Added a lightweight governance-doc entry block so external readers can discover `CONSTITUTION.md`, `AGENTS.md`, and `MANUAL.md` without turning the README files into internal handbooks.
+
+### Resulting Document Stack
+- `CONSTITUTION.md` -> highest governance file
+- `AGENTS.md` -> shared cross-agent runtime handbook
+- `MANUAL.md` -> maintainer handbook
+- `docs/*` -> topical design and contract details
+- `README*.md` -> user-facing entry points
+
+### Verification
+- Verified the three-layer document split directly in the repository.
+- Confirmed the README governance block was added across all README variants.
+
+### Impact Range
+- `CONSTITUTION.md` (New)
+- `AGENTS.md`
+- `MANUAL.md`
+- `README.md`
+- `README_zh-CN.md`
+- `README_zh-TW.md`
+- `README_de.md`
+- `README_es.md`
+- `README_fr.md`
+- `README_ja.md`
+- `README_ko.md`
+
+---
+
 ## 2026-04-13 / Fix CI: Lazy-Import ESM-Only pi-tui Dependency
 
 ### Related commits
