@@ -58,6 +58,30 @@ spark studio --dry-run   # launch without making API calls (layout preview)
 > is **work in progress**. The current TUI focuses on Dictionary Pro lookups.
 > `/coach` and `/content` integrations will be added in a future release.
 
+## 🖥️ Backend API for Frontends
+
+Launch the local backend API for an external frontend such as Google Antigravity:
+
+```bash
+spark web --port 4173
+```
+
+Current backend endpoints:
+
+- `GET /api/health`
+- `POST /api/dict/lookup` — Dictionary Pro lookup with slang/register output and academic alignment. Defaults to `dryRun: true`.
+- `POST /api/style/economist` — deterministic Economist-style feature analysis.
+
+## 🧠 Economist Style Analysis
+
+SPARK now includes a first-pass style engine for Economist-like analytical prose:
+
+```bash
+spark style --text "Although markets may adapt, regulation can distort incentives."
+```
+
+This is **feature analysis**, not a full corpus-trained imitation engine yet. It scores sentence rhythm, contrast turns, causal logic, hedging, economics/policy vocabulary, and compressed clause punctuation.
+
 ---
 
 ## 🚀 Quick Start

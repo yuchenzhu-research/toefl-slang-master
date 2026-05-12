@@ -38,6 +38,32 @@
 
 ---
 
+## 🖥️ 前端可接入的後端 API
+
+啟動本地後端 API，供 Google Antigravity 等前端調用：
+
+```bash
+spark web --port 4173
+```
+
+目前後端接口：
+
+- `GET /api/health`
+- `POST /api/dict/lookup`：Dictionary Pro 查詞，返回俚語/語域資訊和學術對標；預設 `dryRun: true`
+- `POST /api/style/economist`：確定性的 Economist 風格特徵分析
+
+## 🧠 Economist 風格分析
+
+第一版風格引擎已支援 Economist-like 分析：
+
+```bash
+spark style --text "Although markets may adapt, regulation can distort incentives."
+```
+
+這仍是**風格特徵分析**，不是完整語料訓練的仿寫引擎。當前會檢查句長節奏、轉折、因果鏈、hedging、經濟/政策詞彙和壓縮式標點。
+
+---
+
 ## 🚀 快速開始
 
 ### 安裝

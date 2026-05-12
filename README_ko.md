@@ -37,6 +37,30 @@
 
 ---
 
+## 🖥️ 프론트엔드용 Backend API
+
+Google Antigravity 같은 별도 프론트엔드가 호출할 로컬 API를 실행합니다.
+
+```bash
+spark web --port 4173
+```
+
+현재 엔드포인트:
+
+- `GET /api/health`
+- `POST /api/dict/lookup` — slang/register 정보와 학술 표현 매칭을 반환하는 Dictionary Pro API. 기본값은 `dryRun: true`
+- `POST /api/style/economist` — Economist 스타일 특징을 결정적으로 분석
+
+## 🧠 Economist Style Analysis
+
+```bash
+spark style --text "Although markets may adapt, regulation can distort incentives."
+```
+
+현재는 특징 분석이며, 코퍼스로 학습한 완전한 모방 엔진은 아닙니다.
+
+---
+
 ## 🚀 빠른 시작
 
 ### 설치
@@ -56,10 +80,14 @@ spark init
 
 ```bash
 # Workflow 1: 아티클에서 새로운 표현 추출 및 학습 카드 생성
-spark pipeline:input --file article.pdf
+spark x pipeline:input --file article.pdf
 
 # Workflow 2: 작성한 글에서 부족한 표현을 진단 후 업그레이드 카드 생성
-spark pipeline:output --text "This is a big improvement."
+spark x pipeline:output --text "This is a big improvement."
+
+# API 호출 없이 미리보기
+spark x pipeline:input --file article.md --dry-run
+spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
 ---

@@ -36,6 +36,30 @@ Analysiert PDF/MD/TXT, um strukturierte Lernnotizen zu extrahieren.
 
 ---
 
+## 🖥️ Backend API for Frontends
+
+Start the local backend API for a separate frontend such as Google Antigravity:
+
+```bash
+spark web --port 4173
+```
+
+Current endpoints:
+
+- `GET /api/health`
+- `POST /api/dict/lookup` — Dictionary Pro lookup with slang/register output and academic alignment. Defaults to `dryRun: true`.
+- `POST /api/style/economist` — deterministic Economist-style feature analysis.
+
+## 🧠 Economist Style Analysis
+
+```bash
+spark style --text "Although markets may adapt, regulation can distort incentives."
+```
+
+This is feature analysis, not a full corpus-trained imitation engine yet.
+
+---
+
 ## 🚀 Schnellstart
 
 ### Installation
@@ -55,10 +79,14 @@ spark init
 
 ```bash
 # Workflow 1: Sätze aus Artikeln extrahieren und Flashcards generieren
-spark pipeline:input --file article.pdf
+spark x pipeline:input --file article.pdf
 
 # Workflow 2: Schreiben diagnostizieren und Upgrade-Karten generieren
-spark pipeline:output --text "This is a big improvement."
+spark x pipeline:output --text "This is a big improvement."
+
+# Pipeline ohne API-Aufruf prüfen
+spark x pipeline:input --file article.md --dry-run
+spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
 ---

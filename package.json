@@ -16,6 +16,8 @@
     "doctor": "ts-node src/platform/doctor.ts",
     "spark": "ts-node src/app-cli.ts",
     "studio": "ts-node src/studio/index.ts",
+    "web": "ts-node src/web/server.ts",
+    "style": "ts-node src/style-engine/cli.ts",
     "dict": "ts-node src/dictionary-pro/index.ts",
     "dict:dry": "ts-node src/dictionary-pro/index.ts --text \"a big deal\" --mode conversion --target toefl-writing --dry-run",
     "dict:providers": "ts-node src/dictionary-pro/index.ts providers",

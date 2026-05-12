@@ -7,7 +7,9 @@ import { ToeflSlangClient } from "./platform/client";
 import { runDoctorCli } from "./platform/doctor";
 import { runInitCli } from "./platform/init";
 import { runStudioModuleCli } from "./studio";
+import { runStyleEngineCli } from "./style-engine/cli";
 import { runToeflWritingModuleCli } from "./toefl-writing";
+import { runWebCli } from "./web/server";
 
 function printUsage(): void {
   const usage = `
@@ -15,7 +17,9 @@ SPARK CLI (Speech, Phrase, and Artful Resonance Kinship)
 
 Usage:
   spark studio [--file <path>] [--dry-run]   ← Studio TUI (Dictionary Pro lookups; pipeline WIP)
+  spark web [--port <port>]                  ← Local backend API for frontend clients
   spark dict "<expression>" [options]
+  spark style --text "<paragraph>" [--json]
   spark coach "<essay-or-paragraph>" [options]
   spark content --file <article.md> [options]
   spark init [--force]
@@ -25,9 +29,11 @@ Usage:
 
 Guided Mode:
   studio     Launch Studio TUI for interactive Dictionary Pro lookups.
+  web        Launch local backend API for lookup and style analysis.
 
 Core Commands:
   dict       Run Dictionary Pro to upgrade informal English (Informal -> TOEFL).
+  style      Analyze Economist-style prose features.
   coach      Run TOEFL Coach for writing diagnosis and scoring.
   content    Run Content Parser to extract learning materials.
 
@@ -39,7 +45,9 @@ Setup Commands:
 Examples:
   spark studio                               ← Start guided session
   spark studio --file article.md --dry-run   ← Preview without API calls
+  spark web --port 4173
   spark dict "gonna" --target toefl-writing
+  spark style --text "Although markets may adapt, regulation can distort incentives."
   spark coach "I think technology is good..." --dry-run
   spark content --file essay.md --json
 `;
@@ -64,8 +72,14 @@ export async function runTopLevelCli(argv: string[]): Promise<void> {
     case "studio":
       await runStudioModuleCli(rest);
       return;
+    case "web":
+      await runWebCli(rest);
+      return;
     case "dict":
       await runDictionaryProModuleCli(rest);
+      return;
+    case "style":
+      await runStyleEngineCli(rest);
       return;
     case "coach":
       await runToeflWritingModuleCli(rest);

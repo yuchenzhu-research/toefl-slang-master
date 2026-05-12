@@ -57,6 +57,30 @@ spark studio --dry-run   # 不调用 API，仅预览界面布局
 > 正在开发中（WIP）。当前 TUI 专注于 Dictionary Pro 查词功能。
 > `/coach` 和 `/content` 的集成将在后续版本中加入。
 
+## 🖥️ 前端可接入的后端 API
+
+启动本地后端 API，供 Google Antigravity 等前端调用：
+
+```bash
+spark web --port 4173
+```
+
+当前后端接口：
+
+- `GET /api/health`
+- `POST /api/dict/lookup`：Dictionary Pro 查词，返回俚语/语域信息和学术对标；默认 `dryRun: true`
+- `POST /api/style/economist`：确定性的 Economist 风格特征分析
+
+## 🧠 Economist 风格分析
+
+第一版风格引擎已支持 Economist-like 分析：
+
+```bash
+spark style --text "Although markets may adapt, regulation can distort incentives."
+```
+
+这仍是**风格特征分析**，不是完整语料训练的仿写引擎。当前会检查句长节奏、转折、因果链、hedging、经济/政策词汇和压缩式标点。
+
 ---
 
 ## 🚀 快速开始

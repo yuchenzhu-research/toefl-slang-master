@@ -37,6 +37,30 @@ Analiza publicaciones extranjeras para extraer notas de aprendizaje estructurada
 
 ---
 
+## 🖥️ Backend API para Frontends
+
+Inicia la API local para un frontend separado como Google Antigravity:
+
+```bash
+spark web --port 4173
+```
+
+Endpoints actuales:
+
+- `GET /api/health`
+- `POST /api/dict/lookup` — Dictionary Pro con salida de slang/registro y alineación académica. Por defecto usa `dryRun: true`.
+- `POST /api/style/economist` — análisis determinista de rasgos estilo Economist.
+
+## 🧠 Análisis de Estilo Economist
+
+```bash
+spark style --text "Although markets may adapt, regulation can distort incentives."
+```
+
+Esto es análisis de rasgos, no un motor completo de imitación entrenado con corpus.
+
+---
+
 ## 🚀 Inicio Rápido
 
 ### Instalación
@@ -56,10 +80,14 @@ spark init
 
 ```bash
 # Workflow 1: Extraer frases de artículos y generar flashcards
-spark pipeline:input --file article.pdf
+spark x pipeline:input --file article.pdf
 
 # Workflow 2: Diagnosticar escritura y generar tarjetas de mejora
-spark pipeline:output --text "This is a big improvement."
+spark x pipeline:output --text "This is a big improvement."
+
+# Previsualizar sin llamadas API
+spark x pipeline:input --file article.md --dry-run
+spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
 ---

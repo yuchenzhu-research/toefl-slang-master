@@ -37,6 +37,30 @@
 
 ---
 
+## 🖥️ フロントエンド向け Backend API
+
+Google Antigravity などの外部フロントエンド向けにローカル API を起動します。
+
+```bash
+spark web --port 4173
+```
+
+現在のエンドポイント：
+
+- `GET /api/health`
+- `POST /api/dict/lookup` — slang/レジスター情報とアカデミック対照を返す Dictionary Pro API。既定は `dryRun: true`
+- `POST /api/style/economist` — Economist 風の特徴を決定的に分析
+
+## 🧠 Economist Style Analysis
+
+```bash
+spark style --text "Although markets may adapt, regulation can distort incentives."
+```
+
+これは特徴分析であり、コーパス学習済みの完全な模倣エンジンではありません。
+
+---
+
 ## 🚀 クイックスタート
 
 ### インストール
@@ -56,10 +80,14 @@ spark init
 
 ```bash
 # Workflow 1: 記事から表現を抽出し、単語カードを自動生成
-spark pipeline:input --file article.pdf
+spark x pipeline:input --file article.pdf
 
 # Workflow 2: 作文を診断し、アップグレードカードを生成
-spark pipeline:output --text "This is a big improvement."
+spark x pipeline:output --text "This is a big improvement."
+
+# API呼び出しなしでプレビュー
+spark x pipeline:input --file article.md --dry-run
+spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
 ---
