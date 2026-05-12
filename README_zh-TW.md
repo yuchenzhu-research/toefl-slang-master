@@ -35,8 +35,28 @@
 專注於深度外刊分析與學習資料抽取。
 *   **素材提煉**：自動識別高價值語法點、句式模板和文化背景。
 *   **結構化筆記**：解析 PDF/MD/TXT 素材，生成標準的學習單元。
+*   **語料閉環**：自動輸出下游模組可直接消費的表達候選池。
 
 ---
+
+## 🎬 Studio 引導模式
+
+直接啟動 SPARK Studio 終端：
+
+```bash
+spark studio
+```
+
+Studio 當前以**交互式 TUI（終端 UI）**運行。輸入任意單詞或表達，Dictionary Pro 會即時查詢並返回結果。按 `Ctrl+C` 退出。
+
+```bash
+spark studio --dry-run   # 不調用 API，僅預覽界面佈局
+```
+
+> [!NOTE]
+> 完整的引導式 pipeline（文件選擇 → 解析預覽 → 候選篩選 → 詞卡生成）
+> 正在開發中（WIP）。當前 TUI 專注於 Dictionary Pro 查詞功能。
+> `/coach` 和 `/content` 的集成將在後續版本中加入。
 
 ## 🖥️ 前端可接入的後端 API
 
@@ -49,7 +69,7 @@ spark web --port 4173
 目前後端接口：
 
 - `GET /api/health`
-- `POST /api/dict/lookup`：Dictionary Pro 查詞，返回俚語/語域資訊和學術對標；預設 `dryRun: true`
+- `POST /api/dict/lookup`：Dictionary Pro 查詞，返回俚語/語域資訊和學術對照；預設 `dryRun: true`
 - `POST /api/style/economist`：確定性的 Economist 風格特徵分析
 
 ## 🧠 Economist 風格分析
@@ -93,6 +113,19 @@ spark x pipeline:input --file article.md --dry-run
 spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
+### 原子模組獨立調用
+
+```bash
+# 直接查詞
+spark dict "a big deal"
+
+# 獨立寫作診斷
+spark coach --file ./essay.txt --json
+
+# 獨立素材提取（不調用 AI）
+spark content --file article.pdf --extract-only
+```
+
 ### Provider 路由說明
 
 `--provider` 表示接入網關 / provider runtime，`--model` 才是具體模型 ID。
@@ -111,11 +144,11 @@ spark dict "gonna" --provider siliconflow-minimax
 
 可透過 `spark x` 訪問的極客能力：
 
-- **SRS 間隔複習** (`spark x review`)
-- **每日挑戰** (`spark x daily`)
-- **語義聚類** (`spark x cluster`)
-- **原生 TTS** (`spark x speak`)
-- **命令行 REPL** (`spark x repl`)
+- **SRS 間隔複習** (`spark x review`)：基於 SM2 算法的閃卡記憶測試。
+- **每日挑戰** (`spark x daily`)：從你的庫中隨機抽取 3 張卡片進行碎片化快測。
+- **語義聚類** (`spark x cluster`)：基於圖算法將你的詞卡網自動編織為同源義群。
+- **原生 TTS** (`spark x speak`)：調用系統語音引擎精準朗讀單詞與例句。
+- **命令行 REPL** (`spark x repl`)：高效率連續發問不斷流。
 
 ---
 
@@ -129,6 +162,7 @@ spark dict "gonna" --provider siliconflow-minimax
 
 ---
 
-## 💂 安全隱私
+## 💂 安全與隱私
 
 **純 API 模式**：本工具不設中心化伺服器。你的 API Key (OpenAI, Gemini, Anthropic, SiliconFlow) 和所有學習數據均嚴格保留在你的本地機器上。
+

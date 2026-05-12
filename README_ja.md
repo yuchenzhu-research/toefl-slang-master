@@ -29,13 +29,34 @@
 学術的な論理と構成の診断に焦点を当てたライティングレビュー。
 *   **公式基準**：ETS基準に基づく模擬スコアリングとフィードバック。
 *   **弱点表現の抽出**：作文内のインフォーマルな表現を自動検出。
+*   **構成の最適化**：分析的なアカデミックな遷移語や複雑な文式の使用をガイド。
 
 ### 3. Content Parser
 海外出版物や学習資料の深い分析。
 *   **素材の抽出**：価値の高い文法、構文テンプレート、文化的背景を特定。
 *   **構造化ノート**：PDF/MD/TXTを解析し、学習ユニットを生成。
+*   **語彙のループ**：後続モジュールで直接利用可能な表現候補を自動出力。
 
 ---
+
+## 🎬 Studio 導入モード
+
+SPARK Studio ターミナルを直接起動：
+
+```bash
+spark studio
+```
+
+Studio は現在、**対話型 TUI (Terminal UI)** として動作します。単語や表現を入力すると、Dictionary Pro がリアルタイムで検索結果を返します。`Ctrl+C` で終了します。
+
+```bash
+spark studio --dry-run   # APIを呼び出さず、レイアウトのみプレビュー
+```
+
+> [!NOTE]
+> 完全なガイド付きパイプライン（ファイル選択 → 解析プレビュー → 候補選択 → カード生成）は
+> **開発中 (WIP)** です。現在の TUI は Dictionary Pro の検索機能に焦点を当てています。
+> `/coach` と `/content` の統合は今後のリリースで追加予定です。
 
 ## 🖥️ フロントエンド向け Backend API
 
@@ -53,11 +74,13 @@ spark web --port 4173
 
 ## 🧠 Economist Style Analysis
 
+第一弾のスタイルエンジンは Economist-like な分析をサポートしています：
+
 ```bash
 spark style --text "Although markets may adapt, regulation can distort incentives."
 ```
 
-これは特徴分析であり、コーパス学習済みの完全な模倣エンジンではありません。
+これは**特徴分析**であり、コーパス学習済みの完全な模倣エンジンではありません。文の長さのリズム、転換点、因果関係、ヘッジング、経済/政策用語、圧縮された句読点などをチェックします。
 
 ---
 
@@ -90,16 +113,42 @@ spark x pipeline:input --file article.md --dry-run
 spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
+### 原子モジュールの個別呼び出し
+
+```bash
+# 直接検索
+spark dict "a big deal"
+
+# ライティング診断
+spark coach --file ./essay.txt --json
+
+# 素材抽出（AI呼び出しなし）
+spark content --file article.pdf --extract-only
+```
+
+### Provider ルーティング
+
+`--provider` はアクセスゲートウェイ / ランタイム、`--model` は具体的なモデル ID を指します。
+
+```bash
+# MiniMax 公式直連
+spark dict "gonna" --provider minimax
+
+# SiliconFlow 経由の MiniMax
+spark dict "gonna" --provider siliconflow-minimax
+```
+
 ---
 
 ## 🧪 実験的な機能
 
-`spark x` コマンドでアクセス可能：
-- **SRS 復習** (`spark x review`)
-- **デイリーチャレンジ** (`spark x daily`)
-- **意味のクラスタリング** (`spark x cluster`)
-- **ネイティブ音声** (`spark x speak`)
-- **REPLモード** (`spark x repl`)
+`spark x` 名前空間でアクセス可能な高度な機能：
+
+- **SRS 復習** (`spark x review`)：SM2アルゴリズムに基づくフラッシュカード記憶テスト。
+- **デイリーチャレンジ** (`spark x daily`)：保存されたカードバンクからランダムに3枚をクイックテスト。
+- **意味のクラスタリング** (`spark x cluster`)：グラフアルゴリズムを用いて類義語関係を自動マップ。
+- **ネイティブ音声** (`spark x speak`)：システムエンジンによる保存済み表現の読み上げ。
+- **REPLモード** (`spark x repl`)：効率的な対話ループ。
 
 ---
 
@@ -115,4 +164,4 @@ spark x pipeline:output --text "I think technology is good." --dry-run
 
 ## 💂 セキュリティとプライバシー
 
-**完全APIモード**: 中央サーバーなし。APIキーとデータはすべてローカルに保存されます。
+**完全APIモード**: 本プロジェクトは中央サーバーなしで動作します。APIキー（OpenAI, Gemini, Anthropic, SiliconFlow）と学習データはすべてローカルに保存されます。
