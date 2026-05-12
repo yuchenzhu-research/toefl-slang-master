@@ -4,8 +4,14 @@ import {
   buildDictionaryProPrompts,
   buildDictionaryProRepairPrompts,
 } from "./prompt";
-import { DictionaryProStructuredResponse } from "./types";
-import { DictionaryProQuery } from "./types";
+import {
+  DictionaryProStructuredResponse,
+  DictionaryProWordPhraseResponse,
+  DictionaryProSentenceUpgradeResponse,
+  DictionaryProComparisonResponse,
+  DictionaryProAmbiguousResponse,
+  DictionaryProQuery,
+} from "./types";
 import {
   formatDictionaryProValidationErrors,
   parseAndValidateDictionaryProResponse,
@@ -73,7 +79,7 @@ export function renderDictionaryProResponse(response: DictionaryProStructuredRes
   return renderAmbiguousResponse(response);
 }
 
-function renderWordPhraseResponse(response: any): string {
+function renderWordPhraseResponse(response: DictionaryProWordPhraseResponse): string {
   const translation = formatInlineList(response.translation);
   const slang = [
     `语域: ${response.slang.register}`,
@@ -81,7 +87,7 @@ function renderWordPhraseResponse(response: any): string {
     `变体: ${formatInlineList(response.slang.variants)}`,
   ].join("<br>");
   const alignment = response.alignment
-    .map((item) => `${item.expression}: ${item.note}`)
+    .map((item: { expression: string; note: string }) => `${item.expression}: ${item.note}`)
     .join("<br>");
   const analysis = [
     `原句: ${response.analysis.sourceExample}`,
@@ -103,19 +109,19 @@ function renderWordPhraseResponse(response: any): string {
   if (response.notes && response.notes.length > 0) {
     sections.push("");
     sections.push("**补充说明**");
-    sections.push(...response.notes.map((note) => `- ${note}`));
+    sections.push(...response.notes.map((note: string) => `- ${note}`));
   }
 
   return sections.join("\n");
 }
 
-function renderSentenceUpgradeResponse(response: any): string {
+function renderSentenceUpgradeResponse(response: DictionaryProSentenceUpgradeResponse): string {
   const lines = [
     `**原表达问题**: ${response.problem}`,
     "",
     "**替换建议**",
     ...response.replacements.map(
-      (item) => `- ${item.source} -> ${item.replacement} : ${item.reason}`,
+      (item: { source: string; replacement: string; reason: string }) => `- ${item.source} -> ${item.replacement} : ${item.reason}`,
     ),
     "",
     "**推荐改写**",
@@ -126,19 +132,19 @@ function renderSentenceUpgradeResponse(response: any): string {
   ];
 
   if (response.notes && response.notes.length > 0) {
-    lines.push("", "**补充说明**", ...response.notes.map((note) => `- ${note}`));
+    lines.push("", "**补充说明**", ...response.notes.map((note: string) => `- ${note}`));
   }
 
   return lines.join("\n");
 }
 
-function renderComparisonResponse(response: any): string {
+function renderComparisonResponse(response: DictionaryProComparisonResponse): string {
   const lines = [
     "| 表达 | 语域 | 适合 TOEFL 写作吗 | 差异 |",
     "| --- | --- | --- | --- |",
     ...response.items.map(
-      (item) =>
-        `| ${item.expression} | ${item.register} | ${formatSuitability(item.toeflSuitability)} | ${item.difference} |`,
+      (item: { expression: string; register: string; toeflSuitability: string; difference: string }) =>
+        `| ${item.expression} | ${item.register} | ${formatSuitability(item.toeflSuitability as any)} | ${item.difference} |`,
     ),
   ];
 
@@ -147,16 +153,16 @@ function renderComparisonResponse(response: any): string {
   }
 
   if (response.notes && response.notes.length > 0) {
-    lines.push("", "**补充说明**", ...response.notes.map((note) => `- ${note}`));
+    lines.push("", "**补充说明**", ...response.notes.map((note: string) => `- ${note}`));
   }
 
   return lines.join("\n");
 }
 
-function renderAmbiguousResponse(response: any): string {
+function renderAmbiguousResponse(response: DictionaryProAmbiguousResponse): string {
   const lines = [
     "**可能义项**",
-    ...response.possibleSenses.map((sense, index) => `${index + 1}. ${sense}`),
+    ...response.possibleSenses.map((sense: string, index: number) => `${index + 1}. ${sense}`),
     "",
     response.clarificationPrompt,
   ];
@@ -166,7 +172,7 @@ function renderAmbiguousResponse(response: any): string {
   }
 
   if (response.notes && response.notes.length > 0) {
-    lines.push("", "**补充说明**", ...response.notes.map((note) => `- ${note}`));
+    lines.push("", "**补充说明**", ...response.notes.map((note: string) => `- ${note}`));
   }
 
   return lines.join("\n");

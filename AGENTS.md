@@ -26,21 +26,15 @@
    - `README.md`
    - `README_zh-CN.md`
    - `README_zh-TW.md`
-   - `docs/vision.md`
-   - `docs/pipeline.md`
-   - `docs/i18n.md`
-   - `docs/outputs.md`
    - `package.json`
    - `tsconfig.json`
 4. 再检查与当前任务直接相关的：
    - `src/` 下对应模块
-   - `docs/` 下对应专题文档
    - `tests/` 下对应测试
    - `.github/workflows/ci.yml`
 5. 完成审计后，再实施修改
 
 说明：
-
 - 如果某份文档还不完整，不要假设项目没有这类约束
 - 即使任务只涉及文档、测试、CLI 或配置，也不跳过该流程
 
@@ -53,16 +47,13 @@
 1. 先审计现状，再修改，不先假设
 2. 先确认 authoritative source，再决定改动范围
 3. 优先做最小闭环修改，不顺手做大重构
-4. 优先修正 docs / tests / CI / scripts 的漂移，再扩功能
+4. 优先修正 tests / CI / scripts 的漂移，再扩功能
 5. 完成后明确说明验证情况、风险与后续建议
 
 默认问题分流：
 
 - **治理与边界问题**：先看 `CONSTITUTION.md`、`AGENTS.md`、`MANUAL.md`
-- **项目定位与主链路**：先看 `docs/vision.md`、`docs/pipeline.md`
-- **locale 规则**：先看 `docs/i18n.md`
-- **输出纪律**：先看 `docs/outputs.md`
-- **connector contract**：先看 `docs/connectors/*`
+- **locale 规则**：`src/platform/locale.ts`
 - **脚本 / 入口 / 依赖**：先看 `package.json`
 - **CI 基线**：先看 `.github/workflows/ci.yml`
 
