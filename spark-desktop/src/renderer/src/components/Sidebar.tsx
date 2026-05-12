@@ -1,50 +1,46 @@
-import React from 'react';
-import { ICON } from './icons';
-
 export type PageId = "style" | "dict" | "coach" | "content" | "settings";
 
 interface SidebarProps {
-  currentPage: PageId;
+  currentPage: PageId | null;
   onNavigate: (page: PageId) => void;
+  onHome: () => void;
 }
 
-export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
+const navItems: Array<{ id: PageId; label: string }> = [
+  { id: "style", label: "Style" },
+  { id: "dict", label: "Dict" },
+  { id: "coach", label: "Coach" },
+  { id: "content", label: "Content" },
+  { id: "settings", label: "Settings" }
+];
+
+export function Sidebar({ currentPage, onNavigate, onHome }: SidebarProps) {
   return (
-    <nav className="sidebar">
-      <div className="logo">S</div>
-      <div className="sidebar-nav">
-        <button
-          className={`nav-btn ${currentPage === "style" ? "active" : ""}`}
-          onClick={() => onNavigate("style")}
-          title="Economist Style Engine"
-          dangerouslySetInnerHTML={{ __html: ICON.book }}
-        />
-        <button
-          className={`nav-btn ${currentPage === "dict" ? "active" : ""}`}
-          onClick={() => onNavigate("dict")}
-          title="Dictionary Pro"
-          dangerouslySetInnerHTML={{ __html: ICON.search }}
-        />
-        <button
-          className={`nav-btn ${currentPage === "coach" ? "active" : ""}`}
-          onClick={() => onNavigate("coach")}
-          title="TOEFL Coach (Coming Soon)"
-          dangerouslySetInnerHTML={{ __html: ICON.penTool }}
-        />
-        <button
-          className={`nav-btn ${currentPage === "content" ? "active" : ""}`}
-          onClick={() => onNavigate("content")}
-          title="Content Parser (Coming Soon)"
-          dangerouslySetInnerHTML={{ __html: ICON.fileText }}
-        />
-        <button
-          className={`nav-btn ${currentPage === "settings" ? "active" : ""}`}
-          onClick={() => onNavigate("settings")}
-          title="API Settings"
-          dangerouslySetInnerHTML={{ __html: ICON.settings }}
-        />
+    <nav className="site-nav" aria-label="SPARK modules">
+      <button className="nav-link nav-home" type="button" onClick={onHome}>
+        Study Flow
+      </button>
+
+      <button className="brand-mark" type="button" onClick={onHome} aria-label="SPARK home">
+        <span>S</span>
+        <span>P</span>
+        <span>A</span>
+        <span>R</span>
+        <span>K</span>
+      </button>
+
+      <div className="nav-links" aria-label="Primary">
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            className={`nav-link ${currentPage === item.id ? "active" : ""}`}
+            type="button"
+            onClick={() => onNavigate(item.id)}
+          >
+            {item.label}
+          </button>
+        ))}
       </div>
-      <div className="avatar" />
     </nav>
   );
 }

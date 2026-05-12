@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ICON } from "../components/icons";
 import { useToast } from "../components/ToastContext";
 
@@ -30,6 +30,7 @@ export function StylePage() {
       }, 100);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [analysis, panelOpen]);
 
   const handleAnalyze = async () => {

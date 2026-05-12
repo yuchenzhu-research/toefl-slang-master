@@ -1,4 +1,3 @@
-import React from "react";
 import { ICON } from "../components/icons";
 
 export function CoachPage() {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ICON } from "../components/icons";
 import { useToast } from "../components/ToastContext";
 
