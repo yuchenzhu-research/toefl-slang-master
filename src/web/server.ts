@@ -116,6 +116,8 @@ export async function handleSparkApiRequest(
       const clientOptions: ToeflSlangClientOptions = {
         provider: readString(body.provider) || undefined,
         model: readString(body.model) || undefined,
+        apiKey: readString(body.apiKey) || undefined,
+        baseUrl: readString(body.baseUrl) || undefined,
       };
       const result = await runDictionaryProQuery({ query, clientOptions });
       sendJson(res, 200, {

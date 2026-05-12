@@ -1,7 +1,7 @@
 import React from 'react';
 import { ICON } from './icons';
 
-export type PageId = "style" | "dict" | "coach" | "content";
+export type PageId = "style" | "dict" | "coach" | "content" | "settings";
 
 interface SidebarProps {
   currentPage: PageId;
@@ -36,6 +36,12 @@ export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
           onClick={() => onNavigate("content")}
           title="Content Parser (Coming Soon)"
           dangerouslySetInnerHTML={{ __html: ICON.fileText }}
+        />
+        <button
+          className={`nav-btn ${currentPage === "settings" ? "active" : ""}`}
+          onClick={() => onNavigate("settings")}
+          title="API Settings"
+          dangerouslySetInnerHTML={{ __html: ICON.settings }}
         />
       </div>
       <div className="avatar" />

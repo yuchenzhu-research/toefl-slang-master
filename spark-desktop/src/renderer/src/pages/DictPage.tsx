@@ -21,10 +21,22 @@ export function DictPage() {
     }, 15000);
 
     try {
+      const provider = localStorage.getItem("spark_provider") || undefined;
+      const apiKey = localStorage.getItem("spark_api_key") || undefined;
+      const model = localStorage.getItem("spark_model") || undefined;
+      const baseUrl = localStorage.getItem("spark_base_url") || undefined;
+
       const res = await fetch("http://127.0.0.1:4173/api/dict/lookup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: query, dryRun: false }),
+        body: JSON.stringify({ 
+          text: query, 
+          dryRun: false,
+          provider,
+          apiKey,
+          model,
+          baseUrl
+        }),
       });
       clearTimeout(timeoutId);
 

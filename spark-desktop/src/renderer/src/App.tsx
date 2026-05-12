@@ -5,6 +5,7 @@ import { StylePage } from "./pages/StylePage";
 import { DictPage } from "./pages/DictPage";
 import { CoachPage } from "./pages/CoachPage";
 import { ContentPage } from "./pages/ContentPage";
+import { SettingsPage } from "./pages/SettingsPage";
 
 export default function App(): JSX.Element {
   const [page, setPage] = useState<PageId>("style");
@@ -17,6 +18,7 @@ export default function App(): JSX.Element {
         {page === "dict" && <DictPage />}
         {page === "coach" && <CoachPage />}
         {page === "content" && <ContentPage />}
+        {page === "settings" && <SettingsPage />}
       </div>
     </ToastProvider>
   );
