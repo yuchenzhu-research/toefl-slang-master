@@ -7,7 +7,7 @@ import {
   DictionaryProSentenceUpgradeResponse,
   DictionaryProStructuredResponse,
   DictionaryProWordPhraseResponse,
-} from "./schema";
+} from "./types";
 import { runDictionaryProQuery } from "./runner";
 import { DictionaryProQuery, DictionaryProTarget } from "./types";
 

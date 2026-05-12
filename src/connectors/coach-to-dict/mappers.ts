@@ -1,5 +1,5 @@
 import type { DictionaryProTarget } from "../../dictionary-pro/types";
-import type { ToeflWritingStructuredResponse } from "../../toefl-writing/schema";
+import type { ToeflWritingStructuredResponse } from "../../toefl-writing/types";
 import {
   CoachToDictBridgeBundle,
   CoachToDictDictionaryQuery,

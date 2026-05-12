@@ -81,7 +81,7 @@ test("LocaleManager handles switcher flags correctly", () => {
 });
 
 import { toExpressionCard } from "../src/connectors/dict-to-card/index";
-import { DictionaryProWordPhraseResponse } from "../src/dictionary-pro/schema";
+import { DictionaryProWordPhraseResponse } from "../src/dictionary-pro/types";
 
 test("toExpressionCard maps word_phrase response correctly", () => {
   const dictResponse: DictionaryProWordPhraseResponse = {

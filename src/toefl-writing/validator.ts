@@ -4,7 +4,7 @@ import {
   WeakExpression,
   WeakExpressionSet,
 } from "../platform/contracts";
-import { ToeflWritingStructuredResponse, ToeflWritingScope, inferWritingScope } from "./schema";
+import { ToeflWritingStructuredResponse, ToeflWritingScope, inferWritingScope } from "./types";
 import { ToeflWritingQuery, ToeflWritingSourcePayload, ToeflWritingSourceType } from "./types";
 
 const SCOPE_VALUES: ToeflWritingScope[] = ["sentence", "paragraph", "essay"];

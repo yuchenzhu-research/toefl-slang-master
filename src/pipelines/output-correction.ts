@@ -5,7 +5,7 @@ import { OutputManager } from "../platform/output-manager";
 import { resolveToeflWritingSource } from "../toefl-writing/cli";
 import { runToeflWritingQuery } from "../toefl-writing/runner";
 import { buildCoachToDictBridgeBundle } from "../connectors/coach-to-dict";
-import { inferWritingScope } from "../toefl-writing/schema";
+import { inferWritingScope } from "../toefl-writing/types";
 
 /**
  * Pipeline 2: Output Correction Workflow

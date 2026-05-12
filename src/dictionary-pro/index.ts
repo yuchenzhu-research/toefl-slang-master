@@ -11,7 +11,7 @@ export { runDictionaryProEvaluation, formatDictionaryProEvaluationReport } from 
 export { runDictionaryProBenchmark, formatDictionaryProBenchmarkReport } from "./benchmark";
 export { runDictionaryProQuery } from "./runner";
 export * from "./types";
-export * from "./schema";
+export * from "./types";
 
 export async function runDictionaryProModuleCli(argv: string[]): Promise<void> {
   if (argv.length === 0) {

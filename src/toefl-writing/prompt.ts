@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { ToeflWritingSourcePayload, ToeflWritingQuery } from "./types";
-import { inferWritingScope } from "./schema";
+import { inferWritingScope } from "./types";
 import { LocaleManager } from "../platform/locale";
 
 interface PromptBundle {

@@ -6,7 +6,7 @@ import { ToeflSlangClient } from "../platform/client";
 import { LocaleManager } from "../platform/locale";
 import { PROVIDER_APIS } from "../platform/providers/types";
 import { buildToeflWritingPrompts } from "./prompt";
-import { inferWritingScope } from "./schema";
+import { inferWritingScope } from "./types";
 import { runToeflWritingQuery } from "./runner";
 import { ToeflWritingQuery, ToeflWritingSourcePayload } from "./types";
 

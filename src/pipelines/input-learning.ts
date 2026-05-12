@@ -6,7 +6,7 @@ import { OutputManager } from "../platform/output-manager";
 import { toExpressionCardSeeds } from "../connectors/content-to-dict";
 import { toExpressionCard } from "../connectors/dict-to-card";
 import { resolveContentParserSource } from "../content-parser/extractor";
-import { resolveActiveFocus } from "../content-parser/schema";
+import { resolveActiveFocus } from "../content-parser/types";
 
 /**
  * Pipeline 1: Input Learning Workflow

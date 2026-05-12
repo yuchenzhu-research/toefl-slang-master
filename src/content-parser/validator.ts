@@ -1,4 +1,4 @@
-import { ContentParserStructuredResponse, resolveActiveFocus } from "./schema";
+import { ContentParserStructuredResponse, resolveActiveFocus } from "./types";
 import { ContentParserQuery, ContentParserSourcePayload, ContentParserFocus, ContentParserSourceType } from "./types";
 
 const FOCUS_VALUES: ContentParserFocus[] = ["full", "syntax", "slang", "culture", "conversion"];

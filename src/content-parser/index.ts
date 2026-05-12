@@ -6,7 +6,7 @@ export { runContentParserCli, parseContentParserArgs } from "./cli";
 export { resolveContentParserSource } from "./extractor";
 export { runContentParserQuery } from "./runner";
 export * from "./types";
-export * from "./schema";
+export * from "./types";
 
 export async function runContentParserModuleCli(argv: string[]): Promise<void> {
   await runContentParserCli(argv.length === 0 ? ["--help"] : argv);

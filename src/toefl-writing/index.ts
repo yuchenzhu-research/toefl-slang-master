@@ -5,7 +5,7 @@ import { runToeflWritingCli } from "./cli";
 export { runToeflWritingCli, parseToeflWritingArgs, resolveToeflWritingSource } from "./cli";
 export { runToeflWritingQuery } from "./runner";
 export * from "./types";
-export * from "./schema";
+export * from "./types";
 
 export async function runToeflWritingModuleCli(argv: string[]): Promise<void> {
   await runToeflWritingCli(argv.length === 0 ? ["--help"] : argv);

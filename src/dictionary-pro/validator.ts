@@ -10,7 +10,7 @@ import {
   DictionaryProWordPhraseResponse,
   resolveActiveMode,
   resolveActiveTarget,
-} from "./schema";
+} from "./types";
 import { DictionaryProQuery, DictionaryProTarget } from "./types";
 
 const RESPONSE_KINDS: DictionaryProResponseKind[] = [

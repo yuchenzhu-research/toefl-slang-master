@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { ContentParserSourcePayload, ContentParserQuery } from "./types";
-import { resolveActiveFocus } from "./schema";
+import { resolveActiveFocus } from "./types";
 import { LocaleManager } from "../platform/locale";
 
 interface PromptBundle {

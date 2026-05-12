@@ -1,4 +1,4 @@
-import { DictionaryProStructuredResponse } from "../../dictionary-pro/schema";
+import { DictionaryProStructuredResponse } from "../../dictionary-pro/types";
 import { ExpressionCard } from "../../platform/contracts";
 
 /**

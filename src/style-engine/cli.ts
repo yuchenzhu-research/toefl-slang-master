@@ -1,5 +1,5 @@
 import { analyzeEconomistStyle } from "./analyzer";
-import { renderStyleAnalysis } from "./render";
+import { renderStyleAnalysis } from "./analyzer";
 
 function printUsage(): void {
   const usage = `

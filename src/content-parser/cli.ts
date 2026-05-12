@@ -6,7 +6,7 @@ import { PROVIDER_APIS } from "../platform/providers/types";
 import { resolveContentParserSource } from "./extractor";
 import { buildContentParserPrompts } from "./prompt";
 import { runContentParserQuery } from "./runner";
-import { resolveActiveFocus } from "./schema";
+import { resolveActiveFocus } from "./types";
 import { ContentParserFocus, ContentParserQuery } from "./types";
 
 const VALID_FOCUS: ContentParserFocus[] = [
