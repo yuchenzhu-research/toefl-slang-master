@@ -424,6 +424,87 @@ body {
   line-height: 1.5;
 }
 
+/* ── Nav Button SVG ── */
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Dictionary Pro ── */
+.dict-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.dict-input {
+  flex: 1;
+  padding: 16px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.dict-input:focus {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+.dict-input::placeholder {
+  color: var(--text-muted);
+}
+
+.dict-btn {
+  position: static;
+  flex-shrink: 0;
+}
+
+.dict-result {
+  margin-top: 32px;
+}
+
+.dict-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+
+.dict-pre {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 12px;
+}
+
+.dict-markdown {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-top: 12px;
+  white-space: pre-wrap;
+}
+
+.dict-note {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.dict-note code {
+  background: var(--bg-card);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--accent-hover);
+}
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar {
   width: 6px;
