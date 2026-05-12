@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { ToeflSlangClientOptions } from "../platform/client";
+import type { ProviderApi } from "../platform/providers/types";
 
 const EXPERIMENTAL_USAGE = `
 SPARK - Experimental / Auxiliary Commands
@@ -10,7 +11,9 @@ Usage:
 
 Workflow Commands:
   pipeline:input <filepath>      Run the Input Learning flow.
+  pipeline:input --file <path> [--focus <focus>] [--dry-run]
   pipeline:output <text>         Run the Output Correction flow.
+  pipeline:output --text <text> [--dry-run]
   batch:coach <dir>              Batch process essays for TOEFL Coach.
 
 Auxiliary Commands:
@@ -47,22 +50,34 @@ export async function runExperimentalCli(
 ): Promise<void> {
   switch (command) {
     case "pipeline:input": {
-      const filePath = readFlagValue(rest, "--file") ?? rest[0];
+      const filePath = readFlagValue(rest, "--file") ?? firstPositional(rest);
       if (!filePath) {
         throw new Error("Usage: spark x pipeline:input <filepath> | --file <filepath>");
       }
-      const { runPipelineInput } = require("../pipelines/input-learning");
-      await runPipelineInput({ filePath, focus: "full", extractOnly: false }, clientOptions);
+      const mergedClientOptions = mergeClientOptions(clientOptions, rest);
+      const focus = readFlagValue(rest, "--focus") ?? "full";
+      const query = { filePath, focus, extractOnly: false };
+      const { runPipelineInput, dryRunPipelineInput } = require("../pipelines/input-learning");
+      if (hasFlag(rest, "--dry-run")) {
+        await dryRunPipelineInput(query, mergedClientOptions);
+        return;
+      }
+      await runPipelineInput(query, mergedClientOptions);
       return;
     }
 
     case "pipeline:output": {
-      const text = readFlagValue(rest, "--text") ?? rest.join(" ").trim();
+      const text = readFlagValue(rest, "--text") ?? positionalArgs(rest).join(" ").trim();
       if (!text) {
         throw new Error("Usage: spark x pipeline:output <text> | --text <text>");
       }
-      const { runPipelineOutput } = require("../pipelines/output-correction");
-      await runPipelineOutput(text, clientOptions);
+      const mergedClientOptions = mergeClientOptions(clientOptions, rest);
+      const { runPipelineOutput, dryRunPipelineOutput } = require("../pipelines/output-correction");
+      if (hasFlag(rest, "--dry-run")) {
+        await dryRunPipelineOutput(text, mergedClientOptions);
+        return;
+      }
+      await runPipelineOutput(text, mergedClientOptions);
       return;
     }
 
@@ -198,6 +213,80 @@ function readFlagValue(args: string[], flag: string): string | undefined {
     return undefined;
   }
   return args[index + 1];
+}
+
+function hasFlag(args: string[], flag: string): boolean {
+  return args.includes(flag);
+}
+
+function firstPositional(args: string[]): string | undefined {
+  return positionalArgs(args)[0];
+}
+
+function positionalArgs(args: string[]): string[] {
+  const values: string[] = [];
+
+  for (let index = 0; index < args.length; index += 1) {
+    const token = args[index];
+    if (token.startsWith("-")) {
+      if (flagConsumesValue(token)) {
+        index += 1;
+      }
+      continue;
+    }
+    values.push(token);
+  }
+
+  return values;
+}
+
+function mergeClientOptions(
+  defaults: ToeflSlangClientOptions,
+  args: string[],
+): ToeflSlangClientOptions {
+  const maxTokens = readPositiveIntegerFlag(args, "--max-tokens");
+
+  return {
+    ...defaults,
+    provider: readFlagValue(args, "--provider") ?? readFlagValue(args, "-p") ?? defaults.provider,
+    model: readFlagValue(args, "--model") ?? defaults.model,
+    apiKey: readFlagValue(args, "--api-key") ?? defaults.apiKey,
+    baseUrl: readFlagValue(args, "--base-url") ?? defaults.baseUrl,
+    protocol: (readFlagValue(args, "--protocol") as ProviderApi | undefined) ?? defaults.protocol,
+    maxTokens: maxTokens ?? defaults.maxTokens,
+    accountId: readFlagValue(args, "--cloudflare-account-id") ?? defaults.accountId,
+    gatewayId: readFlagValue(args, "--cloudflare-gateway-id") ?? defaults.gatewayId,
+  };
+}
+
+function readPositiveIntegerFlag(args: string[], flag: string): number | undefined {
+  const rawValue = readFlagValue(args, flag);
+  if (rawValue === undefined) {
+    return undefined;
+  }
+
+  const parsed = Number(rawValue);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error(`Invalid ${flag} "${rawValue}". Expected a positive integer.`);
+  }
+  return parsed;
+}
+
+function flagConsumesValue(flag: string): boolean {
+  return [
+    "--file",
+    "--focus",
+    "--text",
+    "--provider",
+    "-p",
+    "--model",
+    "--api-key",
+    "--base-url",
+    "--protocol",
+    "--max-tokens",
+    "--cloudflare-account-id",
+    "--cloudflare-gateway-id",
+  ].includes(flag);
 }
 
 function runReviewFlow(): void {

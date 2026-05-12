@@ -5,6 +5,8 @@ import { ContentParserQuery } from "../content-parser/types";
 import { OutputManager } from "../platform/output-manager";
 import { toExpressionCardSeeds } from "../connectors/content-to-dict";
 import { toExpressionCard } from "../connectors/dict-to-card";
+import { resolveContentParserSource } from "../content-parser/extractor";
+import { resolveActiveFocus } from "../content-parser/schema";
 
 /**
  * Pipeline 1: Input Learning Workflow
@@ -66,4 +68,25 @@ export async function runPipelineInput(
   }
 
   console.log(`>> [Pipeline 1] Input Learning Complete. Artifacts saved to outputs/content/${slug}/`);
+}
+
+export async function dryRunPipelineInput(
+  query: ContentParserQuery,
+  clientOptions: ToeflSlangClientOptions,
+): Promise<void> {
+  const source = await resolveContentParserSource(query);
+
+  console.log("[DRY RUN] spark x pipeline:input");
+  console.log(`sourceName: ${source.sourceName}`);
+  console.log(`sourceType: ${source.sourceType}`);
+  console.log(`focus: ${resolveActiveFocus(query.focus)}`);
+  console.log(`charCount: ${source.charCount}`);
+  console.log(`truncated: ${source.truncated ? "yes" : "no"}`);
+  console.log(`provider: ${clientOptions.provider ?? "auto"}`);
+  if (clientOptions.model) {
+    console.log(`model: ${clientOptions.model}`);
+  }
+  console.log("planned: Content Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard");
+  console.log("writes: outputs/content/<slug>/{digest.json,index.md,candidates.json}");
+  console.log("writes: outputs/dict/<headword>/{card.json,index.md}");
 }

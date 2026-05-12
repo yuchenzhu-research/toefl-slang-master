@@ -5,6 +5,7 @@ import { OutputManager } from "../platform/output-manager";
 import { resolveToeflWritingSource } from "../toefl-writing/cli";
 import { runToeflWritingQuery } from "../toefl-writing/runner";
 import { buildCoachToDictBridgeBundle } from "../connectors/coach-to-dict";
+import { inferWritingScope } from "../toefl-writing/schema";
 
 /**
  * Pipeline 2: Output Correction Workflow
@@ -85,4 +86,25 @@ export async function runPipelineOutput(
   }
 
   console.log(`>> [Pipeline 2] Output Correction Complete. Artifacts saved to outputs/coach/${slug}/`);
+}
+
+export async function dryRunPipelineOutput(
+  text: string,
+  clientOptions: ToeflSlangClientOptions,
+): Promise<void> {
+  const source = resolveToeflWritingSource({ text });
+
+  console.log("[DRY RUN] spark x pipeline:output");
+  console.log(`sourceName: ${source.sourceName}`);
+  console.log(`sourceType: ${source.sourceType}`);
+  console.log(`scope: ${inferWritingScope(source.text)}`);
+  console.log(`charCount: ${source.charCount}`);
+  console.log(`truncated: ${source.truncated ? "yes" : "no"}`);
+  console.log(`provider: ${clientOptions.provider ?? "auto"}`);
+  if (clientOptions.model) {
+    console.log(`model: ${clientOptions.model}`);
+  }
+  console.log("planned: TOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard");
+  console.log("writes: outputs/coach/<slug>/{diagnosis.json,report.md}");
+  console.log("writes: outputs/dict/<headword>/{card.json,index.md}");
 }

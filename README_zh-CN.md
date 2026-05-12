@@ -82,6 +82,10 @@ spark x pipeline:input --file article.pdf
 
 # 工作流 2：诊断写作中的弱表达并生成对应的升级词卡
 spark x pipeline:output --text "This is a big improvement."
+
+# 不调用 API，仅预览 pipeline 执行计划
+spark x pipeline:input --file article.md --dry-run
+spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
 ### 原子模块独立调用

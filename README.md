@@ -83,6 +83,10 @@ spark x pipeline:input --file article.pdf
 
 # Workflow 2: Diagnose writing and generate upgrade cards for Dictionary Pro
 spark x pipeline:output --text "This is a big improvement."
+
+# Preview a pipeline without making API calls
+spark x pipeline:input --file article.md --dry-run
+spark x pipeline:output --text "I think technology is good." --dry-run
 ```
 
 ### Standalone Commands
