@@ -1,10 +1,10 @@
 {
   "name": "spark-desktop",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "SPARK — Economist Style Engine & Dictionary Pro Desktop App",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "yuchenzhu-research",
+  "homepage": "https://github.com/yuchenzhu-research/toefl-slang-master",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
