@@ -1,107 +1,136 @@
-import { TUI, ProcessTerminal, Container, Text } from "@mariozechner/pi-tui";
-import { theme, editorTheme } from "./theme";
-import { ChatLog } from "./components/ChatLog";
-import { CustomEditor } from "./components/CustomEditor";
+import readline from "readline";
+import chalk from "chalk";
+import { highlight } from "cli-highlight";
 import type { ToeflSlangClientOptions } from "../../platform/client";
 import { runDictionaryProQuery } from "../../dictionary-pro/runner";
+
+function renderMarkdown(md: string): string {
+  try {
+    return highlight(md, {
+      language: "markdown",
+      ignoreIllegals: true,
+      theme: {
+        keyword: chalk.blue,
+        built_in: chalk.cyan,
+        type: chalk.cyan.dim,
+        literal: chalk.blue,
+        number: chalk.green,
+        regexp: chalk.red,
+        string: chalk.yellow,
+        subst: chalk.white,
+        symbol: chalk.white,
+        class: chalk.blue,
+        function: chalk.yellow,
+        title: chalk.bold.white,
+        params: chalk.white,
+        comment: chalk.gray.italic,
+        doctag: chalk.green,
+        meta: chalk.gray,
+        section: chalk.bold.magenta,
+        attr: chalk.cyan,
+        attribute: chalk.cyan,
+        variable: chalk.white,
+        bullet: chalk.yellow,
+        code: chalk.green,
+        emphasis: chalk.italic,
+        strong: chalk.bold,
+        formula: chalk.cyan,
+        link: chalk.underline.blue,
+        quote: chalk.gray.italic,
+      },
+    });
+  } catch {
+    return md;
+  }
+}
+
+class Spinner {
+  private timer: NodeJS.Timeout | null = null;
+  private frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+  private i = 0;
+  private text = "";
+
+  start(text: string) {
+    this.text = text;
+    process.stdout.write("\x1B[?25l"); // hide cursor
+    this.timer = setInterval(() => {
+      process.stdout.write(`\r${chalk.cyan(this.frames[this.i])} ${this.text}`);
+      this.i = (this.i + 1) % this.frames.length;
+    }, 80);
+  }
+
+  stop() {
+    if (this.timer) clearInterval(this.timer);
+    process.stdout.write("\r\x1B[K\x1B[?25h"); // clear line and show cursor
+  }
+}
 
 export async function runTui(options: {
   clientOptions: ToeflSlangClientOptions;
   dryRun?: boolean;
 }): Promise<void> {
-  const tui = new TUI(new ProcessTerminal());
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: chalk.green("❯ "),
+  });
 
-  const header = new Text(theme.header("SPARK Studio — Guided Learning Session"), 1, 0);
-  const chatLog = new ChatLog();
-  const statusContainer = new Container();
-  const statusText = new Text(theme.dim("idle"), 1, 0);
-  statusContainer.addChild(statusText);
-  const footer = new Text(theme.dim("agent: dictPro | fast | press Ctrl+C to exit"), 1, 0);
-
-  const editor = new CustomEditor(tui, editorTheme as any);
-
-  const root = new Container();
-  root.addChild(header);
-  root.addChild(chatLog);
-  root.addChild(statusContainer);
-  root.addChild(footer);
-  root.addChild(editor);
-
-  tui.addChild(root);
-  tui.setFocus(editor);
-
-  let isExiting = false;
-
-  const exitTui = () => {
-    if (isExiting) return;
-    isExiting = true;
-    try {
-      if (tui.terminal && 'setRawMode' in tui.terminal) {
-          // best effort cleanup
-      }
-      console.clear();
-    } catch {}
-    process.exit(0);
-  };
-
-  editor.onCtrlC = exitTui;
-  editor.onCtrlD = exitTui;
-  editor.onEscape = exitTui;
-
-  chatLog.addSystem(
-    "Welcome to SPARK Studio TUI. Type a word to look it up using Dictionary Pro. Note: /coach and /content integrations are WIP.",
-  );
+  console.log(chalk.bold.magenta("╭───────────────────────────────────────────────╮"));
+  console.log(chalk.bold.magenta("│ ") + chalk.bold.white("SPARK Studio (Claude Code Style)              ") + chalk.bold.magenta("│"));
+  console.log(chalk.bold.magenta("│ ") + chalk.gray("Type any word or phrase. Type 'exit' to quit. ") + chalk.bold.magenta("│"));
+  console.log(chalk.bold.magenta("╰───────────────────────────────────────────────╯\n"));
 
   if (options.dryRun) {
-    chatLog.addSystem("Dry-run mode is enabled: no API calls will be made.");
+    console.log(chalk.yellow("⚠️  Dry-run mode enabled: No API calls will be made.\n"));
   }
 
-  const handleSubmit = async () => {
-    const text = editor.getText().trim();
-    if (!text) return;
-    
-    // Clear editor
-    editor.setText("");
+  const spinner = new Spinner();
 
-    if (text === "exit" || text === "quit") {
-      exitTui();
+  rl.prompt();
+
+  rl.on("line", async (line) => {
+    const text = line.trim();
+    if (!text) {
+      rl.prompt();
       return;
     }
 
-    chatLog.addUser(text);
-    statusText.setText(theme.dim("running..."));
+    if (text.toLowerCase() === "exit" || text.toLowerCase() === "quit") {
+      rl.close();
+      return;
+    }
+
+    spinner.start(`Thinking about "${text}"...`);
 
     try {
-      const astId = chatLog.addAssistant(options.dryRun ? "Dry-run..." : "Thinking...");
-
       if (options.dryRun) {
-        chatLog.updateAssistant(
-          astId,
-          `[Dry Run] Dictionary Pro lookup skipped.\n\n[Query]: ${text}\n\nRun without --dry-run to generate results.`,
+        // Simulate delay
+        await new Promise((res) => setTimeout(res, 800));
+        spinner.stop();
+        console.log(
+          renderMarkdown(`### 🔍 Result for "${text}"\n\n> This is a simulated response because \`--dry-run\` is enabled.\n\nRun without \`--dry-run\` to fetch real definitions.`)
         );
-        return;
+      } else {
+        const dpResult = await runDictionaryProQuery({
+          query: {
+            text: text,
+            target: "general-academic",
+            mode: "auto" as any,
+          },
+          clientOptions: options.clientOptions,
+        });
+
+        spinner.stop();
+        console.log("\n" + renderMarkdown(dpResult.markdown) + "\n");
       }
-      
-      const dpResult = await runDictionaryProQuery({
-        query: {
-          text: text,
-          target: "general-academic",
-          mode: "auto" as any,
-        },
-        clientOptions: options.clientOptions,
-      });
-
-      // Update the message inline
-      const view = `[Word]: ${(dpResult.structured as any).headword || (dpResult.structured as any).targetWord || text}\n\n${dpResult.markdown}`;
-      chatLog.updateAssistant(astId, view);
-
     } catch (err: any) {
-      chatLog.addSystem(theme.error(`Error: ${err.message}`));
-    } finally {
-      statusText.setText(theme.dim("idle"));
+      spinner.stop();
+      console.log(chalk.red(`\n✘ Error: ${err.message}\n`));
     }
-  };
 
-  editor.onSubmit = handleSubmit;
-  editor.onAltEnter = handleSubmit;
+    rl.prompt();
+  }).on("close", () => {
+    console.log(chalk.gray("\nExiting SPARK Studio. Goodbye!"));
+    process.exit(0);
+  });
 }
