@@ -87,7 +87,13 @@ export default function App(): ReactElement {
             <span className="stage-label label-six">Markdown + JSON</span>
           </div>
 
+          <div className="edge-card" aria-hidden="true">
+            <span className="edge-card-word">SPARK</span>
+            <span className="edge-card-loop">Study Loop</span>
+          </div>
+
           <section className="gallery-strip" aria-label="SPARK module gallery">
+            <span className="gallery-fragment fragment-one" aria-hidden="true" />
             {modules.map((module) => (
               <button
                 key={module.id}
@@ -101,6 +107,7 @@ export default function App(): ReactElement {
                 <span className="gallery-caption">{module.meta}</span>
               </button>
             ))}
+            <span className="gallery-fragment fragment-two" aria-hidden="true" />
           </section>
 
           <p className="stage-intro">

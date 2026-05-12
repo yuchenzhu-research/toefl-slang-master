@@ -226,17 +226,104 @@ button {
   z-index: 5;
   display: flex;
   width: max-content;
-  min-width: 1180px;
+  min-width: 1380px;
   align-items: center;
   justify-content: center;
   gap: 0;
-  transform: translateY(-2vh);
+  transform: translateY(-2vh) translateX(-6px);
+}
+
+.edge-card {
+  position: absolute;
+  top: 34%;
+  left: -72px;
+  z-index: 4;
+  width: 170px;
+  height: 260px;
+  overflow: hidden;
+  background: #717954;
+  color: var(--paper-soft);
+  pointer-events: none;
+}
+
+.edge-card::before {
+  position: absolute;
+  top: 54px;
+  right: -56px;
+  width: 160px;
+  height: 160px;
+  border: 1px solid rgba(255, 250, 240, 0.75);
+  border-radius: 50%;
+  content: "";
+}
+
+.edge-card::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 52%, rgba(255, 250, 240, 0.2) 53% 54%, transparent 55%),
+    linear-gradient(180deg, rgba(16, 16, 16, 0.08), transparent 45%);
+  content: "";
+}
+
+.edge-card-word {
+  position: absolute;
+  top: 32px;
+  right: 14px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 35px;
+  line-height: 0.9;
+  transform: rotate(90deg);
+  transform-origin: right top;
+}
+
+.edge-card-loop {
+  position: absolute;
+  top: 116px;
+  right: 18px;
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+}
+
+.gallery-fragment {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: 0 0 auto;
+  border: 1px solid rgba(16, 16, 16, 0.16);
+  box-shadow: 0 16px 44px rgba(19, 18, 14, 0.14);
+  pointer-events: none;
+}
+
+.fragment-one {
+  width: 148px;
+  height: 126px;
+  margin-right: -22px;
+  background:
+    linear-gradient(90deg, rgba(255, 250, 240, 0.62) 0 35%, transparent 36%),
+    repeating-linear-gradient(90deg, rgba(255, 250, 240, 0.12) 0 1px, transparent 1px 17px),
+    linear-gradient(135deg, #253734, #6e7564 60%, #d8ccb1);
+  transform: translate(-72px, 34px);
+}
+
+.fragment-two {
+  width: 210px;
+  height: 244px;
+  margin-left: -12px;
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0.84) 0 22%, transparent 23%),
+    repeating-linear-gradient(90deg, rgba(255, 250, 240, 0.16) 0 1px, transparent 1px 21px),
+    linear-gradient(135deg, #d7cfb8, #9a9072 42%, #5c684d);
+  transform: translate(88px, -8px);
 }
 
 .gallery-card {
   position: relative;
   display: flex;
   flex: 0 0 auto;
+  z-index: 2;
   width: 238px;
   height: 188px;
   flex-direction: column;
@@ -248,6 +335,7 @@ button {
   box-shadow: 0 16px 44px rgba(19, 18, 14, 0.18);
   cursor: pointer;
   isolation: isolate;
+  margin-left: -34px;
   padding: 18px;
   text-align: left;
   transform: translateX(var(--offset-x, 0)) translateY(var(--offset-y, 0));
@@ -265,6 +353,13 @@ button {
 }
 
 .gallery-card:nth-child(2) {
+  --offset-x: -48px;
+  --offset-y: 26px;
+  width: 260px;
+  height: 206px;
+}
+
+.gallery-card:nth-child(3) {
   --offset-x: -42px;
   --offset-y: -4px;
   width: 250px;
@@ -272,14 +367,14 @@ button {
   z-index: 2;
 }
 
-.gallery-card:nth-child(3) {
+.gallery-card:nth-child(4) {
   --offset-x: -4px;
   --offset-y: 18px;
   width: 214px;
   height: 176px;
 }
 
-.gallery-card:nth-child(4) {
+.gallery-card:nth-child(5) {
   --offset-x: 30px;
   --offset-y: -18px;
   width: 282px;
@@ -287,34 +382,34 @@ button {
   z-index: 3;
 }
 
-.gallery-card:nth-child(5) {
+.gallery-card:nth-child(6) {
   --offset-x: 72px;
   --offset-y: 38px;
   width: 220px;
   height: 166px;
 }
 
-.random-mode .gallery-card:nth-child(1) {
+.random-mode .gallery-card:nth-child(2) {
   --offset-x: -108px;
   --offset-y: -16px;
 }
 
-.random-mode .gallery-card:nth-child(2) {
+.random-mode .gallery-card:nth-child(3) {
   --offset-x: -28px;
   --offset-y: 34px;
 }
 
-.random-mode .gallery-card:nth-child(3) {
+.random-mode .gallery-card:nth-child(4) {
   --offset-x: 18px;
   --offset-y: -32px;
 }
 
-.random-mode .gallery-card:nth-child(4) {
+.random-mode .gallery-card:nth-child(5) {
   --offset-x: 48px;
   --offset-y: 8px;
 }
 
-.random-mode .gallery-card:nth-child(5) {
+.random-mode .gallery-card:nth-child(6) {
   --offset-x: 104px;
   --offset-y: -10px;
 }
