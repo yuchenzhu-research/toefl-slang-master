@@ -1,75 +1,278 @@
-import { ReactElement, useState } from "react";
-import { Sidebar, PageId } from "./components/Sidebar";
-import { ToastProvider } from "./components/ToastContext";
-import { ICON } from "./components/icons";
-import { StylePage } from "./pages/StylePage";
-import { DictPage } from "./pages/DictPage";
-import { CoachPage } from "./pages/CoachPage";
-import { ContentPage } from "./pages/ContentPage";
-import { SettingsPage } from "./pages/SettingsPage";
+import {
+  CSSProperties,
+  PointerEvent as ReactPointerEvent,
+  ReactElement,
+  UIEvent,
+  WheelEvent as ReactWheelEvent,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
+import { Sidebar, PageId } from './components/Sidebar'
+import { ToastProvider } from './components/ToastContext'
+import { ICON } from './components/icons'
+import { StylePage } from './pages/StylePage'
+import { DictPage } from './pages/DictPage'
+import { CoachPage } from './pages/CoachPage'
+import { ContentPage } from './pages/ContentPage'
+import { SettingsPage } from './pages/SettingsPage'
+import gallery01 from './assets/spark-gallery-01.png'
+import gallery02 from './assets/spark-gallery-02.png'
+import gallery03 from './assets/spark-gallery-03.png'
+import gallery04 from './assets/spark-gallery-04.png'
+import gallery05 from './assets/spark-gallery-05.png'
+import gallery06 from './assets/spark-gallery-06.png'
+import gallery07 from './assets/spark-gallery-07.png'
+import gallery08 from './assets/spark-gallery-08.png'
+import gallery09 from './assets/spark-gallery-09.png'
+import gallery10 from './assets/spark-gallery-10.png'
 
-const modules: Array<{
-  id: PageId;
-  label: string;
-  title: string;
-  meta: string;
-  className: string;
+const galleryItems: Array<{
+  page: PageId
+  category: string
+  label: string
+  title: string
+  meta: string
+  image: string
 }> = [
   {
-    id: "dict",
-    label: "Register Conversion",
-    title: "Dictionary Pro",
-    meta: "Slang to academic",
-    className: "card-dict"
+    page: 'dict',
+    category: 'Register Conversion',
+    label: 'Register Conversion',
+    title: 'Dictionary Pro',
+    meta: 'Slang to academic',
+    image: gallery01
   },
   {
-    id: "style",
-    label: "Editorial Rhythm",
-    title: "Economist Engine",
-    meta: "Argument texture",
-    className: "card-style"
+    page: 'style',
+    category: 'Style Analysis',
+    label: 'Editorial Rhythm',
+    title: 'Economist Engine',
+    meta: 'Argument texture',
+    image: gallery02
   },
   {
-    id: "coach",
-    label: "ETS Diagnosis",
-    title: "TOEFL Coach",
-    meta: "Writing pressure test",
-    className: "card-coach"
+    page: 'coach',
+    category: 'Writing Diagnosis',
+    label: 'ETS Diagnosis',
+    title: 'TOEFL Coach',
+    meta: 'Writing pressure test',
+    image: gallery03
   },
   {
-    id: "content",
-    label: "Material Parsing",
-    title: "Content Parser",
-    meta: "Reading to notes",
-    className: "card-content"
+    page: 'content',
+    category: 'Reading Parser',
+    label: 'Material Parsing',
+    title: 'Content Parser',
+    meta: 'Reading to notes',
+    image: gallery04
   },
   {
-    id: "settings",
-    label: "Provider Runtime",
-    title: "API Settings",
-    meta: "Local credentials",
-    className: "card-settings"
+    page: 'settings',
+    category: 'Provider Runtime',
+    label: 'Provider Runtime',
+    title: 'API Settings',
+    meta: 'Local credentials',
+    image: gallery05
+  },
+  {
+    page: 'dict',
+    category: 'Register Conversion',
+    label: 'Expression Bank',
+    title: 'Study Loop',
+    meta: 'Cards and recall',
+    image: gallery06
+  },
+  {
+    page: 'style',
+    category: 'Style Analysis',
+    label: 'Close Reading',
+    title: 'Source Texture',
+    meta: 'Rhythm and contrast',
+    image: gallery07
+  },
+  {
+    page: 'content',
+    category: 'Reading Parser',
+    label: 'Archive Notes',
+    title: 'Parser Desk',
+    meta: 'Reading to snippets',
+    image: gallery08
+  },
+  {
+    page: 'coach',
+    category: 'Writing Diagnosis',
+    label: 'Draft Review',
+    title: 'Writing Lab',
+    meta: 'Score pressure',
+    image: gallery09
+  },
+  {
+    page: 'content',
+    category: 'Reading Parser',
+    label: 'Reference Shelf',
+    title: 'Material Kit',
+    meta: 'Reusable evidence',
+    image: gallery10
   }
-];
+]
+
+const categories = [
+  'Register Conversion',
+  'Style Analysis',
+  'Writing Diagnosis',
+  'Reading Parser',
+  'Provider Runtime'
+]
+
+function shuffleGallery(): typeof galleryItems {
+  return [...galleryItems]
+    .map((item) => ({ item, sort: Math.random() }))
+    .sort((left, right) => left.sort - right.sort)
+    .map(({ item }) => item)
+}
 
 function renderPage(page: PageId): ReactElement {
-  if (page === "style") return <StylePage />;
-  if (page === "dict") return <DictPage />;
-  if (page === "coach") return <CoachPage />;
-  if (page === "content") return <ContentPage />;
-  return <SettingsPage />;
+  if (page === 'style') return <StylePage />
+  if (page === 'dict') return <DictPage />
+  if (page === 'coach') return <CoachPage />
+  if (page === 'content') return <ContentPage />
+  return <SettingsPage />
 }
 
 export default function App(): ReactElement {
-  const [page, setPage] = useState<PageId | null>(null);
-  const [randomMode, setRandomMode] = useState(false);
+  const [page, setPage] = useState<PageId | null>(null)
+  const [randomMode, setRandomMode] = useState(false)
+  const [randomItems, setRandomItems] = useState(() => shuffleGallery())
+  const [activeCategory, setActiveCategory] = useState(categories[0])
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const galleryRef = useRef<HTMLDivElement>(null)
+  const dragState = useRef({
+    active: false,
+    moved: false,
+    startX: 0,
+    scrollLeft: 0
+  })
+  const clickWasDrag = useRef(false)
+
+  const visibleItems = useMemo(
+    () => (randomMode ? randomItems : galleryItems),
+    [randomItems, randomMode]
+  )
+
+  const stageStyle = {
+    '--scroll-progress': scrollProgress.toFixed(4),
+    '--scroll-rotate': `${(scrollProgress - 0.5) * 10}deg`,
+    '--scroll-shift': `${(scrollProgress - 0.5) * 34}px`,
+    '--scroll-depth': `${scrollProgress * 18}px`
+  } as CSSProperties
+
+  function scrollGallery(direction: -1 | 1): void {
+    galleryRef.current?.scrollBy({
+      left: direction * Math.min(window.innerWidth * 0.72, 720),
+      behavior: 'smooth'
+    })
+  }
+
+  function updateGalleryState(element: HTMLDivElement): void {
+    const maxScroll = Math.max(element.scrollWidth - element.clientWidth, 1)
+    const progress = element.scrollLeft / maxScroll
+    const center = element.scrollLeft + element.clientWidth / 2
+    const cards = Array.from(element.querySelectorAll<HTMLElement>('.gallery-card'))
+    const closestCard = cards.reduce<HTMLElement | null>((closest, card) => {
+      if (!closest) return card
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2
+      const closestCenter = closest.offsetLeft + closest.offsetWidth / 2
+      return Math.abs(cardCenter - center) < Math.abs(closestCenter - center) ? card : closest
+    }, null)
+
+    setScrollProgress(progress)
+    if (!randomMode && closestCard?.dataset.category) {
+      setActiveCategory(closestCard.dataset.category)
+    }
+  }
+
+  function handleGalleryScroll(event: UIEvent<HTMLDivElement>): void {
+    updateGalleryState(event.currentTarget)
+  }
+
+  function handleStageWheel(event: ReactWheelEvent<HTMLElement>): void {
+    const gallery = galleryRef.current
+    if (!gallery) return
+    const delta = Math.abs(event.deltaY) > Math.abs(event.deltaX) ? event.deltaY : event.deltaX
+    if (!delta) return
+    event.preventDefault()
+    gallery.scrollLeft += delta
+    updateGalleryState(gallery)
+  }
+
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>): void {
+    dragState.current = {
+      active: true,
+      moved: false,
+      startX: event.clientX,
+      scrollLeft: event.currentTarget.scrollLeft
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>): void {
+    if (!dragState.current.active) return
+    const delta = event.clientX - dragState.current.startX
+    if (Math.abs(delta) > 5) {
+      dragState.current.moved = true
+      clickWasDrag.current = true
+    }
+    event.currentTarget.scrollLeft = dragState.current.scrollLeft - delta
+    updateGalleryState(event.currentTarget)
+  }
+
+  function endDrag(event: ReactPointerEvent<HTMLDivElement>): void {
+    if (!dragState.current.active) return
+    dragState.current.active = false
+    event.currentTarget.releasePointerCapture(event.pointerId)
+    window.setTimeout(() => {
+      clickWasDrag.current = false
+    }, 0)
+  }
+
+  function toggleMode(): void {
+    setRandomMode((current) => {
+      const next = !current
+      if (next) {
+        setRandomItems(shuffleGallery())
+        setActiveCategory('Random Study Flow')
+      } else {
+        setActiveCategory(categories[0])
+      }
+      galleryRef.current?.scrollTo({ left: 0, behavior: 'smooth' })
+      return next
+    })
+  }
 
   return (
     <ToastProvider>
-      <div className={`app ${page ? "workspace-active" : ""}`}>
+      <div className={`app ${page ? 'workspace-active' : ''}`}>
         <Sidebar currentPage={page} onNavigate={setPage} onHome={() => setPage(null)} />
 
-        <main className={`landing-stage ${randomMode ? "random-mode" : "linear-mode"}`}>
+        <main
+          className={`landing-stage ${randomMode ? 'random-mode' : 'linear-mode'}`}
+          style={stageStyle}
+          onWheel={handleStageWheel}
+        >
+          <span className="corner-letter corner-letter-s" aria-hidden="true">
+            S
+          </span>
+          <span className="corner-letter corner-letter-p" aria-hidden="true">
+            P
+          </span>
+          <span className="corner-letter corner-letter-a" aria-hidden="true">
+            A
+          </span>
+          <span className="corner-letter corner-letter-k" aria-hidden="true">
+            K
+          </span>
+
           <svg className="stage-decoration" viewBox="0 0 1664 774" fill="none" aria-hidden="true">
             <path d="M830 118V704" />
             <path d="M0 413H1664" />
@@ -78,55 +281,85 @@ export default function App(): ReactElement {
             <path d="M830 413L1090 267" />
           </svg>
 
-          <div className="stage-labels" aria-hidden="true">
-            <span className="stage-label label-one">Style Analysis</span>
-            <span className="stage-label label-two">Dictionary Pro</span>
-            <span className="stage-label label-three">TOEFL Coach</span>
-            <span className="stage-label label-four">Content Parser</span>
-            <span className="stage-label label-five">Provider Routing</span>
-            <span className="stage-label label-six">Markdown + JSON</span>
-          </div>
-
-          <div className="edge-card" aria-hidden="true">
-            <span className="edge-card-word">SPARK</span>
-            <span className="edge-card-loop">Study Loop</span>
-          </div>
-
-          <section className="gallery-strip" aria-label="SPARK module gallery">
-            <span className="gallery-fragment fragment-one" aria-hidden="true" />
-            {modules.map((module) => (
-              <button
-                key={module.id}
-                type="button"
-                className={`gallery-card ${module.className}`}
-                onClick={() => setPage(module.id)}
+          <div className="category-orbit" aria-live="polite">
+            {categories.map((category) => (
+              <span
+                key={category}
+                className={`category-label ${activeCategory === category ? 'active' : ''}`}
               >
-                <span className="visual-layer" aria-hidden="true" />
-                <span className="gallery-meta">{module.label}</span>
-                <span className="gallery-title">{module.title}</span>
-                <span className="gallery-caption">{module.meta}</span>
-              </button>
+                {category}
+              </span>
             ))}
-            <span className="gallery-fragment fragment-two" aria-hidden="true" />
+          </div>
+
+          <div className="hero-core">
+            <span className="radiating-lines" aria-hidden="true" />
+            <p className="stage-kicker">{randomMode ? 'Random Study Flow' : activeCategory}</p>
+            <h1 className="stage-intro">
+              Turn informal English, reading material, and rough drafts into reusable academic
+              expression.
+            </h1>
+            <button
+              className="mode-toggle"
+              type="button"
+              onClick={toggleMode}
+              aria-pressed={randomMode}
+            >
+              <span>Linear</span>
+              <span className="toggle-track">
+                <span className="toggle-dot" />
+              </span>
+              <span>Random</span>
+            </button>
+          </div>
+
+          <section className="gallery-shell" aria-label="SPARK photo gallery">
+            <button
+              className="gallery-control gallery-control-prev"
+              type="button"
+              onClick={() => scrollGallery(-1)}
+              aria-label="Scroll photos left"
+            >
+              <span dangerouslySetInnerHTML={{ __html: ICON.arrow }} />
+            </button>
+
+            <div
+              className="gallery-strip"
+              ref={galleryRef}
+              onScroll={handleGalleryScroll}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+            >
+              {visibleItems.map((item, index) => (
+                <button
+                  key={`${item.title}-${index}`}
+                  type="button"
+                  className="gallery-card"
+                  data-category={item.category}
+                  onClick={() => {
+                    if (!clickWasDrag.current) setPage(item.page)
+                  }}
+                >
+                  <img className="gallery-photo" src={item.image} alt="" aria-hidden="true" />
+                  <span className="visual-layer" aria-hidden="true" />
+                  <span className="gallery-meta">{item.label}</span>
+                  <span className="gallery-title">{item.title}</span>
+                  <span className="gallery-caption">{item.meta}</span>
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="gallery-control gallery-control-next"
+              type="button"
+              onClick={() => scrollGallery(1)}
+              aria-label="Scroll photos right"
+            >
+              <span dangerouslySetInnerHTML={{ __html: ICON.arrow }} />
+            </button>
           </section>
-
-          <p className="stage-intro">
-            SPARK is a TOEFL-first language studio for turning informal English,
-            reading material, and rough drafts into reusable academic expression.
-          </p>
-
-          <button
-            className="mode-toggle"
-            type="button"
-            onClick={() => setRandomMode((current) => !current)}
-            aria-pressed={randomMode}
-          >
-            <span>Linear</span>
-            <span className="toggle-track">
-              <span className="toggle-dot" />
-            </span>
-            <span>Random</span>
-          </button>
         </main>
 
         {page && (
@@ -139,5 +372,5 @@ export default function App(): ReactElement {
         )}
       </div>
     </ToastProvider>
-  );
+  )
 }
