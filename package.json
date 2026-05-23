@@ -30,6 +30,7 @@
     "test": "npm run test:ci",
     "test:ci": "rm -rf dist && tsc && node --test dist/tests/*.test.js",
     "desktop:dev": "npm run dev --prefix apps/desktop",
+    "desktop:typecheck": "npm run typecheck --prefix apps/desktop",
     "desktop:build": "npm run build --prefix apps/desktop",
     "desktop:build:mac": "npm run build:mac --prefix apps/desktop",
     "desktop:build:win": "npm run build:win --prefix apps/desktop"

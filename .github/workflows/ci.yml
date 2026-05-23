@@ -28,6 +28,8 @@ jobs:
     - name: Type Check / Tests Baseline
       run: npm run test:ci
 
-    # 预留给后续的测试执行
-    # - name: Run unit tests
-    #   run: npm run test:unit
+    - name: Desktop Type Check
+      run: npm run desktop:typecheck
+
+    - name: Desktop Build Baseline
+      run: npm run desktop:build

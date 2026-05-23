@@ -81,3 +81,16 @@ apps/desktop/
 5. 最后再扩展复杂交互、离线缓存或多窗口能力
 
 不要先扩大 GUI，再回头补 contract。
+
+---
+
+## 6. Verification Baseline
+
+任何影响 `apps/desktop/`、workspace 依赖、renderer 页面、preload / IPC 或桌面端构建配置的改动，都至少运行：
+
+```bash
+npm run desktop:typecheck
+npm run desktop:build
+```
+
+CI 必须保留桌面端 typecheck 和 build 基线。前端可以继续快速迭代，但不能长期依赖“本地能跑、CI 不覆盖”的状态。
