@@ -1,0 +1,84 @@
+{
+  "project": "SPARK",
+  "branchName": "ralph/frontend-evolution",
+  "description": "Frontend Evolution - turn the desktop app into a real Dictionary Pro learning workspace with reusable API and UI foundations",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Create frontend API client boundary",
+      "description": "As a developer, I want a shared frontend API client so that renderer pages call local SPARK APIs through one maintained boundary.",
+      "acceptanceCriteria": [
+        "Add a shared API client module under apps/desktop/src/renderer/src/",
+        "Client exposes typed functions for GET /api/health and POST /api/dict/lookup",
+        "Client has one configurable API base URL with http://localhost:4173 as the local default",
+        "Client returns structured success and error objects; pages must not parse raw fetch responses directly",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Extract shared workspace UI primitives",
+      "description": "As a developer, I want reusable workspace UI primitives so future pages can share consistent input, action, status, and result layout patterns.",
+      "acceptanceCriteria": [
+        "Add shared components for status message, action button state, and result section layout",
+        "Components do not include Dictionary-specific business wording unless passed as props",
+        "No card-inside-card layout is introduced",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Add Dictionary workspace state model",
+      "description": "As a developer, I want Dictionary Pro page state to be explicit so that the UI can manage input, request status, results, and errors predictably.",
+      "acceptanceCriteria": [
+        "Dictionary page state includes input text, loading state, error message, backend status, and last result",
+        "Empty input cannot trigger a lookup",
+        "Starting a lookup clears stale errors",
+        "Failed lookup preserves the user's input",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Add backend availability feedback",
+      "description": "As a learner, I want the desktop app to show whether the local SPARK backend is reachable so that I know why lookups may fail.",
+      "acceptanceCriteria": [
+        "Dictionary page checks GET /api/health when the page opens or when the user manually refreshes status",
+        "Backend status is shown as reachable, unavailable, or checking",
+        "If backend is unavailable, Dictionary lookup controls remain visible and submit shows a clear local-backend error path",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Wire Dictionary Pro page to local API",
+      "description": "As a learner, I want to enter an informal expression and get Dictionary Pro output in the desktop app so that I can use the app as a real study workspace.",
+      "acceptanceCriteria": [
+        "Dictionary page has a primary input for an expression such as a big deal",
+        "Dictionary page has a visible action button that triggers POST /api/dict/lookup through the shared API client",
+        "While the request is running, the page shows a non-blocking loading state",
+        "Successful response renders at least original expression, academic alternative, register notes, and examples when available from the API response",
+        "Failed response shows a concise error message without clearing the input",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
