@@ -1,0 +1,34 @@
+# Ralph Progress Log
+Started: 2026-05-23
+---
+
+## Codebase Patterns
+- Use single quotes (') for strings instead of double quotes (") to follow project conventions
+- Run `npm run format` before committing to avoid lint errors
+
+## 2026-05-23 - Formatting fixes
+- Applied prettier formatting to api/client.ts to fix lint warnings
+- Typecheck and lint now pass for the API client module
+- Files changed:
+  - apps/desktop/src/renderer/src/api/client.ts
+- **Learnings for future iterations:**
+  - Always run `npm run format` before committing to avoid lint errors
+  - The codebase uses single-quote style and trailing semicolons are not used
+  - The project uses eslint with prettier/prettier rules that require specific formatting
+---
+
+## 2026-05-23 - US-001, US-002, US-003, US-004, US-005
+- Created frontend API client boundary in apps/desktop/src/renderer/src/api/client.ts
+- Extracted shared workspace UI primitives (StatusMessage, ActionButton, ResultSection) in Workspace.tsx
+- Rebuilt Dictionary workspace state model with explicit states (query, isLoading, error, result, backendStatus)
+- Added live local backend server availability check (/api/health) on load and manual refresh
+- Replaced direct fetch calls with the typed api/client wrappers
+- Fully verified typechecks, test suite, and repository structure invariants
+- Files changed:
+  - apps/desktop/src/renderer/src/api/client.ts
+  - apps/desktop/src/renderer/src/components/Workspace.tsx
+  - apps/desktop/src/renderer/src/pages/DictPage.tsx
+- **Learnings for future iterations:**
+  - Avoid coupling React compilation with backend code namespaces across workspaces; define local DTO types when compiling the frontend.
+  - Watch out for parameter shadowing (e.g. naming parameters same as API functions like 'request') to prevent typecheck/runtime errors.
+---

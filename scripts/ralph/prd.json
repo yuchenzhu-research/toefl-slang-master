@@ -1,83 +1,119 @@
 {
   "project": "SPARK",
-  "branchName": "ralph/frontend-evolution",
-  "description": "Frontend Evolution - turn the desktop app into a real Dictionary Pro learning workspace with reusable API and UI foundations",
+  "branchName": "ralph/agent-workspace-cli-gui",
+  "description": "Agent Workspace CLI + GUI - build a Claude Code/OpenClaw-inspired command-first learning workspace with an ALET-inspired desktop interface",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Create frontend API client boundary",
-      "description": "As a developer, I want a shared frontend API client so that renderer pages call local SPARK APIs through one maintained boundary.",
+      "title": "Create interface reference notes",
+      "description": "As a developer, I want concise reference notes from ALET, Claude Code, and OpenClaw so that implementation agents know the design direction without copying external code.",
       "acceptanceCriteria": [
-        "Add a shared API client module under apps/desktop/src/renderer/src/",
-        "Client exposes typed functions for GET /api/health and POST /api/dict/lookup",
-        "Client has one configurable API base URL with http://localhost:4173 as the local default",
-        "Client returns structured success and error objects; pages must not parse raw fetch responses directly",
+        "Add docs/frontend-interface-reference.md",
+        "Document ALET-inspired visual principles: horizontal layout, small type, light surface, interactive movement, image rhythm",
+        "Document Claude Code-inspired CLI principles from /Users/yuchenzhu/Desktop/claude-code-source-code-main: command input, session log, tool/status messages, keyboard-first flow",
+        "Document OpenClaw-inspired architecture principles from references/openclaw: agent workspace, plugin/extension boundaries, not copying runtime code",
+        "Include explicit non-copying rule: references inform patterns only",
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": true,
+      "passes": false,
       "notes": ""
     },
     {
       "id": "US-002",
-      "title": "Extract shared workspace UI primitives",
-      "description": "As a developer, I want reusable workspace UI primitives so future pages can share consistent input, action, status, and result layout patterns.",
+      "title": "Define shared interface domain model",
+      "description": "As a developer, I want CLI and GUI to share one small interface domain model so both versions can evolve consistently.",
       "acceptanceCriteria": [
-        "Add shared components for status message, action button state, and result section layout",
-        "Components do not include Dictionary-specific business wording unless passed as props",
-        "No card-inside-card layout is introduced",
+        "Add a shared TypeScript model for workspace sessions, commands, command results, artifacts, and tool/status events",
+        "Model lives under src/platform/ or another existing platform boundary, not inside a page component",
+        "Field names are English and locale-neutral",
+        "Add unit tests for at least one session lifecycle and one command result shape",
         "Typecheck passes",
-        "Verify in browser using dev-browser skill"
+        "Tests pass"
       ],
       "priority": 2,
-      "passes": true,
+      "passes": false,
       "notes": ""
     },
     {
       "id": "US-003",
-      "title": "Add Dictionary workspace state model",
-      "description": "As a developer, I want Dictionary Pro page state to be explicit so that the UI can manage input, request status, results, and errors predictably.",
+      "title": "Add agent workspace CLI skeleton",
+      "description": "As a learner, I want a SPARK CLI workspace mode so that I can run study commands in a continuous terminal session.",
       "acceptanceCriteria": [
-        "Dictionary page state includes input text, loading state, error message, backend status, and last result",
-        "Empty input cannot trigger a lookup",
-        "Starting a lookup clears stale errors",
-        "Failed lookup preserves the user's input",
-        "Typecheck passes"
+        "Add a CLI command such as spark workspace or spark agent with help text",
+        "CLI accepts at least one command-oriented input path for Dictionary Pro dry-run lookup",
+        "CLI prints a session header, command echo, status line, and artifact/result summary",
+        "Existing spark studio behavior remains available",
+        "Update README command surface if a new command is added",
+        "Typecheck passes",
+        "Tests pass"
       ],
       "priority": 3,
-      "passes": true,
+      "passes": false,
       "notes": ""
     },
     {
       "id": "US-004",
-      "title": "Add backend availability feedback",
-      "description": "As a learner, I want the desktop app to show whether the local SPARK backend is reachable so that I know why lookups may fail.",
+      "title": "Build desktop command dock layout",
+      "description": "As a learner, I want the desktop app to present a command dock and horizontal workspace so that SPARK feels like an agent workspace rather than a static module menu.",
       "acceptanceCriteria": [
-        "Dictionary page checks GET /api/health when the page opens or when the user manually refreshes status",
-        "Backend status is shown as reachable, unavailable, or checking",
-        "If backend is unavailable, Dictionary lookup controls remain visible and submit shows a clear local-backend error path",
+        "Desktop landing/workspace view includes a command dock with input, mode selector, and primary run action",
+        "Layout uses horizontal workspace lanes or panels inspired by ALET without becoming a portfolio page",
+        "Visual style uses small precise type, light surface, restrained controls, and stable dimensions",
+        "Existing navigation to Dictionary, Style, Coach, Content, and Settings remains reachable",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
       "priority": 4,
-      "passes": true,
+      "passes": false,
       "notes": ""
     },
     {
       "id": "US-005",
-      "title": "Wire Dictionary Pro page to local API",
-      "description": "As a learner, I want to enter an informal expression and get Dictionary Pro output in the desktop app so that I can use the app as a real study workspace.",
+      "title": "Add session timeline panel",
+      "description": "As a learner, I want to see previous commands and status events so that I can understand what the learning agent has done.",
       "acceptanceCriteria": [
-        "Dictionary page has a primary input for an expression such as a big deal",
-        "Dictionary page has a visible action button that triggers POST /api/dict/lookup through the shared API client",
-        "While the request is running, the page shows a non-blocking loading state",
-        "Successful response renders at least original expression, academic alternative, register notes, and examples when available from the API response",
-        "Failed response shows a concise error message without clearing the input",
+        "Desktop workspace includes a session timeline panel",
+        "Timeline can display command submitted, backend checking, lookup completed, and error event states",
+        "Timeline state is local in this phase and does not require persistence",
+        "Timeline uses the shared interface domain model from US-002 if available",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
       "priority": 5,
-      "passes": true,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Add artifact preview rail",
+      "description": "As a learner, I want a preview rail for Markdown/JSON-style outputs so that SPARK's artifact-first model is visible in the GUI.",
+      "acceptanceCriteria": [
+        "Desktop workspace includes an artifact preview rail or panel",
+        "Rail can show at least Dictionary markdown output and structured metadata summary",
+        "Empty state explains no artifact has been generated yet without long tutorial copy",
+        "Layout remains readable on laptop-sized desktop windows",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Align Dictionary page with agent workspace shell",
+      "description": "As a learner, I want Dictionary Pro to run inside the new workspace shell so that the first real workflow demonstrates the future CLI/GUI model.",
+      "acceptanceCriteria": [
+        "Dictionary lookup can be triggered from the command dock or Dictionary page using the same API client",
+        "Lookup result updates the session timeline and artifact preview rail",
+        "Backend unavailable and lookup error states appear in the workspace shell",
+        "Existing Dictionary page behavior does not regress",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 7,
+      "passes": false,
       "notes": ""
     }
   ]
