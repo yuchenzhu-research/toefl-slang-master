@@ -1,18 +1,18 @@
-export type PageId = "style" | "dict" | "coach" | "content" | "settings";
+export type PageId = 'style' | 'dict' | 'coach' | 'content' | 'settings'
 
 interface SidebarProps {
-  currentPage: PageId | null;
-  onNavigate: (page: PageId) => void;
-  onHome: () => void;
+  currentPage: PageId | null
+  onNavigate: (page: PageId) => void
+  onHome: () => void
 }
 
 const navItems: Array<{ id: PageId; label: string }> = [
-  { id: "style", label: "Style" },
-  { id: "dict", label: "Dict" },
-  { id: "coach", label: "Coach" },
-  { id: "content", label: "Content" },
-  { id: "settings", label: "Settings" }
-];
+  { id: 'style', label: 'Style' },
+  { id: 'dict', label: 'Dict' },
+  { id: 'coach', label: 'Coach' },
+  { id: 'content', label: 'Content' },
+  { id: 'settings', label: 'Settings' }
+]
 
 export function Sidebar({ currentPage, onNavigate, onHome }: SidebarProps) {
   return (
@@ -33,7 +33,7 @@ export function Sidebar({ currentPage, onNavigate, onHome }: SidebarProps) {
         {navItems.map((item) => (
           <button
             key={item.id}
-            className={`nav-link ${currentPage === item.id ? "active" : ""}`}
+            className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
             type="button"
             onClick={() => onNavigate(item.id)}
           >
@@ -42,5 +42,5 @@ export function Sidebar({ currentPage, onNavigate, onHome }: SidebarProps) {
         ))}
       </div>
     </nav>
-  );
+  )
 }
