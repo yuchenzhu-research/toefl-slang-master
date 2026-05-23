@@ -429,6 +429,11 @@ locale 的根本规则以 `docs/i18n.md` 和 `CONSTITUTION.md` 为准。
 - schema / validator
 - docs sync
 
+当前已有的结构守卫：
+
+- `tests/repository-structure.test.ts`
+  防止桌面 workspace、lockfile、locale README、CHANGELOG / DEVLOG 维护要求和 CI 基线再次漂移。
+
 维护原则：
 
 1. 结构性变更优先补守卫测试
