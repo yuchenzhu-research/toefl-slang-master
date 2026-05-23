@@ -123,7 +123,6 @@ cargo install --path .
 ## 相关链接
 
 - [GitHub](https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_NAME}})
-- [更新日志](CHANGELOG.md)
 - [贡献指南](CONTRIBUTING.md)
 
 ---

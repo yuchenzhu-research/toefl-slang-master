@@ -28,8 +28,15 @@
     "content:dry": "ts-node src/content-parser/index.ts --file README.md --focus full --dry-run",
     "dict:eval": "ts-node src/dictionary-pro/eval-cli.ts",
     "test": "npm run test:ci",
-    "test:ci": "rm -rf dist && tsc && node --test dist/tests/*.test.js"
+    "test:ci": "rm -rf dist && tsc && node --test dist/tests/*.test.js",
+    "desktop:dev": "npm run dev --prefix apps/desktop",
+    "desktop:build": "npm run build --prefix apps/desktop",
+    "desktop:build:mac": "npm run build:mac --prefix apps/desktop",
+    "desktop:build:win": "npm run build:win --prefix apps/desktop"
   },
+  "workspaces": [
+    "apps/desktop"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yuchenzhu-research/toefl-slang-master.git"

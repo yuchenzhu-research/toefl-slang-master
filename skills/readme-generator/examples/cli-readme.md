@@ -74,7 +74,6 @@ devtool [command] [options]
 | create | c | 创建新项目 | `devtool create my-app` |
 | generate | g | 生成代码 | `devtool generate component` |
 | serve | s | 启动本地服务 | `devtool serve -p 8080` |
-| git-changelog | - | 生成 Git 变更日志 | `devtool git-changelog` |
 | npm-speedup | - | 加速 npm 源 | `devtool npm-speedup` |
 | --help | h | 显示帮助 | `devtool --help` |
 | --version | v | 显示版本 | `devtool --version` |
@@ -93,9 +92,6 @@ devtool g component Header
 
 # 启动本地服务
 devtool s -p 3000 -o
-
-# 生成变更日志
-devtool git-changelog --format markdown
 
 # 加速 npm
 devtool npm-speedup --registry taobao
@@ -168,7 +164,6 @@ MIT License
 ## 相关链接
 
 - [GitHub](https://github.com/user/devtool)
-- [更新日志](CHANGELOG.md)
 - [贡献指南](CONTRIBUTING.md)
 
 ---

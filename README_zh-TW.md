@@ -3,7 +3,7 @@
 > **打破學術英語 (TOEFL) 與道地美式表達 (Slang) 的高牆。**
 > 讓《經濟學人》等閱讀素材一魚兩吃：既能提分，又能像 Local 一樣說話。
 
-[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
+[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](docs/locales/README_ja.md) | [한국어](docs/locales/README_ko.md) | [Español](docs/locales/README_es.md) | [Français](docs/locales/README_fr.md) | [Deutsch](docs/locales/README_de.md)
 
 ---
 
@@ -71,6 +71,17 @@ spark web --port 4173
 - `GET /api/health`
 - `POST /api/dict/lookup`：Dictionary Pro 查詞，返回俚語/語域資訊和學術對照；預設 `dryRun: true`
 - `POST /api/style/economist`：確定性的 Economist 風格特徵分析
+
+## 🖼️ 桌面端應用
+
+Electron 前端位於 `apps/desktop`，作為 npm workspace 管理。根 `package.json` 仍是倉庫 scripts 與依賴入口的權威來源。
+
+```bash
+npm run desktop:dev
+npm run desktop:build
+```
+
+前端架構與演進規則見 `docs/frontend.md`。
 
 ## 🧠 Economist 風格分析
 
@@ -165,4 +176,3 @@ spark dict "gonna" --provider siliconflow-minimax
 ## 💂 安全與隱私
 
 **純 API 模式**：本工具不設中心化伺服器。你的 API Key (OpenAI, Gemini, Anthropic, SiliconFlow) 和所有學習數據均嚴格保留在你的本地機器上。
-

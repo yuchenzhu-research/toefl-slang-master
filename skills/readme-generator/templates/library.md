@@ -77,14 +77,6 @@ pnpm add {{PROJECT_NAME}}
 
 {{BROWSER_SUPPORT_TABLE}}
 
-## 更新日志
-
-### {{LATEST_VERSION}}
-
-{{LATEST_CHANGES}}
-
-查看 [完整更新日志](CHANGELOG.md)
-
 ## 常见问题
 
 <details>
@@ -123,7 +115,6 @@ pnpm add {{PROJECT_NAME}}
 ## 相关链接
 
 - [API 文档]({{API_DOC_URL}})
-- [更新日志](CHANGELOG.md)
 - [贡献指南](CONTRIBUTING.md)
 
 ---

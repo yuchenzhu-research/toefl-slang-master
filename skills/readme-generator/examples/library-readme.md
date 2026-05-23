@@ -143,16 +143,6 @@ const formatDate: DateUtil = (date: Date, format: string): string => {
 | Safari | 14+ |
 | Edge | 最新 |
 
-## 更新日志
-
-### v2.0.0
-
-- 新增 DOM 操作工具函数
-- 优化日期处理性能
-- 修复 isEmpty 函数类型问题
-
-查看 [完整更新日志](CHANGELOG.md)
-
 ## 常见问题
 
 <details>
@@ -180,7 +170,6 @@ MIT License
 ## 相关链接
 
 - [API 文档](https://use-toolkit.dev/docs/api)
-- [更新日志](CHANGELOG.md)
 - [贡献指南](CONTRIBUTING.md)
 
 ---

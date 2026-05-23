@@ -44,6 +44,8 @@
   Markdown / JSON 本地产物设计与输出纪律。
 - `docs/connectors/*`
   connector contract、中间对象映射与桥接边界。
+- `docs/frontend.md`
+  桌面前端 workspace、依赖边界与演进顺序。
 
 维护原则：
 
@@ -66,10 +68,9 @@
 ├─ README.md
 ├─ README_zh-CN.md
 ├─ README_zh-TW.md
-├─ CHANGELOG.md
-├─ DEVLOG.md
 ├─ package.json
 ├─ tsconfig.json
+├─ apps/
 ├─ bin/
 ├─ docs/
 ├─ skills/
@@ -80,8 +81,8 @@
 
 说明：
 
-- `CHANGELOG.md` / `DEVLOG.md` 当前已存在，但工程流程尚未像成熟仓库那样完全收紧
 - `references/` 仅供参考，不属于主项目源码边界
+- `apps/desktop/` 是 Electron 桌面前端 workspace；根 `package.json` 和根 `package-lock.json` 仍是仓库级入口
 
 ### 3.2 `src/`
 
@@ -113,8 +114,20 @@
   - `runner.ts` — 引导式流程编排，调用现有 runner + OutputManager
   - `index.ts` — CLI 入口，暴露 runStudioModuleCli
 
+### 3.3 `apps/desktop/`
 
-### 3.3 `skills/`
+`apps/desktop/` 是 Electron + React 桌面端。它是应用层，不是平台层。
+
+维护原则：
+
+- 前端通过稳定 CLI/API/contract 接入能力，不复制 `src/` 业务逻辑
+- workspace 可以保留自己的 `package.json` 描述 Electron/Vite 脚本和依赖
+- 根 `package-lock.json` 是唯一 lockfile，不维护 `apps/desktop/package-lock.json`
+- 根 `package.json` 暴露 `desktop:*` 脚本，避免使用者进入子目录猜命令
+- Electron 构建资源属于前端源资产；`dist/`、`out/`、`node_modules/` 属于本地生成物
+
+
+### 3.4 `skills/`
 
 `skills/` 保存项目级 skill 资产，例如：
 
@@ -127,7 +140,7 @@
 - `skills/` 是项目资产，不等于运行时代码
 - 不应把 `skills/` 内容和 `src/` 业务实现混在一起
 
-### 3.4 `references/`
+### 3.5 `references/`
 
 `references/` 仅存放外部参考材料和外部项目本地挂载点。
 
@@ -136,7 +149,7 @@
 - 不把 `references/` 当主项目代码边界
 - 参考其思想可以，但不要直接以其中实现作为主项目源码修改目标
 
-### 3.5 `tests/`
+### 3.6 `tests/`
 
 当前测试基线仍很薄，说明项目还处于早期工程化阶段。  
 后续新增结构性改动时，应逐步补齐：
@@ -221,6 +234,15 @@
 - `README*.md`
 - `.github/workflows/ci.yml`
 - CLI tests
+
+### 5.6 如果改动桌面前端
+
+- `apps/desktop/package.json`
+- 根 `package.json`
+- 根 `package-lock.json`
+- `docs/frontend.md`
+- README 的桌面端说明
+- 必要时检查 web API / contract / provider runtime
 
 ---
 
@@ -364,16 +386,18 @@ locale 的根本规则以 `docs/i18n.md` 和 `CONSTITUTION.md` 为准。
 
 ### 10.2 `package.json` 的角色
 
-`package.json` 当前是：
+根 `package.json` 当前是：
 
 - 依赖来源
 - scripts 来源
 - bin 注册来源
+- workspace 声明来源
 
 因此：
 
 - 新增入口必须同步 `package.json`
 - 不能让 README、bin、scripts、源码入口长期漂移
+- workspace 子包不维护第二份 lockfile；依赖锁定统一在根 `package-lock.json`
 
 ### 10.3 当前工程现实
 

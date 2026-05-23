@@ -37,6 +37,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 node_modules/
+out/
+apps/*/package-lock.json
+
+# Desktop release resources are source assets, not generated build output.
+!apps/desktop/build/
+!apps/desktop/build/**
 
 # Temporary
 *.tmp

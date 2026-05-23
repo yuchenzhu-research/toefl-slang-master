@@ -3,7 +3,7 @@
 > **アカデミックな英語（TOEFL）と本場のアメリカ英語（Slang）の壁を打ち破る。**
 > 『エコノミスト』などの素材をフル活用。スコアアップとネイティブのような表現力、どちらも妥協しない！
 
-[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
+[English](../../README.md) | [简体中文](../../README_zh-CN.md) | [繁體中文](../../README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
 
 ---
 

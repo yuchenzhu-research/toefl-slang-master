@@ -93,6 +93,12 @@
 - `references/` 不属于主项目源码边界。
 - 外部参考实现不可被默认视为主项目实现。
 
+### 3.5 Frontend Is An App Layer
+
+- 桌面前端属于 `apps/desktop/`，不是新的平台核心。
+- 前端应消费稳定 CLI/API/contract，不复制 `src/` 业务逻辑。
+- UI 演进必须晚于 contract、输出和 provider runtime 的收口。
+
 ---
 
 ## 4. Quality Gates
@@ -107,6 +113,7 @@
 
 - `package.json` 是 npm scripts、bin 注册和依赖声明的唯一事实来源。
 - 新增入口、新增依赖或脚本变更必须同步 `package.json`。
+- workspace 可拥有自己的 `package.json`，但根 `package-lock.json` 是唯一依赖锁定来源。
 
 ### 4.3 User Docs Must Reflect Reality
 
@@ -157,6 +164,7 @@
 - provider runtime 细节泄漏到业务层
 - locale 规则落不到运行时却继续扩面
 - connector 过早膨胀成平台
+- 前端绕过 contract 直接复制业务逻辑
 - README 愿景持续领先于真实实现
 - tests / CI / scripts / docs 同步失效
 

@@ -3,7 +3,7 @@
 > **打破学术英语 (TOEFL) 与地道美式表达 (Slang) 的围墙。**
 > 让《经济学人》素材一鱼两吃：既能提分，又能像 Local 一样说话。
 
-[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
+[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](docs/locales/README_ja.md) | [한국어](docs/locales/README_ko.md) | [Español](docs/locales/README_es.md) | [Français](docs/locales/README_fr.md) | [Deutsch](docs/locales/README_de.md)
 
 ---
 
@@ -70,6 +70,17 @@ spark web --port 4173
 - `GET /api/health`
 - `POST /api/dict/lookup`：Dictionary Pro 查词，返回俚语/语域信息和学术对标；默认 `dryRun: true`
 - `POST /api/style/economist`：确定性的 Economist 风格特征分析
+
+## 🖼️ 桌面端应用
+
+Electron 前端位于 `apps/desktop`，作为 npm workspace 管理。根 `package.json` 仍是仓库 scripts 与依赖入口的权威来源。
+
+```bash
+npm run desktop:dev
+npm run desktop:build
+```
+
+前端架构与演进规则见 `docs/frontend.md`。
 
 ## 🧠 Economist 风格分析
 

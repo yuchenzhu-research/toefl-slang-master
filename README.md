@@ -3,7 +3,7 @@
 > **Bridging the gap between academic TOEFL English and authentic American slang.**
 > Extract maximum value from reading materials: boost your scores AND speak like a local.
 
-[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
+[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](docs/locales/README_ja.md) | [한국어](docs/locales/README_ko.md) | [Español](docs/locales/README_es.md) | [Français](docs/locales/README_fr.md) | [Deutsch](docs/locales/README_de.md)
 
 ---
 
@@ -71,6 +71,17 @@ Current backend endpoints:
 - `GET /api/health`
 - `POST /api/dict/lookup` — Dictionary Pro lookup with slang/register output and academic alignment. Defaults to `dryRun: true`.
 - `POST /api/style/economist` — deterministic Economist-style feature analysis.
+
+## 🖼️ Desktop App
+
+The Electron frontend lives in `apps/desktop` as an npm workspace. The root `package.json` remains the authoritative script and dependency entry point for the repository.
+
+```bash
+npm run desktop:dev
+npm run desktop:build
+```
+
+Frontend architecture and evolution rules are documented in `docs/frontend.md`.
 
 ## 🧠 Economist Style Analysis
 

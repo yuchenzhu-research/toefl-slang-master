@@ -3,7 +3,7 @@
 > **Cerrando la brecha entre el inglés académico del TOEFL y el argot estadounidense auténtico.**
 > Extraiga el máximo valor de sus lecturas: mejore sus puntajes Y hable como un local.
 
-[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
+[English](../../README.md) | [简体中文](../../README_zh-CN.md) | [繁體中文](../../README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
 
 ---
 

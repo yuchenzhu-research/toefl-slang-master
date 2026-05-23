@@ -30,6 +30,7 @@
    - `tsconfig.json`
 4. 再检查与当前任务直接相关的：
    - `src/` 下对应模块
+   - `apps/desktop/` 下的桌面前端
    - `tests/` 下对应测试
    - `.github/workflows/ci.yml`
 5. 完成审计后，再实施修改
@@ -65,6 +66,8 @@
 
 - `src/`
   主项目源码边界
+- `apps/desktop/`
+  Electron 桌面前端 workspace
 - `docs/`
   专题设计与约束说明
 - `tests/`
@@ -80,6 +83,7 @@
 - provider runtime 相关逻辑优先收口在平台层
 - 业务模块内如有跨模块重复，优先考虑共享 contract 或共享 runtime
 - connector 是桥接层，不是新的平台核心
+- 前端只消费稳定 CLI/API/contract，不直接复制业务模块逻辑
 
 ---
 
@@ -140,6 +144,7 @@
 ## 6. Package / Script / CI Rules
 
 - `package.json` 是 npm scripts、bin 注册和依赖声明的唯一事实来源
+- 根 `package-lock.json` 是依赖锁定的唯一事实来源；workspace 内不维护第二份 lockfile
 - 不要默默增加新的运行入口而不同步 `package.json`
 - 不要让 README、bin、scripts、实际入口长期漂移
 - `.github/workflows/ci.yml` 应与当前 scripts 和测试集保持一致
@@ -162,8 +167,6 @@
 
 1. 是否形成了新的 commits
 2. 当前分支
-3. 是否需要更新 `DEVLOG.md` / `CHANGELOG.md`
-4. 若未更新，说明原因
 
 ---
 

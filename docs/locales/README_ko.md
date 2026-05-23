@@ -3,7 +3,7 @@
 > **학술적인 영어(TOEFL)와 실제 미국식 영어(Slang) 사이의 장벽을 허물다.**
 > 리딩 자료의 가치를 극대화하세요: 점수 향상과 원어민 같은 표현력을 동시에 잡으세요.
 
-[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
+[English](../../README.md) | [简体中文](../../README_zh-CN.md) | [繁體中文](../../README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Español](README_es.md) | [Français](README_fr.md) | [Deutsch](README_de.md)
 
 ---
 
