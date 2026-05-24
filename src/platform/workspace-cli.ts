@@ -15,6 +15,34 @@ import { WorkspaceCommandResult } from "./contracts";
 import { analyzeEconomistStyle, renderStyleAnalysis } from "../style-engine/analyzer";
 
 
+/**
+ * Renders a workspace event with a compact symbol and label suitable for CLI.
+ */
+export function renderWorkspaceEvent(evt: any): void {
+  let symbol = " ";
+  switch (evt.type) {
+    case "command-submitted":
+      symbol = "➜";
+      break;
+    case "backend-checking":
+    case "tool-running":
+      symbol = "⚙";
+      break;
+    case "artifact-created":
+      symbol = "▤";
+      break;
+    case "complete":
+      symbol = "✔";
+      break;
+    case "error":
+      symbol = "✘";
+      break;
+  }
+  const typeLabel = evt.type.toUpperCase();
+  console.log(`[Event] [${typeLabel}]  ${symbol}  ${evt.message}`);
+}
+
+
 function createRl(): readline.Interface {
   return readline.createInterface({
     input: process.stdin,
@@ -61,11 +89,11 @@ export async function executeWorkspaceCliCommand(
   if (command === "dict") {
     // 1. Evt: submitted
     const evt1 = createCommandSubmittedEvent(inputText);
-    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+    renderWorkspaceEvent(evt1);
 
     // 2. Evt: tool-running (dry-run)
     const evt2 = createToolRunningEvent("dictionary_lookup", "Running Dictionary Pro in dry-run mode...");
-    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+    renderWorkspaceEvent(evt2);
 
     // 3. Normalization (dry-run mode)
     const query = { id: commandId, text: args, dryRun: true };
@@ -74,12 +102,12 @@ export async function executeWorkspaceCliCommand(
     // 4. Evts: artifact created
     for (const art of result.artifacts) {
       const evtArt = createArtifactCreatedEvent(art.id, art.title);
-      console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+      renderWorkspaceEvent(evtArt);
     }
 
     // 5. Evt: complete
     const evtComp = createWorkspaceCompleteEvent();
-    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+    renderWorkspaceEvent(evtComp);
 
     // 6. Print Artifact Summary
     console.log("\nGenerated Artifacts:");
@@ -102,11 +130,11 @@ export async function executeWorkspaceCliCommand(
   if (command === "style") {
     // 1. Evt: submitted
     const evt1 = createCommandSubmittedEvent(inputText);
-    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+    renderWorkspaceEvent(evt1);
 
     // 2. Evt: tool-running
     const evt2 = createToolRunningEvent("style_analyzer", "Analyzing Economist prose style...");
-    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+    renderWorkspaceEvent(evt2);
 
     // 3. Style analysis
     const analysisResult = analyzeEconomistStyle(args);
@@ -118,11 +146,11 @@ export async function executeWorkspaceCliCommand(
       markdownContent
     );
     const evtArt = createArtifactCreatedEvent(art.id, art.title);
-    console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+    renderWorkspaceEvent(evtArt);
 
     // 5. Evt: complete
     const evtComp = createWorkspaceCompleteEvent();
-    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+    renderWorkspaceEvent(evtComp);
 
     // 6. Print Compact Result Summary
     console.log("\nStyle Analysis Result Summary:");
@@ -144,11 +172,11 @@ export async function executeWorkspaceCliCommand(
   if (command === "coach") {
     // 1. Evt: submitted
     const evt1 = createCommandSubmittedEvent(inputText);
-    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+    renderWorkspaceEvent(evt1);
 
     // 2. Evt: tool-running
     const evt2 = createToolRunningEvent("toefl_coach", "Running TOEFL Coach in dry-run mode...");
-    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+    renderWorkspaceEvent(evt2);
 
     // 3. Dry-run planned workflow summary output
     console.log("[DRY RUN] /coach");
@@ -160,11 +188,11 @@ export async function executeWorkspaceCliCommand(
       `# TOEFL Coach Diagnosis (Dry Run)\n\nInput text: "${args}"\n\nPlanned workflow:\nTOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard`
     );
     const evtArt = createArtifactCreatedEvent(art.id, art.title);
-    console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+    renderWorkspaceEvent(evtArt);
 
     // 5. Evt: complete
     const evtComp = createWorkspaceCompleteEvent();
-    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+    renderWorkspaceEvent(evtComp);
 
     // 6. Print Artifact Summary
     console.log("\nGenerated Artifacts:");
@@ -181,13 +209,13 @@ export async function executeWorkspaceCliCommand(
   if (command === "content") {
     // 1. Evt: submitted
     const evt1 = createCommandSubmittedEvent(inputText);
-    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+    renderWorkspaceEvent(evt1);
 
     // 2. Validate path
     if (!args) {
       const errorMsg = "File path is required";
       const evtErr = createWorkspaceErrorEvent(errorMsg);
-      console.log(`[Event] [${evtErr.type.toUpperCase()}] ${evtErr.message}`);
+      renderWorkspaceEvent(evtErr);
 
       const art = createErrorArtifact("Content Parsing Error", errorMsg);
       console.log(`\nGenerated Artifacts:`);
@@ -205,7 +233,7 @@ export async function executeWorkspaceCliCommand(
     if (!fs.existsSync(args)) {
       const errorMsg = `File not found: ${args}`;
       const evtErr = createWorkspaceErrorEvent(errorMsg);
-      console.log(`[Event] [${evtErr.type.toUpperCase()}] ${evtErr.message}`);
+      renderWorkspaceEvent(evtErr);
 
       const art = createErrorArtifact("Content Parsing Error", errorMsg);
       console.log(`\nGenerated Artifacts:`);
@@ -222,7 +250,7 @@ export async function executeWorkspaceCliCommand(
 
     // 3. Evt: tool-running
     const evt2 = createToolRunningEvent("content_parser", "Running Content Parser in dry-run mode...");
-    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+    renderWorkspaceEvent(evt2);
 
     // 4. Dry-run planned workflow summary output
     console.log("[DRY RUN] /content");
@@ -234,11 +262,11 @@ export async function executeWorkspaceCliCommand(
       `# Content Digest (Dry Run)\n\nFile parsed: "${args}"\n\nPlanned workflow:\nContent Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard`
     );
     const evtArt = createArtifactCreatedEvent(art.id, art.title);
-    console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+    renderWorkspaceEvent(evtArt);
 
     // 6. Evt: complete
     const evtComp = createWorkspaceCompleteEvent();
-    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+    renderWorkspaceEvent(evtComp);
 
     // 7. Print Artifact Summary
     console.log("\nGenerated Artifacts:");

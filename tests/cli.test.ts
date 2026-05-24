@@ -208,6 +208,27 @@ test("workspace CLI executes /content with missing or empty path and returns err
   assert.ok(outputNonexistent.includes("Error: File not found: nonexistent-file-xyz.md"));
 });
 
+test("workspace CLI renders successful command timeline with correct symbols", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/dict piece of cake");
+  });
+
+  assert.ok(output.includes("➜"));
+  assert.ok(output.includes("⚙"));
+  assert.ok(output.includes("▤"));
+  assert.ok(output.includes("✔"));
+});
+
+test("workspace CLI renders error command timeline with correct symbols", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/content nonexistent-file-xyz.md");
+  });
+
+  assert.ok(output.includes("➜"));
+  assert.ok(output.includes("✘"));
+});
+
+
 
 
 
