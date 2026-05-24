@@ -20,6 +20,15 @@
   --radius-lg: 8px;
   --shadow: 0 28px 80px rgba(25, 24, 20, 0.22);
   --transition: 420ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ALET-inspired workspace design system tokens */
+  --surface-light: #faf9f6;          /* Clean, warm, high-craft light background surface */
+  --ink-workspace: #181816;          /* Dark charcoal ink for readable text */
+  --accent-workspace: #b85a3c;       /* Warm terracotta/rust accent (no purple-blue gradients) */
+  --accent-workspace-rgb: 184, 90, 60;
+  --grid-line: rgba(24, 24, 22, 0.07);/* Delicate grid lines for workspace alignment */
+  --panel-shadow: 0 8px 32px rgba(24, 24, 22, 0.05); /* Soft depth layer representing elevation */
+  --motion-timing: 380ms cubic-bezier(0.16, 1, 0.3, 1); /* Elegant responsive animation curves */
 }
 
 * {
