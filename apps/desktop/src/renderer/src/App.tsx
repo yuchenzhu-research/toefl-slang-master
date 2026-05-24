@@ -12,7 +12,8 @@ import { Sidebar, PageId } from './components/Sidebar'
 import { CommandDock, WorkspaceMode } from './components/CommandDock'
 import { WorkspaceLane } from './components/WorkspaceLane'
 import { SessionTimeline } from './components/SessionTimeline'
-import { useWorkspace, WorkspaceEvent } from './hooks/useWorkspace'
+import { ArtifactRail } from './components/ArtifactRail'
+import { useWorkspace, WorkspaceEvent, WorkspaceArtifact } from './hooks/useWorkspace'
 import { ToastProvider } from './components/ToastContext'
 import { ICON } from './components/icons'
 import { StylePage } from './pages/StylePage'
@@ -161,6 +162,18 @@ const MOCK_EVENTS: WorkspaceEvent[] = [
   }
 ]
 
+const MOCK_ARTIFACT: WorkspaceArtifact = {
+  id: 'art-demo-001',
+  title: 'Expression Card: a big deal',
+  type: 'markdown',
+  content: `# a big deal\n\n> [!NOTE]\n> DEVELOPMENT DEMO DATA ONLY. This is a mockup of a Dictionary Pro expression card.\n\n**Translation**: 极其重要的事情，大手笔\n\n---\n\n### Academic Alternatives\n1. **a significant milestone / event** (Formal)\n2. **of major import** (Academic)\n3. **a substantial challenge** (ETS context)\n\n---\n\n### Contextual Usage\n* *Informal*: Landing this customer is **a big deal** for our startup.\n* *Academic*: Securing this funding represents **a significant milestone** for the research laboratory.\n`,
+  metadata: {
+    headword: 'a big deal',
+    mode: 'conversion',
+    target: 'toefl-writing'
+  }
+}
+
 function shuffleGallery(): typeof galleryItems {
   return [...galleryItems]
     .map((item) => ({ item, sort: Math.random() }))
@@ -178,7 +191,7 @@ function renderPage(page: PageId): ReactElement {
 }
 
 export default function App(): ReactElement {
-  const { session } = useWorkspace()
+  const { session, activeArtifact, setActiveArtifact } = useWorkspace()
   const [page, setPage] = useState<PageId | null>(null)
   const [randomMode, setRandomMode] = useState(false)
   const [randomItems, setRandomItems] = useState(() => shuffleGallery())
@@ -381,12 +394,22 @@ export default function App(): ReactElement {
 
               {/* Lane 2: Session Timeline Panel */}
               <WorkspaceLane title="Session" className="lane-session">
-                <SessionTimeline events={session?.events || MOCK_EVENTS} />
+                <SessionTimeline
+                  events={session?.events || MOCK_EVENTS}
+                  onArtifactClick={(artifactId) => {
+                    if (artifactId === 'art-demo-001') {
+                      setActiveArtifact(MOCK_ARTIFACT)
+                    } else if (session) {
+                      const found = session.artifacts.find((art) => art.id === artifactId)
+                      if (found) setActiveArtifact(found)
+                    }
+                  }}
+                />
               </WorkspaceLane>
 
               {/* Lane 3: Output Rail Panel */}
               <WorkspaceLane title="Output" className="lane-output">
-                <div className="skeleton-placeholder">Artifact Rail</div>
+                <ArtifactRail activeArtifact={activeArtifact || (session ? null : MOCK_ARTIFACT)} />
               </WorkspaceLane>
 
               {visibleItems.map((item, index) => (
