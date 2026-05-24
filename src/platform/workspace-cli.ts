@@ -116,132 +116,195 @@ export async function executeWorkspaceCliCommand(
   const parsed = parseWorkspaceCommand(inputText);
   const commandId = parsed.id;
 
-  if (!parsed.parsed) {
-    throw new Error("Empty command");
-  }
+  try {
+    if (!parsed.parsed) {
+      throw new Error("Empty command");
+    }
 
-  const { command, args } = parsed.parsed;
+    const { command, args } = parsed.parsed;
 
-  if (command === "dict") {
-    // 1. Evt: submitted
-    const evt1 = createCommandSubmittedEvent(inputText);
-    renderWorkspaceEvent(evt1);
+    if (command === "dict") {
+      // 1. Evt: submitted
+      const evt1 = createCommandSubmittedEvent(inputText);
+      renderWorkspaceEvent(evt1);
 
-    // 2. Evt: tool-running (dry-run)
-    const evt2 = createToolRunningEvent("dictionary_lookup", "Running Dictionary Pro in dry-run mode...");
-    renderWorkspaceEvent(evt2);
+      // 2. Evt: tool-running (dry-run)
+      const evt2 = createToolRunningEvent("dictionary_lookup", "Running Dictionary Pro in dry-run mode...");
+      renderWorkspaceEvent(evt2);
 
-    // 3. Normalization (dry-run mode)
-    const query = { id: commandId, text: args, dryRun: true };
-    const result = normalizeDictionaryLookup(null, query);
+      // 3. Normalization (dry-run mode)
+      const query = { id: commandId, text: args, dryRun: true };
+      const result = normalizeDictionaryLookup(null, query);
 
-    // 4. Evts: artifact created
-    for (const art of result.artifacts) {
+      // 4. Evts: artifact created
+      for (const art of result.artifacts) {
+        const evtArt = createArtifactCreatedEvent(art.id, art.title);
+        renderWorkspaceEvent(evtArt);
+      }
+
+      // 5. Evt: complete
+      const evtComp = createWorkspaceCompleteEvent();
+      renderWorkspaceEvent(evtComp);
+
+      // 6. Print Artifact Summary
+      renderWorkspaceArtifacts(result.artifacts);
+
+      return result;
+    }
+
+    if (command === "style") {
+      // 1. Evt: submitted
+      const evt1 = createCommandSubmittedEvent(inputText);
+      renderWorkspaceEvent(evt1);
+
+      // 2. Evt: tool-running
+      const evt2 = createToolRunningEvent("style_analyzer", "Analyzing Economist prose style...");
+      renderWorkspaceEvent(evt2);
+
+      // 3. Style analysis
+      const analysisResult = analyzeEconomistStyle(args);
+      const markdownContent = renderStyleAnalysis(analysisResult);
+
+      // 4. Create Artifact
+      const art = createMarkdownArtifact(
+        "Style Analysis: Economist Profile",
+        markdownContent
+      );
       const evtArt = createArtifactCreatedEvent(art.id, art.title);
       renderWorkspaceEvent(evtArt);
+
+      // 5. Evt: complete
+      const evtComp = createWorkspaceCompleteEvent();
+      renderWorkspaceEvent(evtComp);
+
+      // 6. Print Compact Result Summary
+      console.log("\nStyle Analysis Result Summary:");
+      console.log(`  - Overall Score: ${analysisResult.overallScore}/100`);
+      console.log(`  - Summary: ${analysisResult.summary}`);
+      if (analysisResult.suggestions.length > 0) {
+        console.log("  - Top Suggestion:");
+        console.log(`    [${analysisResult.suggestions[0].priority}] ${analysisResult.suggestions[0].issue}: ${analysisResult.suggestions[0].action}`);
+      }
+      console.log();
+
+      renderWorkspaceArtifacts([art]);
+
+      return {
+        commandId,
+        status: "success",
+        artifacts: [art]
+      };
     }
 
-    // 5. Evt: complete
-    const evtComp = createWorkspaceCompleteEvent();
-    renderWorkspaceEvent(evtComp);
+    if (command === "coach") {
+      // 1. Evt: submitted
+      const evt1 = createCommandSubmittedEvent(inputText);
+      renderWorkspaceEvent(evt1);
 
-    // 6. Print Artifact Summary
-    renderWorkspaceArtifacts(result.artifacts);
+      // 2. Evt: tool-running
+      const evt2 = createToolRunningEvent("toefl_coach", "Running TOEFL Coach in dry-run mode...");
+      renderWorkspaceEvent(evt2);
 
-    return result;
-  }
+      // 3. Dry-run planned workflow summary output
+      console.log("[DRY RUN] /coach");
+      console.log("planned: TOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard");
 
-  if (command === "style") {
-    // 1. Evt: submitted
-    const evt1 = createCommandSubmittedEvent(inputText);
-    renderWorkspaceEvent(evt1);
+      // 4. Create Artifact
+      const art = createMarkdownArtifact(
+        "TOEFL Coach Diagnosis (Dry Run)",
+        `# TOEFL Coach Diagnosis (Dry Run)\n\nInput text: "${args}"\n\nPlanned workflow:\nTOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard`
+      );
+      const evtArt = createArtifactCreatedEvent(art.id, art.title);
+      renderWorkspaceEvent(evtArt);
 
-    // 2. Evt: tool-running
-    const evt2 = createToolRunningEvent("style_analyzer", "Analyzing Economist prose style...");
-    renderWorkspaceEvent(evt2);
+      // 5. Evt: complete
+      const evtComp = createWorkspaceCompleteEvent();
+      renderWorkspaceEvent(evtComp);
 
-    // 3. Style analysis
-    const analysisResult = analyzeEconomistStyle(args);
-    const markdownContent = renderStyleAnalysis(analysisResult);
+      // 6. Print Artifact Summary
+      renderWorkspaceArtifacts([art]);
 
-    // 4. Create Artifact
-    const art = createMarkdownArtifact(
-      "Style Analysis: Economist Profile",
-      markdownContent
-    );
-    const evtArt = createArtifactCreatedEvent(art.id, art.title);
-    renderWorkspaceEvent(evtArt);
-
-    // 5. Evt: complete
-    const evtComp = createWorkspaceCompleteEvent();
-    renderWorkspaceEvent(evtComp);
-
-    // 6. Print Compact Result Summary
-    console.log("\nStyle Analysis Result Summary:");
-    console.log(`  - Overall Score: ${analysisResult.overallScore}/100`);
-    console.log(`  - Summary: ${analysisResult.summary}`);
-    if (analysisResult.suggestions.length > 0) {
-      console.log("  - Top Suggestion:");
-      console.log(`    [${analysisResult.suggestions[0].priority}] ${analysisResult.suggestions[0].issue}: ${analysisResult.suggestions[0].action}`);
+      return {
+        commandId,
+        status: "success",
+        artifacts: [art]
+      };
     }
-    console.log();
 
-    renderWorkspaceArtifacts([art]);
+    if (command === "content") {
+      // 1. Evt: submitted
+      const evt1 = createCommandSubmittedEvent(inputText);
+      renderWorkspaceEvent(evt1);
 
-    return {
-      commandId,
-      status: "success",
-      artifacts: [art]
-    };
-  }
+      // 2. Validate path
+      if (!args) {
+        const errorMsg = "File path is required";
+        const evtErr = createWorkspaceErrorEvent(errorMsg);
+        renderWorkspaceEvent(evtErr);
 
-  if (command === "coach") {
-    // 1. Evt: submitted
-    const evt1 = createCommandSubmittedEvent(inputText);
-    renderWorkspaceEvent(evt1);
+        const art = createErrorArtifact("Content Parsing Error", errorMsg);
+        renderWorkspaceArtifacts([art]);
 
-    // 2. Evt: tool-running
-    const evt2 = createToolRunningEvent("toefl_coach", "Running TOEFL Coach in dry-run mode...");
-    renderWorkspaceEvent(evt2);
+        return {
+          commandId,
+          status: "error",
+          artifacts: [art],
+          error: errorMsg
+        };
+      }
 
-    // 3. Dry-run planned workflow summary output
-    console.log("[DRY RUN] /coach");
-    console.log("planned: TOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard");
+      if (!fs.existsSync(args)) {
+        const errorMsg = `File not found: ${args}`;
+        const evtErr = createWorkspaceErrorEvent(errorMsg);
+        renderWorkspaceEvent(evtErr);
 
-    // 4. Create Artifact
-    const art = createMarkdownArtifact(
-      "TOEFL Coach Diagnosis (Dry Run)",
-      `# TOEFL Coach Diagnosis (Dry Run)\n\nInput text: "${args}"\n\nPlanned workflow:\nTOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard`
-    );
-    const evtArt = createArtifactCreatedEvent(art.id, art.title);
-    renderWorkspaceEvent(evtArt);
+        const art = createErrorArtifact("Content Parsing Error", errorMsg);
+        renderWorkspaceArtifacts([art]);
 
-    // 5. Evt: complete
-    const evtComp = createWorkspaceCompleteEvent();
-    renderWorkspaceEvent(evtComp);
+        return {
+          commandId,
+          status: "error",
+          artifacts: [art],
+          error: errorMsg
+        };
+      }
 
-    // 6. Print Artifact Summary
-    renderWorkspaceArtifacts([art]);
+      // 3. Evt: tool-running
+      const evt2 = createToolRunningEvent("content_parser", "Running Content Parser in dry-run mode...");
+      renderWorkspaceEvent(evt2);
 
-    return {
-      commandId,
-      status: "success",
-      artifacts: [art]
-    };
-  }
+      // 4. Dry-run planned workflow summary output
+      console.log("[DRY RUN] /content");
+      console.log("planned: Content Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard");
 
-  if (command === "content") {
-    // 1. Evt: submitted
-    const evt1 = createCommandSubmittedEvent(inputText);
-    renderWorkspaceEvent(evt1);
+      // 5. Create Artifact
+      const art = createMarkdownArtifact(
+        "Content Digest (Dry Run)",
+        `# Content Digest (Dry Run)\n\nFile parsed: "${args}"\n\nPlanned workflow:\nContent Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard`
+      );
+      const evtArt = createArtifactCreatedEvent(art.id, art.title);
+      renderWorkspaceEvent(evtArt);
 
-    // 2. Validate path
-    if (!args) {
-      const errorMsg = "File path is required";
+      // 6. Evt: complete
+      const evtComp = createWorkspaceCompleteEvent();
+      renderWorkspaceEvent(evtComp);
+
+      // 7. Print Artifact Summary
+      renderWorkspaceArtifacts([art]);
+
+      return {
+        commandId,
+        status: "success",
+        artifacts: [art]
+      };
+    }
+
+    if (command === "unknown") {
+      const errorMsg = `Unknown command "${inputText}". Supported commands: /dict, /style, /coach, /content, /clear, /exit, /help`;
       const evtErr = createWorkspaceErrorEvent(errorMsg);
       renderWorkspaceEvent(evtErr);
 
-      const art = createErrorArtifact("Content Parsing Error", errorMsg);
+      const art = createErrorArtifact("Workspace Error", errorMsg);
       renderWorkspaceArtifacts([art]);
 
       return {
@@ -252,58 +315,27 @@ export async function executeWorkspaceCliCommand(
       };
     }
 
-    if (!fs.existsSync(args)) {
-      const errorMsg = `File not found: ${args}`;
-      const evtErr = createWorkspaceErrorEvent(errorMsg);
-      renderWorkspaceEvent(evtErr);
+    // Fallback for non-dict commands
+    return {
+      commandId,
+      status: "success",
+      artifacts: []
+    };
+  } catch (err: any) {
+    const errorMsg = err.message || "Backend unavailable";
+    const evtErr = createWorkspaceErrorEvent(errorMsg);
+    renderWorkspaceEvent(evtErr);
 
-      const art = createErrorArtifact("Content Parsing Error", errorMsg);
-      renderWorkspaceArtifacts([art]);
-
-      return {
-        commandId,
-        status: "error",
-        artifacts: [art],
-        error: errorMsg
-      };
-    }
-
-    // 3. Evt: tool-running
-    const evt2 = createToolRunningEvent("content_parser", "Running Content Parser in dry-run mode...");
-    renderWorkspaceEvent(evt2);
-
-    // 4. Dry-run planned workflow summary output
-    console.log("[DRY RUN] /content");
-    console.log("planned: Content Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard");
-
-    // 5. Create Artifact
-    const art = createMarkdownArtifact(
-      "Content Digest (Dry Run)",
-      `# Content Digest (Dry Run)\n\nFile parsed: "${args}"\n\nPlanned workflow:\nContent Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard`
-    );
-    const evtArt = createArtifactCreatedEvent(art.id, art.title);
-    renderWorkspaceEvent(evtArt);
-
-    // 6. Evt: complete
-    const evtComp = createWorkspaceCompleteEvent();
-    renderWorkspaceEvent(evtComp);
-
-    // 7. Print Artifact Summary
+    const art = createErrorArtifact("Workspace Error", errorMsg);
     renderWorkspaceArtifacts([art]);
 
     return {
       commandId,
-      status: "success",
-      artifacts: [art]
+      status: "error",
+      artifacts: [art],
+      error: errorMsg
     };
   }
-
-  // Fallback for non-dict commands
-  return {
-    commandId,
-    status: "success",
-    artifacts: []
-  };
 }
 
 /**
@@ -330,7 +362,7 @@ export async function runWorkspaceCli(): Promise<void> {
 
       if (!parsedCmd.parsed) {
         // Empty input
-        console.log("  (Enter a command, e.g. /dict a big deal or /help)");
+        console.log("  (Type /help to see commands, or /exit to quit)");
         continue;
       }
 
@@ -372,7 +404,7 @@ export async function runWorkspaceCli(): Promise<void> {
       }
 
       if (command === "unknown") {
-        console.log(`  ✗ Unknown command "${parsedCmd.text}". Type /help to see supported commands.`);
+        await executeWorkspaceCliCommand(input);
         continue;
       }
 

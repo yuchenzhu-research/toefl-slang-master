@@ -239,6 +239,24 @@ test("workspace CLI renders JSON artifact summary correctly without dumping huge
   assert.ok(output.includes("dryRun: true"));
 });
 
+test("workspace CLI executeWorkspaceCliCommand Empty command error", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("");
+  });
+  assert.ok(output.includes("[Event] [ERROR]"));
+  assert.ok(output.includes("Error: Empty command"));
+});
+
+test("workspace CLI executeWorkspaceCliCommand Unknown command error with supported commands list", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/unknown-abc-xyz");
+  });
+  assert.ok(output.includes("[Event] [ERROR]"));
+  assert.ok(output.includes("Unknown command \"/unknown-abc-xyz\""));
+  assert.ok(output.includes("Supported commands: /dict, /style, /coach, /content, /clear, /exit, /help"));
+});
+
+
 
 
 
