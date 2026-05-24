@@ -228,6 +228,18 @@ test("workspace CLI renders error command timeline with correct symbols", async 
   assert.ok(output.includes("✘"));
 });
 
+test("workspace CLI renders JSON artifact summary correctly without dumping huge objects", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/dict piece of cake");
+  });
+
+  assert.ok(output.includes("Summary (JSON Sidecar Keys):"));
+  assert.ok(output.includes("Keys: text, mode, target, dryRun, timestamp"));
+  assert.ok(output.includes("text: piece of cake"));
+  assert.ok(output.includes("dryRun: true"));
+});
+
+
 
 
 

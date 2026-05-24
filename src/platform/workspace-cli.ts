@@ -42,6 +42,42 @@ export function renderWorkspaceEvent(evt: any): void {
   console.log(`[Event] [${typeLabel}]  ${symbol}  ${evt.message}`);
 }
 
+/**
+ * Renders workspace artifacts with their titles, types, previews, or JSON summaries.
+ */
+export function renderWorkspaceArtifacts(artifacts: any[]): void {
+  if (!artifacts || artifacts.length === 0) return;
+
+  console.log("\nGenerated Artifacts:");
+  for (const art of artifacts) {
+    console.log(`  - [${art.type.toUpperCase()}] ID: ${art.id} | Title: ${art.title}`);
+    if (art.type === "markdown") {
+      console.log("    Preview:");
+      console.log("    ----------------------------------------------------");
+      const lines = art.content.split("\n").slice(0, 5).map((l: string) => `    ${l}`);
+      console.log(lines.join("\n"));
+      console.log("    ----------------------------------------------------");
+    } else if (art.type === "json") {
+      console.log("    Summary (JSON Sidecar Keys):");
+      if (art.metadata) {
+        const keys = Object.keys(art.metadata);
+        console.log(`    Keys: ${keys.join(", ")}`);
+        const entries = Object.entries(art.metadata)
+          .slice(0, 5)
+          .map(([k, v]) => `      ${k}: ${typeof v === "object" ? JSON.stringify(v) : v}`);
+        if (entries.length > 0) {
+          console.log(entries.join("\n"));
+        }
+      } else {
+        console.log("    (No metadata keys available)");
+      }
+    } else if (art.type === "error") {
+      console.log(`    Error Message: ${art.content}`);
+    }
+  }
+  console.log();
+}
+
 
 function createRl(): readline.Interface {
   return readline.createInterface({
@@ -110,19 +146,7 @@ export async function executeWorkspaceCliCommand(
     renderWorkspaceEvent(evtComp);
 
     // 6. Print Artifact Summary
-    console.log("\nGenerated Artifacts:");
-    for (const art of result.artifacts) {
-      console.log(`  - [${art.type.toUpperCase()}] ID: ${art.id} | Title: ${art.title}`);
-      if (art.type === "markdown") {
-        console.log("    Preview:");
-        console.log("    ----------------------------------------------------");
-        // Print first 5 lines of preview
-        const lines = art.content.split("\n").slice(0, 5).map(l => `    ${l}`);
-        console.log(lines.join("\n"));
-        console.log("    ----------------------------------------------------");
-      }
-    }
-    console.log();
+    renderWorkspaceArtifacts(result.artifacts);
 
     return result;
   }
@@ -162,6 +186,8 @@ export async function executeWorkspaceCliCommand(
     }
     console.log();
 
+    renderWorkspaceArtifacts([art]);
+
     return {
       commandId,
       status: "success",
@@ -195,9 +221,7 @@ export async function executeWorkspaceCliCommand(
     renderWorkspaceEvent(evtComp);
 
     // 6. Print Artifact Summary
-    console.log("\nGenerated Artifacts:");
-    console.log(`  - [MARKDOWN] ID: ${art.id} | Title: ${art.title}`);
-    console.log();
+    renderWorkspaceArtifacts([art]);
 
     return {
       commandId,
@@ -218,9 +242,7 @@ export async function executeWorkspaceCliCommand(
       renderWorkspaceEvent(evtErr);
 
       const art = createErrorArtifact("Content Parsing Error", errorMsg);
-      console.log(`\nGenerated Artifacts:`);
-      console.log(`  - [ERROR] ID: ${art.id} | Title: ${art.title}`);
-      console.log();
+      renderWorkspaceArtifacts([art]);
 
       return {
         commandId,
@@ -236,9 +258,7 @@ export async function executeWorkspaceCliCommand(
       renderWorkspaceEvent(evtErr);
 
       const art = createErrorArtifact("Content Parsing Error", errorMsg);
-      console.log(`\nGenerated Artifacts:`);
-      console.log(`  - [ERROR] ID: ${art.id} | Title: ${art.title}`);
-      console.log();
+      renderWorkspaceArtifacts([art]);
 
       return {
         commandId,
@@ -269,9 +289,7 @@ export async function executeWorkspaceCliCommand(
     renderWorkspaceEvent(evtComp);
 
     // 7. Print Artifact Summary
-    console.log("\nGenerated Artifacts:");
-    console.log(`  - [MARKDOWN] ID: ${art.id} | Title: ${art.title}`);
-    console.log();
+    renderWorkspaceArtifacts([art]);
 
     return {
       commandId,
