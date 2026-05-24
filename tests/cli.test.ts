@@ -88,3 +88,15 @@ test("top-level app CLI stays isolated from pipeline and experimental implementa
   assert.ok(!appCliSource.includes('from "./pipelines/output-correction"'));
   assert.ok(!appCliSource.includes('from "./experimental/dashboard"'));
 });
+
+test("bare spark CLI with no arguments enters workspace CLI mode", async () => {
+  process.env.SPARK_TEST_MODE = "true";
+  try {
+    const output = await captureConsoleLog(() => runTopLevelCli([]));
+    assert.ok(output.includes("SPARK Agent Workspace CLI"));
+    assert.ok(output.includes("[TEST MODE] Exiting workspace CLI loop immediately."));
+  } finally {
+    delete process.env.SPARK_TEST_MODE;
+  }
+});
+

@@ -75,3 +75,12 @@ Started: 2026-05-23
 - Added path existence guards for docs/frontend-interface-reference.md and contents checks for docs/frontend.md.
 - Verified both frontend typecheck and backend test suite passes cleanly.
 ---
+
+## 2026-05-24 - US-011
+- Completed US-011: Make bare spark enter workspace CLI.
+- Created runWorkspaceCli interactive readline loop inside src/platform/workspace-cli.ts.
+- Modified src/app-cli.ts to automatically route empty arguments to the new workspace CLI session while preserving existing explicit subcommands.
+- Added bypass hook SPARK_TEST_MODE in runWorkspaceCli to avoid readline hangs in test environments.
+- Added new test suite in tests/cli.test.ts to assert the empty argument routing behavior.
+- Verified both frontend typecheck and backend test suite passes cleanly.
+---

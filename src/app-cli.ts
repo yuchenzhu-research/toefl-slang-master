@@ -10,6 +10,7 @@ import { runStudioModuleCli } from "./studio";
 import { runStyleEngineCli } from "./style-engine/cli";
 import { runToeflWritingModuleCli } from "./toefl-writing";
 import { runWebCli } from "./web/server";
+import { runWorkspaceCli } from "./platform/workspace-cli";
 
 function printUsage(): void {
   const usage = `
@@ -57,7 +58,7 @@ Examples:
 
 export async function runTopLevelCli(argv: string[]): Promise<void> {
   if (argv.length === 0) {
-    printUsage();
+    await runWorkspaceCli();
     return;
   }
 
