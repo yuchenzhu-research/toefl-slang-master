@@ -147,4 +147,24 @@ test("workspace CLI executes /style and prints events and summary", async () => 
   assert.ok(output.includes("Summary:"));
 });
 
+test("workspace CLI executes /coach in dry-run mode and prints events and summary", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/coach I think technology is good.");
+  });
+
+  assert.ok(output.includes("[Event] [COMMAND-SUBMITTED]"));
+  assert.ok(output.includes("Submitted command: /coach I think technology is good."));
+  assert.ok(output.includes("[Event] [TOOL-RUNNING]"));
+  assert.ok(output.includes("Running TOEFL Coach in dry-run mode..."));
+  assert.ok(output.includes("[DRY RUN] /coach"));
+  assert.ok(output.includes("planned: TOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard"));
+  assert.ok(output.includes("[Event] [ARTIFACT-CREATED]"));
+  assert.ok(output.includes("Created artifact 'TOEFL Coach Diagnosis (Dry Run)'"));
+  assert.ok(output.includes("[Event] [COMPLETE]"));
+  assert.ok(output.includes("Generated Artifacts:"));
+  assert.ok(output.includes("- [MARKDOWN] ID: art-"));
+  assert.ok(output.includes("Title: TOEFL Coach Diagnosis (Dry Run)"));
+});
+
+
 

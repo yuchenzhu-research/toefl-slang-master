@@ -138,6 +138,43 @@ export async function executeWorkspaceCliCommand(
     };
   }
 
+  if (command === "coach") {
+    // 1. Evt: submitted
+    const evt1 = createCommandSubmittedEvent(inputText);
+    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+
+    // 2. Evt: tool-running
+    const evt2 = createToolRunningEvent("toefl_coach", "Running TOEFL Coach in dry-run mode...");
+    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+
+    // 3. Dry-run planned workflow summary output
+    console.log("[DRY RUN] /coach");
+    console.log("planned: TOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard");
+
+    // 4. Create Artifact
+    const art = createMarkdownArtifact(
+      "TOEFL Coach Diagnosis (Dry Run)",
+      `# TOEFL Coach Diagnosis (Dry Run)\n\nInput text: "${args}"\n\nPlanned workflow:\nTOEFL Coach -> WeakExpressionSet -> Dictionary Pro -> ExpressionCard`
+    );
+    const evtArt = createArtifactCreatedEvent(art.id, art.title);
+    console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+
+    // 5. Evt: complete
+    const evtComp = createWorkspaceCompleteEvent();
+    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+
+    // 6. Print Artifact Summary
+    console.log("\nGenerated Artifacts:");
+    console.log(`  - [MARKDOWN] ID: ${art.id} | Title: ${art.title}`);
+    console.log();
+
+    return {
+      commandId,
+      status: "success",
+      artifacts: [art]
+    };
+  }
+
   // Fallback for non-dict commands
   return {
     commandId,
@@ -197,6 +234,11 @@ export async function runWorkspaceCli(): Promise<void> {
       }
 
       if (command === "style") {
+        await executeWorkspaceCliCommand(input);
+        continue;
+      }
+
+      if (command === "coach") {
         await executeWorkspaceCliCommand(input);
         continue;
       }
