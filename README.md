@@ -110,6 +110,24 @@ npm link
 spark init
 ```
 
+### Agent Workspace CLI
+
+Running `spark` without any arguments opens the interactive Agent Workspace CLI, providing a unified session with timelines and local artifacts:
+
+```bash
+# Enter interactive agent workspace CLI
+spark
+```
+
+Once inside the workspace, you can use slash commands:
+*   `/dict <phrase>` - Upgrade informal English to academic equivalent
+*   `/style <text>` - Analyze text for Economist-style features
+*   `/coach <text>` - Diagnose writing and get ETS-compatible score
+*   `/content <file>` - Parse reading material for vocabulary candidates
+*   `/clear` - Clear terminal screen
+*   `/exit` - Exit interactive session
+*   `/help` - View supported commands
+
 ### Core Pipelines
 
 ```bash
