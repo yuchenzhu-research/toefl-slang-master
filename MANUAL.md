@@ -92,12 +92,16 @@
   顶层 CLI 分发入口
 - `src/platform/`
   共享 facade 和运行时桥接
-- `src/platform/auth/`
-  API key、本地配置和 provider 认证信息解析
-- `src/platform/providers/`
-  provider catalog、runtime 和协议实现
-- `src/platform/runtime/`
-  共享运行时能力（如 validated-json）
+  - `src/platform/auth/`
+    API key、本地配置和 provider 认证信息解析
+  - `src/platform/providers/`
+    provider catalog、runtime 和协议实现
+  - `src/platform/runtime/`
+    共享运行时能力（如 validated-json）
+  - `src/platform/workspace-helpers.ts`
+    工作空间事件生成助手、命令解析器与 Dictionary Normalization
+  - `src/platform/workspace-fixtures.ts`
+    开发/演示专用的确定性工作空间 Session fixtue 数据
 - `src/dictionary-pro/`
   表达升级模块
 - `src/toefl-writing/`
@@ -121,6 +125,7 @@
 维护原则：
 
 - 前端通过稳定 CLI/API/contract 接入能力，不复制 `src/` 业务逻辑
+- 前端使用 `src/renderer/src/hooks/useWorkspace.ts` 状态适配器处理本地 Session、Event 与 Artifact 状态，不包含后端业务逻辑
 - workspace 可以保留自己的 `package.json` 描述 Electron/Vite 脚本和依赖
 - 根 `package-lock.json` 是唯一 lockfile，不维护 `apps/desktop/package-lock.json`
 - 根 `package.json` 暴露 `desktop:*` 脚本，避免使用者进入子目录猜命令
@@ -433,6 +438,8 @@ locale 的根本规则以 `docs/i18n.md` 和 `CONSTITUTION.md` 为准。
 
 - `tests/repository-structure.test.ts`
   防止桌面 workspace、lockfile、locale README、CHANGELOG / DEVLOG 维护要求和 CI 基线再次漂移。
+- `tests/workspace.test.ts`
+  验证共享的工作空间 session 契约、事件助手、命令解析以及查找标准化逻辑形态一致。
 
 维护原则：
 

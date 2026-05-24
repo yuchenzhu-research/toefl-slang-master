@@ -61,3 +61,10 @@ Started: 2026-05-23
 - Fixed prior TSX syntax error with raw '<' character in apps/desktop/src/renderer/src/pages/EvaluationPage.tsx.
 - Verified both frontend typecheck and backend test suite passes cleanly.
 ---
+
+## 2026-05-24 - US-009
+- Completed US-009: Document workspace governance.
+- Updated docs/frontend.md to include the CLI+GUI workspace integration path, bare CLI execution support, and ALET/Claude Code/OpenClaw design references guidelines.
+- Updated MANUAL.md to include workspace helpers, fixtures, hooks, and test descriptions.
+- Verified both frontend typecheck and backend test suite passes cleanly.
+---

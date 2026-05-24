@@ -94,3 +94,21 @@ npm run desktop:build
 ```
 
 CI 必须保留桌面端 typecheck 和 build 基线。前端可以继续快速迭代，但不能长期依赖“本地能跑、CI 不覆盖”的状态。
+
+---
+
+## 7. Workspace CLI & GUI Integration
+
+为了提供统一的学习智能体体验，SPARK 将 CLI 和桌面前端整合到一致的 Workspace 模型之下。
+
+### 7.1 Bare CLI Interaction
+- 运行无任何参数的 `spark` 将默认开启交互式的 **Workspace CLI** 模式（基于 `/dict`, `/style`, `/coach`, `/content` 等斜杠指令和实时 transcript/timeline）。
+- 为保证向后兼容，现有的显式子命令（如 `spark dict`, `spark studio`）仍然受支持并保持原本的直接调用行为，不得退化。
+
+### 7.2 Design Mode References
+- 桌面前端的 GUI（基于 ALET 风格的横滑画布、Command Dock 和 Artifact Rail）与 Workspace CLI 均遵循相同的事件与工件模型。
+- **ALET、Claude Code 与 OpenClaw 均属于设计模式参考 (References)**。它们仅用作交互、排版与视觉节奏的启发，**严禁直接在项目中复制、包含或引入其外部源码或专有资产**。所有业务边界必须严格遵循 `CONSTITUTION.md` 划定的孤立原则。
+
+### 7.3 Frontend Session Management
+- 渲染进程统一使用本地状态适配器 Hook `useWorkspace.ts` 对 WorkspaceSession 进行管理（包含事件追加、工件选中、状态更新与会话重置）。
+- 适配器只管理 React 状态与 DTO 模型，禁止复制任何后端的业务解析与评分编排逻辑。
