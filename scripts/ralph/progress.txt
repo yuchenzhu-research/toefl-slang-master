@@ -54,3 +54,16 @@ All 50 user stories (US-001 through US-050) have been implemented, typechecked, 
 3. **Incremental typecheck is essential**: Running typecheck after each story caught import errors immediately rather than accumulating silent drift.
 4. **CSS cleanup is low-risk, high-reward**: Removing 5 dead class blocks freed ~100 lines and reduced cognitive load.
 5. **Empty states deserve design**: The transition from raw placeholder text to workspace-empty-state classes made the app feel intentional before any command is run.
+
+## 2026-05-24 - US-051 & US-052
+- GUI refactoring for ALET visuals: implemented scroll-based slogan/decorations fade-out to prevent lane overlapping, elevated typography, and applied glassmorphism with soft shadows to all cards and inputs.
+- API connectivity and resilience: integrated `checkHealth` checks and elegant StatusMessage notification alerts across Dict, Style, Coach, and Content pages.
+- Files changed:
+  - apps/desktop/src/renderer/src/App.tsx
+  - apps/desktop/src/renderer/src/assets/main.css
+  - apps/desktop/src/renderer/src/pages/StylePage.tsx
+  - apps/desktop/src/renderer/src/pages/CoachPage.tsx
+  - apps/desktop/src/renderer/src/pages/ContentPage.tsx
+- **Learnings for future iterations:**
+  - Elevating component z-index is crucial when handling global navigation bars to prevent drawer buttons from overlaying on navigation links.
+  - Constraining SVG dimensions explicitly inside StatusMessage icons prevents unexpected large-scale layout breakage when no width/height attributes are specified.

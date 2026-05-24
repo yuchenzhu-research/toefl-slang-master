@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { ICON } from '../components/icons'
 import { useToast } from '../components/ToastContext'
 import { ToolStatusChip } from '../components/ToolStatusChip'
+import { checkHealth } from '../api/client'
+import { StatusMessage } from '../components/Workspace'
 
 const DEFAULT_TEXT =
   "The university's draconian policies regarding dormitory curfews have sparked widespread backlash among the student body, many of whom argue that such archaic rules are incompatible with modern academic life. Therefore, the administration must reconsider its stance because a strict approach may ultimately suppress student engagement."
@@ -19,6 +21,21 @@ export function StylePage() {
   const [panelOpen, setPanelOpen] = useState(false)
   const barRefs = useRef<HTMLDivElement[]>([])
   const { showToast } = useToast()
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'reachable' | 'unavailable'>('checking')
+
+  const checkBackendHealth = async () => {
+    setBackendStatus('checking')
+    const res = await checkHealth()
+    if (res.ok && res.data?.ok) {
+      setBackendStatus('reachable')
+    } else {
+      setBackendStatus('unavailable')
+    }
+  }
+
+  useEffect(() => {
+    checkBackendHealth()
+  }, [])
 
   useEffect(() => {
     if (analysis && panelOpen) {
@@ -89,6 +106,19 @@ export function StylePage() {
                 status={isAnalyzing ? 'running' : 'idle'}
                 label={isAnalyzing ? 'Analyzing…' : 'Ready'}
               />
+              <ToolStatusChip
+                status={backendStatus === 'reachable' ? 'complete' : backendStatus === 'unavailable' ? 'error' : 'checking'}
+                label={backendStatus === 'reachable' ? 'Online' : backendStatus === 'unavailable' ? 'Offline' : 'Checking'}
+              />
+              <button
+                type="button"
+                className="ws-refresh-btn"
+                onClick={checkBackendHealth}
+                aria-label="Refresh backend status"
+                title="Refresh backend status"
+              >
+                ↺
+              </button>
             </div>
           </div>
           <h1 className="headline">
@@ -101,6 +131,18 @@ export function StylePage() {
             standards — sentence rhythm, contrast turns, causal logic, analytical hedging, and
             policy vocabulary.
           </p>
+
+          {backendStatus === 'unavailable' && (
+            <div className="backend-status-container" style={{ margin: '1rem 0' }}>
+              <StatusMessage
+                type="unavailable"
+                message="Local server disconnected. Check status or launch backend to analyze."
+                onClick={checkBackendHealth}
+                style={{ cursor: 'pointer' }}
+              />
+            </div>
+          )}
+
           <div className="editor-wrapper">
             <textarea
               className="editor ws-input"
