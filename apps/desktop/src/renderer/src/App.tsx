@@ -14,6 +14,7 @@ import { WorkspaceLane } from './components/WorkspaceLane'
 import { SessionTimeline } from './components/SessionTimeline'
 import { ArtifactRail } from './components/ArtifactRail'
 import { useWorkspace, WorkspaceEvent, WorkspaceArtifact } from './hooks/useWorkspace'
+import { lookupDictionary } from './api/client'
 import { ToastProvider } from './components/ToastContext'
 import { ICON } from './components/icons'
 import { StylePage } from './pages/StylePage'
@@ -191,8 +192,9 @@ function renderPage(page: PageId): ReactElement {
 }
 
 export default function App(): ReactElement {
-  const { session, activeArtifact, setActiveArtifact } = useWorkspace()
+  const { session, activeArtifact, setActiveArtifact, initSession, appendEvent, addArtifact } = useWorkspace()
   const [page, setPage] = useState<PageId | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [randomMode, setRandomMode] = useState(false)
   const [randomItems, setRandomItems] = useState(() => shuffleGallery())
   const [activeCategory, setActiveCategory] = useState(categories[0])
@@ -206,8 +208,180 @@ export default function App(): ReactElement {
   })
   const clickWasDrag = useRef(false)
 
-  function handleCommandRun(mode: WorkspaceMode, text: string): void {
-    console.log(`CommandDock run: ${mode} with text "${text}"`)
+  async function handleCommandRun(mode: WorkspaceMode, text: string): Promise<void> {
+    setIsLoading(true)
+    
+    if (!session) {
+      initSession(`session-${Date.now()}`)
+    }
+
+    const commandText = `/${mode} ${text}`
+    const timeSeed = Date.now()
+
+    appendEvent({
+      id: `evt-${timeSeed}-submitted`,
+      timestamp: new Date().toISOString(),
+      type: 'command-submitted',
+      message: `Submitted command: ${commandText}`
+    })
+
+    if (mode === 'dict') {
+      appendEvent({
+        id: `evt-${timeSeed}-running`,
+        timestamp: new Date().toISOString(),
+        type: 'tool-running',
+        message: `Looking up '${text}' in Dictionary Pro...`,
+        toolName: 'dictionary_lookup',
+        toolStatus: 'running'
+      })
+
+      try {
+        const response = await lookupDictionary({
+          text,
+          dryRun: true,
+          mode: 'conversion',
+          target: 'toefl-writing'
+        })
+
+        if (response.ok && response.data) {
+          const data = response.data
+          const artId = `art-${Date.now()}`
+
+          if (data.dryRun) {
+            const mdContent = `# ${text} (Dry Run Mock)
+
+> [!NOTE]
+> This lookup was run in dry-run mode. No provider API calls were performed.
+
+- **Query**: ${text}
+- **Mode**: conversion
+- **Target**: toefl-writing
+`
+            const mdArtifact: WorkspaceArtifact = {
+              id: artId,
+              title: `Expression Card: ${text} (Dry Run)`,
+              type: 'markdown',
+              content: mdContent,
+              metadata: {
+                text,
+                mode: 'conversion',
+                target: 'toefl-writing',
+                dryRun: true
+              }
+            }
+
+            addArtifact(mdArtifact)
+            appendEvent({
+              id: `evt-${timeSeed}-artifact`,
+              timestamp: new Date().toISOString(),
+              type: 'artifact-created',
+              message: `Created artifact 'Expression Card: ${text} (Dry Run)'`,
+              artifactId: artId
+            })
+          } else {
+            const mdArtifact: WorkspaceArtifact = {
+              id: artId,
+              title: `Expression Card: ${text}`,
+              type: 'markdown',
+              content: data.markdown || 'No content returned',
+              metadata: (data.structured as Record<string, any>) || {}
+            }
+            addArtifact(mdArtifact)
+            appendEvent({
+              id: `evt-${timeSeed}-artifact`,
+              timestamp: new Date().toISOString(),
+              type: 'artifact-created',
+              message: `Created artifact 'Expression Card: ${text}'`,
+              artifactId: artId
+            })
+          }
+
+          appendEvent({
+            id: `evt-${timeSeed}-complete`,
+            timestamp: new Date().toISOString(),
+            type: 'complete',
+            message: `Workspace task completed successfully`,
+            toolStatus: 'complete'
+          })
+        } else {
+          const errMsg = response.error || 'Unknown lookup error'
+          const errArtId = `art-${Date.now()}-error`
+          addArtifact({
+            id: errArtId,
+            title: 'Dictionary Lookup Error',
+            type: 'error',
+            content: errMsg
+          })
+          appendEvent({
+            id: `evt-${timeSeed}-error`,
+            timestamp: new Date().toISOString(),
+            type: 'error',
+            message: `Error: ${errMsg}`,
+            toolStatus: 'error',
+            artifactId: errArtId
+          })
+        }
+      } catch (err: any) {
+        const errMsg = err.message || String(err)
+        const errArtId = `art-${Date.now()}-error`
+        addArtifact({
+          id: errArtId,
+          title: 'Dictionary Lookup Error',
+          type: 'error',
+          content: errMsg
+        })
+        appendEvent({
+          id: `evt-${timeSeed}-error`,
+          timestamp: new Date().toISOString(),
+          type: 'error',
+          message: `Error: ${errMsg}`,
+          toolStatus: 'error',
+          artifactId: errArtId
+        })
+      }
+    } else {
+      appendEvent({
+        id: `evt-${timeSeed}-running`,
+        timestamp: new Date().toISOString(),
+        type: 'tool-running',
+        message: `Processing '${mode}' analysis for '${text.substring(0, 20)}...'`,
+        toolName: `${mode}_analysis`,
+        toolStatus: 'running'
+      })
+
+      await new Promise((resolve) => setTimeout(resolve, 800))
+
+      const artId = `art-${Date.now()}`
+      const mdContent = `# ${mode.toUpperCase()} Analysis (Simulated Result)
+
+- **Query/Text**: ${text}
+- **Status**: Simulated Success
+`
+      addArtifact({
+        id: artId,
+        title: `${mode.toUpperCase()} Result: ${text.substring(0, 15)}...`,
+        type: 'markdown',
+        content: mdContent
+      })
+
+      appendEvent({
+        id: `evt-${timeSeed}-artifact`,
+        timestamp: new Date().toISOString(),
+        type: 'artifact-created',
+        message: `Created artifact for ${mode} command`,
+        artifactId: artId
+      })
+
+      appendEvent({
+        id: `evt-${timeSeed}-complete`,
+        timestamp: new Date().toISOString(),
+        type: 'complete',
+        message: `Simulated complete`,
+        toolStatus: 'complete'
+      })
+    }
+
+    setIsLoading(false)
   }
 
   const visibleItems = useMemo(
@@ -389,7 +563,7 @@ export default function App(): ReactElement {
             >
               {/* Lane 1: Command Panel */}
               <WorkspaceLane title="Command" className="lane-command">
-                <CommandDock onRun={handleCommandRun} />
+                <CommandDock onRun={handleCommandRun} isLoading={isLoading} />
               </WorkspaceLane>
 
               {/* Lane 2: Session Timeline Panel */}
