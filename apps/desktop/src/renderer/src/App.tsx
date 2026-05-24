@@ -497,7 +497,7 @@ export default function App(): ReactElement {
         <Sidebar currentPage={page} onNavigate={setPage} onHome={() => setPage(null)} />
 
         <main
-          className={`landing-stage ${randomMode ? 'random-mode' : 'linear-mode'}`}
+          className={`landing-stage ${randomMode ? 'random-mode' : 'linear-mode'} ${scrollProgress > 0.02 || page ? 'stage-scrolled' : ''}`}
           style={stageStyle}
           onWheel={handleStageWheel}
         >
