@@ -5,9 +5,12 @@ import {
   createToolRunningEvent,
   createArtifactCreatedEvent,
   createWorkspaceCompleteEvent,
-  normalizeDictionaryLookup
+  normalizeDictionaryLookup,
+  createMarkdownArtifact
 } from "./workspace-helpers";
 import { WorkspaceCommandResult } from "./contracts";
+import { analyzeEconomistStyle, renderStyleAnalysis } from "../style-engine/analyzer";
+
 
 function createRl(): readline.Interface {
   return readline.createInterface({
@@ -93,6 +96,48 @@ export async function executeWorkspaceCliCommand(
     return result;
   }
 
+  if (command === "style") {
+    // 1. Evt: submitted
+    const evt1 = createCommandSubmittedEvent(inputText);
+    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+
+    // 2. Evt: tool-running
+    const evt2 = createToolRunningEvent("style_analyzer", "Analyzing Economist prose style...");
+    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+
+    // 3. Style analysis
+    const analysisResult = analyzeEconomistStyle(args);
+    const markdownContent = renderStyleAnalysis(analysisResult);
+
+    // 4. Create Artifact
+    const art = createMarkdownArtifact(
+      "Style Analysis: Economist Profile",
+      markdownContent
+    );
+    const evtArt = createArtifactCreatedEvent(art.id, art.title);
+    console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+
+    // 5. Evt: complete
+    const evtComp = createWorkspaceCompleteEvent();
+    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+
+    // 6. Print Compact Result Summary
+    console.log("\nStyle Analysis Result Summary:");
+    console.log(`  - Overall Score: ${analysisResult.overallScore}/100`);
+    console.log(`  - Summary: ${analysisResult.summary}`);
+    if (analysisResult.suggestions.length > 0) {
+      console.log("  - Top Suggestion:");
+      console.log(`    [${analysisResult.suggestions[0].priority}] ${analysisResult.suggestions[0].issue}: ${analysisResult.suggestions[0].action}`);
+    }
+    console.log();
+
+    return {
+      commandId,
+      status: "success",
+      artifacts: [art]
+    };
+  }
+
   // Fallback for non-dict commands
   return {
     commandId,
@@ -147,6 +192,11 @@ export async function runWorkspaceCli(): Promise<void> {
       }
 
       if (command === "dict") {
+        await executeWorkspaceCliCommand(input);
+        continue;
+      }
+
+      if (command === "style") {
         await executeWorkspaceCliCommand(input);
         continue;
       }

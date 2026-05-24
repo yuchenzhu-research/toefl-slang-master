@@ -130,3 +130,21 @@ test("workspace CLI executes /dict in dry-run mode and prints events and summary
   assert.ok(output.includes("Title: Expression Card: piece of cake (Dry Run)"));
 });
 
+test("workspace CLI executes /style and prints events and summary", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/style The economy is growing at a rapid pace.");
+  });
+
+  assert.ok(output.includes("[Event] [COMMAND-SUBMITTED]"));
+  assert.ok(output.includes("Submitted command: /style The economy is growing at a rapid pace."));
+  assert.ok(output.includes("[Event] [TOOL-RUNNING]"));
+  assert.ok(output.includes("Analyzing Economist prose style..."));
+  assert.ok(output.includes("[Event] [ARTIFACT-CREATED]"));
+  assert.ok(output.includes("Created artifact 'Style Analysis: Economist Profile'"));
+  assert.ok(output.includes("[Event] [COMPLETE]"));
+  assert.ok(output.includes("Style Analysis Result Summary:"));
+  assert.ok(output.includes("Overall Score:"));
+  assert.ok(output.includes("Summary:"));
+});
+
+

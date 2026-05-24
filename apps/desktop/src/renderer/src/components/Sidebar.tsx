@@ -1,4 +1,4 @@
-export type PageId = 'style' | 'dict' | 'coach' | 'content' | 'settings'
+export type PageId = 'style' | 'dict' | 'coach' | 'content' | 'settings' | 'eval'
 
 interface SidebarProps {
   currentPage: PageId | null
@@ -11,6 +11,7 @@ const navItems: Array<{ id: PageId; label: string }> = [
   { id: 'dict', label: 'Dict' },
   { id: 'coach', label: 'Coach' },
   { id: 'content', label: 'Content' },
+  { id: 'eval', label: 'Eval' },
   { id: 'settings', label: 'Settings' }
 ]
 

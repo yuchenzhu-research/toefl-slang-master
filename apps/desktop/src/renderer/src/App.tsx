@@ -16,6 +16,7 @@ import { DictPage } from './pages/DictPage'
 import { CoachPage } from './pages/CoachPage'
 import { ContentPage } from './pages/ContentPage'
 import { SettingsPage } from './pages/SettingsPage'
+import { EvaluationPage } from './pages/EvaluationPage'
 import gallery01 from './assets/spark-gallery-01.png'
 import gallery02 from './assets/spark-gallery-02.png'
 import gallery03 from './assets/spark-gallery-03.png'
@@ -137,6 +138,7 @@ function renderPage(page: PageId): ReactElement {
   if (page === 'dict') return <DictPage />
   if (page === 'coach') return <CoachPage />
   if (page === 'content') return <ContentPage />
+  if (page === 'eval') return <EvaluationPage />
   return <SettingsPage />
 }
 
