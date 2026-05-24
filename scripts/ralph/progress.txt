@@ -1,3 +1,9 @@
 # Ralph Progress Log
 Started: 2026-05-23
 ---
+
+## 2026-05-24 - US-001
+- Completed US-001: Create interface reference notes.
+- Added docs/frontend-interface-reference.md detailing ALET-inspired visual tokens, Claude Code terminal CLI flow, and OpenClaw plugin architecture guidelines.
+- Verified compilation and test suite passes.
+---
