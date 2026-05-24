@@ -36,3 +36,11 @@ Started: 2026-05-23
 - Added artifact helper unit tests in tests/workspace.test.ts.
 - Verified compilation and test suite passes.
 ---
+
+## 2026-05-24 - US-006
+- Completed US-006: Create workspace fixture data.
+- Created deterministic workspace session mockup data in src/platform/workspace-fixtures.ts, clearly marked as DEVELOPMENT/DEMO DATA ONLY.
+- Fixture session includes four events and one Dictionary markdown card artifact complying with shared workspace models.
+- Added unit test in tests/workspace.test.ts to verify the fixture shape.
+- Verified compilation and test suite passes.
+---

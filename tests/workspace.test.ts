@@ -7,6 +7,7 @@ import {
   WorkspaceArtifact,
   WorkspaceCommandResult
 } from "../src/platform/contracts";
+import { MOCK_WORKSPACE_SESSION } from "../src/platform/workspace-fixtures";
 import {
   createCommandSubmittedEvent,
   createBackendCheckingEvent,
@@ -211,4 +212,12 @@ test("Workspace Artifact Helpers: should create correct WorkspaceArtifact object
   // Test auto ID generation
   const a4 = createMarkdownArtifact("Auto ID", "Text");
   assert.ok(a4.id.startsWith("art-"));
+});
+
+test("Workspace Fixtures: should expose valid MOCK_WORKSPACE_SESSION", () => {
+  assert.strictEqual(MOCK_WORKSPACE_SESSION.id, "session-demo-999");
+  assert.ok(MOCK_WORKSPACE_SESSION.commands.length >= 1);
+  assert.ok(MOCK_WORKSPACE_SESSION.events.length >= 3);
+  assert.strictEqual(MOCK_WORKSPACE_SESSION.artifacts[0].type, "markdown");
+  assert.strictEqual(MOCK_WORKSPACE_SESSION.artifacts[0].metadata?.headword, "a big deal");
 });
