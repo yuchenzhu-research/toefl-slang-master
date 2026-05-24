@@ -1,4 +1,5 @@
 import { WorkspaceEvent } from '../hooks/useWorkspace'
+import { ToolStatusChip } from './ToolStatusChip'
 
 interface SessionTimelineProps {
   events: WorkspaceEvent[]
@@ -62,10 +63,13 @@ export function SessionTimeline({ events, onArtifactClick }: SessionTimelineProp
                 {getEventIcon(evt.type)}
               </div>
               <div className="timeline-item-content">
-                <p className="event-message">
-                  {evt.message}
-                  {evt.toolName && <span className="event-tool-name"> ({evt.toolName})</span>}
-                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <p className="event-message">
+                    {evt.message}
+                    {evt.toolName && <span className="event-tool-name"> ({evt.toolName})</span>}
+                  </p>
+                  {evt.toolStatus && <ToolStatusChip status={evt.toolStatus} />}
+                </div>
                 {isArtifact && (
                   <button
                     type="button"

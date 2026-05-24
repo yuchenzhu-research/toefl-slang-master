@@ -1741,3 +1741,47 @@ button {
   padding: 4px 8px;
   border-radius: 2px;
 }
+
+/* ToolStatusChip CSS */
+.tool-status-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  line-height: 1;
+}
+
+.tool-status-chip.status-idle {
+  background: rgba(16, 16, 16, 0.05);
+  color: var(--muted);
+  border: 1px solid rgba(16, 16, 16, 0.1);
+}
+
+.tool-status-chip.status-checking {
+  background: rgba(161, 161, 154, 0.08);
+  color: #8c8c82;
+  border: 1px solid rgba(161, 161, 154, 0.2);
+}
+
+.tool-status-chip.status-running {
+  background: rgba(221, 107, 74, 0.08);
+  color: var(--accent-workspace);
+  border: 1px solid rgba(221, 107, 74, 0.2);
+}
+
+.tool-status-chip.status-complete {
+  background: rgba(74, 122, 74, 0.08);
+  color: #4a7a4a;
+  border: 1px solid rgba(74, 122, 74, 0.2);
+}
+
+.tool-status-chip.status-error {
+  background: rgba(184, 92, 92, 0.08);
+  color: #b85c5c;
+  border: 1px solid rgba(184, 92, 92, 0.2);
+}
