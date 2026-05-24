@@ -334,6 +334,36 @@ export default function App(): ReactElement {
               onPointerUp={endDrag}
               onPointerCancel={endDrag}
             >
+              {/* Lane 1: Command Panel */}
+              <div className="workspace-lane lane-command">
+                <div className="lane-header">
+                  <span className="lane-title">Command</span>
+                </div>
+                <div className="lane-body">
+                  <div className="skeleton-placeholder">Command Dock Sandbox</div>
+                </div>
+              </div>
+
+              {/* Lane 2: Session Timeline Panel */}
+              <div className="workspace-lane lane-session">
+                <div className="lane-header">
+                  <span className="lane-title">Session</span>
+                </div>
+                <div className="lane-body">
+                  <div className="skeleton-placeholder">Session Timeline</div>
+                </div>
+              </div>
+
+              {/* Lane 3: Output Rail Panel */}
+              <div className="workspace-lane lane-output">
+                <div className="lane-header">
+                  <span className="lane-title">Output</span>
+                </div>
+                <div className="lane-body">
+                  <div className="skeleton-placeholder">Artifact Rail</div>
+                </div>
+              </div>
+
               {visibleItems.map((item, index) => (
                 <button
                   key={`${item.title}-${index}`}
