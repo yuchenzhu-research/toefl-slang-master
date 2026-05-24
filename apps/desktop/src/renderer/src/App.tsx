@@ -11,6 +11,8 @@ import {
 import { Sidebar, PageId } from './components/Sidebar'
 import { CommandDock, WorkspaceMode } from './components/CommandDock'
 import { WorkspaceLane } from './components/WorkspaceLane'
+import { SessionTimeline } from './components/SessionTimeline'
+import { useWorkspace, WorkspaceEvent } from './hooks/useWorkspace'
 import { ToastProvider } from './components/ToastContext'
 import { ICON } from './components/icons'
 import { StylePage } from './pages/StylePage'
@@ -128,6 +130,37 @@ const categories = [
   'Provider Runtime'
 ]
 
+const MOCK_EVENTS: WorkspaceEvent[] = [
+  {
+    id: 'evt-demo-001',
+    timestamp: '2026-05-24T00:00:05.000Z',
+    type: 'command-submitted',
+    message: 'Submitted command: /dict a big deal'
+  },
+  {
+    id: 'evt-demo-002',
+    timestamp: '2026-05-24T00:00:10.000Z',
+    type: 'tool-running',
+    message: "Looking up 'a big deal' in Dictionary Pro...",
+    toolName: 'dictionary_lookup',
+    toolStatus: 'running'
+  },
+  {
+    id: 'evt-demo-003',
+    timestamp: '2026-05-24T00:00:45.000Z',
+    type: 'artifact-created',
+    message: "Generated academic conversion card for 'a big deal'",
+    artifactId: 'art-demo-001'
+  },
+  {
+    id: 'evt-demo-004',
+    timestamp: '2026-05-24T00:00:50.000Z',
+    type: 'complete',
+    message: 'Workspace task completed successfully',
+    toolStatus: 'complete'
+  }
+]
+
 function shuffleGallery(): typeof galleryItems {
   return [...galleryItems]
     .map((item) => ({ item, sort: Math.random() }))
@@ -145,6 +178,7 @@ function renderPage(page: PageId): ReactElement {
 }
 
 export default function App(): ReactElement {
+  const { session } = useWorkspace()
   const [page, setPage] = useState<PageId | null>(null)
   const [randomMode, setRandomMode] = useState(false)
   const [randomItems, setRandomItems] = useState(() => shuffleGallery())
@@ -347,7 +381,7 @@ export default function App(): ReactElement {
 
               {/* Lane 2: Session Timeline Panel */}
               <WorkspaceLane title="Session" className="lane-session">
-                <div className="skeleton-placeholder">Session Timeline</div>
+                <SessionTimeline events={session?.events || MOCK_EVENTS} />
               </WorkspaceLane>
 
               {/* Lane 3: Output Rail Panel */}
