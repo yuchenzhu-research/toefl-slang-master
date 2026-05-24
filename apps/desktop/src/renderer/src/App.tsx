@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { Sidebar, PageId } from './components/Sidebar'
 import { CommandDock, WorkspaceMode } from './components/CommandDock'
+import { WorkspaceLane } from './components/WorkspaceLane'
 import { ToastProvider } from './components/ToastContext'
 import { ICON } from './components/icons'
 import { StylePage } from './pages/StylePage'
@@ -340,34 +341,19 @@ export default function App(): ReactElement {
               onPointerCancel={endDrag}
             >
               {/* Lane 1: Command Panel */}
-              <div className="workspace-lane lane-command">
-                <div className="lane-header">
-                  <span className="lane-title">Command</span>
-                </div>
-                <div className="lane-body">
-                  <CommandDock onRun={handleCommandRun} />
-                </div>
-              </div>
+              <WorkspaceLane title="Command" className="lane-command">
+                <CommandDock onRun={handleCommandRun} />
+              </WorkspaceLane>
 
               {/* Lane 2: Session Timeline Panel */}
-              <div className="workspace-lane lane-session">
-                <div className="lane-header">
-                  <span className="lane-title">Session</span>
-                </div>
-                <div className="lane-body">
-                  <div className="skeleton-placeholder">Session Timeline</div>
-                </div>
-              </div>
+              <WorkspaceLane title="Session" className="lane-session">
+                <div className="skeleton-placeholder">Session Timeline</div>
+              </WorkspaceLane>
 
               {/* Lane 3: Output Rail Panel */}
-              <div className="workspace-lane lane-output">
-                <div className="lane-header">
-                  <span className="lane-title">Output</span>
-                </div>
-                <div className="lane-body">
-                  <div className="skeleton-placeholder">Artifact Rail</div>
-                </div>
-              </div>
+              <WorkspaceLane title="Output" className="lane-output">
+                <div className="skeleton-placeholder">Artifact Rail</div>
+              </WorkspaceLane>
 
               {visibleItems.map((item, index) => (
                 <button

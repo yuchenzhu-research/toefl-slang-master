@@ -425,9 +425,21 @@ button {
 }
 
 .lane-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   margin-bottom: 20px;
   border-bottom: 1px solid var(--grid-line);
   padding-bottom: 12px;
+}
+
+.lane-metadata {
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .lane-title {
