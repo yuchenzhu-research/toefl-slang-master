@@ -1,18 +1,18 @@
 {
   "project": "SPARK",
   "branchName": "ralph/agent-workspace-cli-gui",
-  "description": "Agent Workspace CLI + GUI - build a Claude Code/OpenClaw-inspired command-first learning workspace with an ALET-inspired desktop interface",
+  "description": "Agent Workspace CLI + GUI - build a high-craft ALET-inspired desktop GUI and a Claude Code/OpenClaw-inspired bare spark CLI workspace",
   "userStories": [
     {
       "id": "US-001",
       "title": "Create interface reference notes",
-      "description": "As a developer, I want concise reference notes from ALET, Claude Code, and OpenClaw so that implementation agents know the design direction without copying external code.",
+      "description": "As a developer, I want concise reference notes from ALET, Claude Code, and OpenClaw so implementation agents understand the direction without copying external code.",
       "acceptanceCriteria": [
         "Add docs/frontend-interface-reference.md",
-        "Document ALET-inspired visual principles: horizontal layout, small type, light surface, interactive movement, image rhythm",
-        "Document Claude Code-inspired CLI principles from /Users/yuchenzhu/Desktop/claude-code-source-code-main: command input, session log, tool/status messages, keyboard-first flow",
-        "Document OpenClaw-inspired architecture principles from references/openclaw: agent workspace, plugin/extension boundaries, not copying runtime code",
-        "Include explicit non-copying rule: references inform patterns only",
+        "Document ALET-inspired principles: horizontal canvas, small type, light surface, interactive movement, image rhythm",
+        "Document Claude Code-inspired CLI principles from /Users/yuchenzhu/Desktop/claude-code-source-code-main: command input, transcript, tool/status messages, keyboard-first flow",
+        "Document OpenClaw-inspired principles from references/openclaw: agent workspace, plugin boundaries, extension discipline",
+        "State clearly that references inform patterns only and must not be copied",
         "Typecheck passes"
       ],
       "priority": 1,
@@ -21,13 +21,13 @@
     },
     {
       "id": "US-002",
-      "title": "Define shared interface domain model",
-      "description": "As a developer, I want CLI and GUI to share one small interface domain model so both versions can evolve consistently.",
+      "title": "Define shared workspace domain model",
+      "description": "As a developer, I want CLI and GUI to share stable workspace types so both surfaces can evolve together.",
       "acceptanceCriteria": [
-        "Add a shared TypeScript model for workspace sessions, commands, command results, artifacts, and tool/status events",
-        "Model lives under src/platform/ or another existing platform boundary, not inside a page component",
+        "Add shared TypeScript types for workspace session, command, command result, event, artifact, and tool status",
+        "Model lives under src/platform/ or an existing platform boundary",
         "Field names are English and locale-neutral",
-        "Add unit tests for at least one session lifecycle and one command result shape",
+        "Add tests for one session lifecycle and one command result shape",
         "Typecheck passes",
         "Tests pass"
       ],
@@ -37,14 +37,13 @@
     },
     {
       "id": "US-003",
-      "title": "Add agent workspace CLI skeleton",
-      "description": "As a learner, I want a SPARK CLI workspace mode so that I can run study commands in a continuous terminal session.",
+      "title": "Add workspace event factory helpers",
+      "description": "As a developer, I want small factory helpers for workspace events so CLI and GUI produce consistent status traces.",
       "acceptanceCriteria": [
-        "Add a CLI command such as spark workspace or spark agent with help text",
-        "CLI accepts at least one command-oriented input path for Dictionary Pro dry-run lookup",
-        "CLI prints a session header, command echo, status line, and artifact/result summary",
-        "Existing spark studio behavior remains available",
-        "Update README command surface if a new command is added",
+        "Add helpers for command-submitted, backend-checking, tool-running, artifact-created, error, and complete events",
+        "Helpers return the shared event type from US-002",
+        "Helpers generate stable IDs or accept injected IDs for tests",
+        "Add unit tests for at least three event helpers",
         "Typecheck passes",
         "Tests pass"
       ],
@@ -54,15 +53,15 @@
     },
     {
       "id": "US-004",
-      "title": "Build desktop command dock layout",
-      "description": "As a learner, I want the desktop app to present a command dock and horizontal workspace so that SPARK feels like an agent workspace rather than a static module menu.",
+      "title": "Add workspace command parser",
+      "description": "As a developer, I want a small command parser so bare spark workspace input can route to Dictionary, Style, Coach, and Content modes.",
       "acceptanceCriteria": [
-        "Desktop landing/workspace view includes a command dock with input, mode selector, and primary run action",
-        "Layout uses horizontal workspace lanes or panels inspired by ALET without becoming a portfolio page",
-        "Visual style uses small precise type, light surface, restrained controls, and stable dimensions",
-        "Existing navigation to Dictionary, Style, Coach, Content, and Settings remains reachable",
+        "Add parser for slash commands or mode-prefixed commands such as /dict a big deal",
+        "Parser returns a typed command object from the shared workspace model",
+        "Parser handles empty input and unknown commands explicitly",
+        "Add tests for dict, style, coach, content, empty, and unknown inputs",
         "Typecheck passes",
-        "Verify in browser using dev-browser skill"
+        "Tests pass"
       ],
       "priority": 4,
       "passes": false,
@@ -70,15 +69,15 @@
     },
     {
       "id": "US-005",
-      "title": "Add session timeline panel",
-      "description": "As a learner, I want to see previous commands and status events so that I can understand what the learning agent has done.",
+      "title": "Add workspace artifact model helpers",
+      "description": "As a developer, I want artifact helpers so Markdown and JSON sidecar outputs can appear consistently in CLI and GUI.",
       "acceptanceCriteria": [
-        "Desktop workspace includes a session timeline panel",
-        "Timeline can display command submitted, backend checking, lookup completed, and error event states",
-        "Timeline state is local in this phase and does not require persistence",
-        "Timeline uses the shared interface domain model from US-002 if available",
+        "Add helpers for markdown artifact, JSON artifact summary, and error artifact",
+        "Helpers use the shared artifact type from US-002",
+        "Helpers do not localize schema keys",
+        "Add unit tests for markdown and JSON artifact helpers",
         "Typecheck passes",
-        "Verify in browser using dev-browser skill"
+        "Tests pass"
       ],
       "priority": 5,
       "passes": false,
@@ -86,15 +85,14 @@
     },
     {
       "id": "US-006",
-      "title": "Add artifact preview rail",
-      "description": "As a learner, I want a preview rail for Markdown/JSON-style outputs so that SPARK's artifact-first model is visible in the GUI.",
+      "title": "Create workspace fixture data",
+      "description": "As a developer, I want deterministic workspace fixtures so GUI and CLI can be built and visually tested without live API calls.",
       "acceptanceCriteria": [
-        "Desktop workspace includes an artifact preview rail or panel",
-        "Rail can show at least Dictionary markdown output and structured metadata summary",
-        "Empty state explains no artifact has been generated yet without long tutorial copy",
-        "Layout remains readable on laptop-sized desktop windows",
-        "Typecheck passes",
-        "Verify in browser using dev-browser skill"
+        "Add fixture session with at least three events and one Dictionary artifact",
+        "Fixture data uses shared workspace model types",
+        "Fixture data is clearly marked as development/demo data",
+        "No provider API call is required to render fixture state",
+        "Typecheck passes"
       ],
       "priority": 6,
       "passes": false,
@@ -102,17 +100,701 @@
     },
     {
       "id": "US-007",
-      "title": "Align Dictionary page with agent workspace shell",
-      "description": "As a learner, I want Dictionary Pro to run inside the new workspace shell so that the first real workflow demonstrates the future CLI/GUI model.",
+      "title": "Normalize Dictionary API response for workspace",
+      "description": "As a developer, I want Dictionary API responses normalized into workspace results so UI components do not inspect raw payloads.",
       "acceptanceCriteria": [
-        "Dictionary lookup can be triggered from the command dock or Dictionary page using the same API client",
-        "Lookup result updates the session timeline and artifact preview rail",
-        "Backend unavailable and lookup error states appear in the workspace shell",
-        "Existing Dictionary page behavior does not regress",
+        "Add a normalization function that converts Dictionary lookup response into command result and artifacts",
+        "Function handles dryRun, markdown, query metadata, and error fields",
+        "Dictionary page can keep using the existing API client",
+        "Add tests for dry-run and error normalization",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Add frontend workspace state adapter",
+      "description": "As a developer, I want a renderer-side state adapter so GUI panels can consume sessions, events, and artifacts consistently.",
+      "acceptanceCriteria": [
+        "Add adapter or hook under apps/desktop/src/renderer/src/ for local workspace session state",
+        "Adapter can append events, set active artifact, and reset session",
+        "Adapter uses shared model-compatible types or local DTOs that mirror the shared model",
+        "No backend business logic is duplicated in the adapter",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Document workspace governance",
+      "description": "As a maintainer, I want governance docs updated so future agents preserve CLI and GUI boundaries.",
+      "acceptanceCriteria": [
+        "Update docs/frontend.md with the CLI+GUI workspace direction",
+        "Update MANUAL.md if new workspace architecture files are introduced",
+        "Document that bare spark enters workspace mode while explicit subcommands remain supported",
+        "Document that ALET, Claude Code, and OpenClaw are references, not source to copy",
+        "Typecheck passes"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Add repository guard tests for workspace direction",
+      "description": "As a maintainer, I want tests that keep the new workspace structure from drifting.",
+      "acceptanceCriteria": [
+        "Extend repository-structure tests or add a new test file for workspace files",
+        "Test verifies scripts/ralph/prd.json has branchName ralph/agent-workspace-cli-gui",
+        "Test verifies docs/frontend-interface-reference.md exists after US-001",
+        "Test verifies bare spark workspace documentation exists after CLI docs are added",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Make bare spark enter workspace CLI",
+      "description": "As a learner, I want running spark with no subcommand to open the new workspace CLI so the product has a clear default experience.",
+      "acceptanceCriteria": [
+        "Running spark with no arguments routes to workspace CLI mode",
+        "spark help still shows the command surface",
+        "Existing subcommands such as spark dict and spark studio continue to work",
+        "Add or update CLI tests for no-argument behavior",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Add workspace CLI help screen",
+      "description": "As a learner, I want the bare spark workspace to show concise commands so I know how to use it.",
+      "acceptanceCriteria": [
+        "Workspace CLI help lists /dict, /style, /coach, /content, /clear, /exit",
+        "Help includes one example command for Dictionary Pro",
+        "Help uses compact Claude Code-style wording and no long tutorial copy",
+        "Add CLI output tests for workspace help",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Add Dictionary command to workspace CLI",
+      "description": "As a learner, I want to run Dictionary Pro inside bare spark so I can get expression feedback from the agent workspace.",
+      "acceptanceCriteria": [
+        "Workspace CLI accepts /dict a big deal",
+        "Command runs Dictionary Pro in dry-run mode by default",
+        "Output includes session header, command echo, status line, and artifact summary",
+        "Add CLI tests for /dict dry-run output",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "Add Style command to workspace CLI",
+      "description": "As a learner, I want to run Economist style analysis from bare spark so CLI and GUI can share the same workspace concept.",
+      "acceptanceCriteria": [
+        "Workspace CLI accepts /style followed by text",
+        "Command runs deterministic style analysis without provider calls",
+        "Output includes status line and compact result summary",
+        "Add CLI tests for /style output",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Add Coach command skeleton to workspace CLI",
+      "description": "As a learner, I want the workspace CLI to accept writing diagnosis input even if the first version is dry-run.",
+      "acceptanceCriteria": [
+        "Workspace CLI accepts /coach followed by text",
+        "Command produces dry-run status and planned workflow summary",
+        "Output does not make provider calls by default",
+        "Add CLI tests for /coach dry-run output",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Add Content command skeleton to workspace CLI",
+      "description": "As a learner, I want the workspace CLI to accept content parsing commands so the full learning pipeline is visible.",
+      "acceptanceCriteria": [
+        "Workspace CLI accepts /content with a file path or text stub",
+        "Command produces dry-run status and planned workflow summary",
+        "Unknown or missing file path returns a clear error event",
+        "Add CLI tests for /content dry-run and missing input",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Render CLI session timeline",
+      "description": "As a learner, I want CLI output to show a timeline of command and tool events so it feels like an agent session.",
+      "acceptanceCriteria": [
+        "Workspace CLI renders at least submitted, running, complete, and error events",
+        "Timeline uses compact symbols or labels that work in plain terminals",
+        "Timeline output is deterministic for tests",
+        "Add tests for successful and error timelines",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Render CLI artifact summary",
+      "description": "As a learner, I want CLI output to show generated artifacts so SPARK remains Markdown-first and JSON-sidecar aware.",
+      "acceptanceCriteria": [
+        "Workspace CLI renders artifact title, type, and short preview",
+        "Dictionary dry-run artifact shows markdown preview when available",
+        "JSON-like metadata is summarized without dumping huge objects",
+        "Add CLI tests for artifact summary output",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 18,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Add CLI error and retry wording",
+      "description": "As a learner, I want CLI failures to be readable so I can recover without guessing.",
+      "acceptanceCriteria": [
+        "Unknown workspace command prints supported commands",
+        "Empty command prints a concise prompt hint",
+        "Backend unavailable state is represented as a workspace error event",
+        "Add tests for unknown and empty command output",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 19,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "Update README for bare spark workspace",
+      "description": "As a new user, I want README instructions for the bare spark CLI workspace so I can discover the new default experience.",
+      "acceptanceCriteria": [
+        "README.md documents that bare spark enters workspace CLI",
+        "README_zh-CN.md and README_zh-TW.md include the same command surface update",
+        "Existing standalone command examples remain documented",
+        "Repository structure tests pass",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 20,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "Create ALET-inspired visual tokens",
+      "description": "As a designer-developer, I want a stronger visual token system so the GUI can move toward a high-craft ALET-inspired workspace.",
+      "acceptanceCriteria": [
+        "Add or revise CSS variables for light surface, ink, accent, grid lines, panel depth, and motion timing",
+        "Tokens avoid a one-note palette and do not rely on purple-blue gradients",
+        "Tokens are documented with short comments only where helpful",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
-      "priority": 7,
+      "priority": 21,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "Build horizontal workspace canvas",
+      "description": "As a learner, I want the desktop first screen to become a horizontal workspace canvas instead of a static gallery.",
+      "acceptanceCriteria": [
+        "Desktop landing stage includes horizontal lanes or columns for command, session, output, and modules",
+        "Layout remains usable at 1280x820 and larger desktop sizes",
+        "Existing module navigation remains reachable",
+        "No card-inside-card layout is introduced",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 22,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "Add desktop command dock component",
+      "description": "As a learner, I want a prominent command dock in the GUI so the app feels command-first like a learning agent.",
+      "acceptanceCriteria": [
+        "Add CommandDock component under renderer components",
+        "Dock includes command input, mode selector, run button, and compact hint text",
+        "Dock uses stable dimensions and does not jump when states change",
+        "Dock can be rendered with fixture state without backend calls",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 23,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-024",
+      "title": "Add GUI mode selector",
+      "description": "As a learner, I want to switch between Dictionary, Style, Coach, and Content modes from the command dock.",
+      "acceptanceCriteria": [
+        "Mode selector includes Dictionary, Style, Coach, and Content options",
+        "Selected mode changes input placeholder and command label",
+        "Selector uses compact segmented control or equivalent familiar UI",
+        "Mode state is local and typed",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 24,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-025",
+      "title": "Add command input interactions",
+      "description": "As a learner, I want keyboard-friendly command input so the GUI feels fast like a CLI.",
+      "acceptanceCriteria": [
+        "Pressing Enter in the command dock triggers the run action",
+        "Empty input does not trigger a command and shows a compact validation state",
+        "Input preserves typed text when a command fails",
+        "Focus ring is visible and professionally styled",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 25,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-026",
+      "title": "Add GUI keyboard shortcuts",
+      "description": "As a learner, I want simple keyboard shortcuts so the desktop workspace can be driven without excessive mouse use.",
+      "acceptanceCriteria": [
+        "Add shortcut to focus command dock input",
+        "Add shortcut to clear the local command input",
+        "Shortcuts do not conflict with browser/Electron basics like copy and paste",
+        "Shortcut labels are available through accessible labels or concise UI hints",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 26,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-027",
+      "title": "Build horizontal lane container",
+      "description": "As a learner, I want workspace panels arranged in horizontal lanes so the ALET-inspired direction is visible and usable.",
+      "acceptanceCriteria": [
+        "Add reusable HorizontalLane or WorkspaceLane component",
+        "Lane component supports title, metadata, and children",
+        "Lane widths are constrained to avoid text overflow",
+        "Lane layout scrolls horizontally when needed without breaking sidebar navigation",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 27,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-028",
+      "title": "Build GUI session timeline panel",
+      "description": "As a learner, I want a visible session timeline panel so I can understand what the workspace agent has done.",
+      "acceptanceCriteria": [
+        "Add SessionTimeline component under renderer components",
+        "Timeline renders submitted, running, complete, and error event states",
+        "Timeline can render fixture events from US-006 or local state",
+        "Timeline typography stays compact and readable",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 28,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-029",
+      "title": "Add GUI tool status chips",
+      "description": "As a learner, I want compact tool status indicators so backend and module activity is visible without heavy UI.",
+      "acceptanceCriteria": [
+        "Add ToolStatusChip or equivalent component",
+        "Chip supports idle, checking, running, complete, and error states",
+        "Status colors are distinct but restrained",
+        "Component is used in at least one workspace panel",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 29,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-030",
+      "title": "Build artifact preview rail",
+      "description": "As a learner, I want a right-side artifact rail so generated learning outputs are visible in the GUI.",
+      "acceptanceCriteria": [
+        "Add ArtifactRail component under renderer components",
+        "Rail shows artifact type, title, and preview text",
+        "Rail has an empty state with short operational copy",
+        "Rail dimensions remain stable when content changes",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 30,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-031",
+      "title": "Add Markdown artifact preview",
+      "description": "As a learner, I want Markdown-style learning output to be readable inside the artifact rail.",
+      "acceptanceCriteria": [
+        "Add MarkdownPreview or simple Markdown-like renderer component",
+        "Renderer supports headings, bullet-like lines, and plain paragraphs without unsafe HTML injection",
+        "Dictionary markdown fixture renders cleanly",
+        "Long content scrolls within the preview area",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 31,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-032",
+      "title": "Add JSON sidecar summary preview",
+      "description": "As a learner, I want structured metadata summarized so the JSON sidecar concept is visible without dumping raw JSON.",
+      "acceptanceCriteria": [
+        "Artifact rail can show key-value summary for structured metadata",
+        "Summary handles missing metadata gracefully",
+        "No schema keys are localized",
+        "Preview remains compact and scannable",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 32,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-033",
+      "title": "Wire command dock to Dictionary API client",
+      "description": "As a learner, I want the GUI command dock to run Dictionary lookup so the first screen is actually useful.",
+      "acceptanceCriteria": [
+        "Dictionary mode in command dock calls the shared Dictionary API client",
+        "Dry-run remains the default unless existing settings specify otherwise",
+        "Result appends timeline events and updates artifact rail",
+        "Backend or lookup errors appear as timeline and dock states",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 33,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-034",
+      "title": "Align Dictionary page with workspace shell",
+      "description": "As a learner, I want Dictionary Pro to look and behave like part of the new workspace shell.",
+      "acceptanceCriteria": [
+        "Dictionary page uses shared command/result/status components where appropriate",
+        "Dictionary page visual style matches workspace tokens",
+        "Existing lookup behavior from the page does not regress",
+        "Dictionary page can still be opened through navigation",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 34,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-035",
+      "title": "Show backend status in command dock",
+      "description": "As a learner, I want backend availability visible near the command input so I understand when local APIs are unavailable.",
+      "acceptanceCriteria": [
+        "Command dock shows backend status: checking, online, offline",
+        "User can manually refresh backend status",
+        "Offline state does not hide the command input",
+        "Submitting while offline shows a clear local-backend error path",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 35,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-036",
+      "title": "Polish GUI loading and error states",
+      "description": "As a learner, I want loading and error states to look intentional and not break the high-craft workspace.",
+      "acceptanceCriteria": [
+        "Loading state appears in command dock, timeline, and artifact rail when appropriate",
+        "Error state uses concise language and visible styling",
+        "Loading and error states do not resize controls unexpectedly",
+        "State styling matches ALET-inspired visual tokens",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 36,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-037",
+      "title": "Design empty workspace states",
+      "description": "As a learner, I want the workspace to feel useful before any command is run.",
+      "acceptanceCriteria": [
+        "Session timeline empty state suggests one short command example",
+        "Artifact rail empty state uses short operational copy",
+        "Command dock placeholder is mode-aware",
+        "Empty states avoid long tutorial paragraphs",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 37,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-038",
+      "title": "Improve Settings API base URL control",
+      "description": "As a learner, I want a visible local API setting so GUI users can point the desktop app at the backend.",
+      "acceptanceCriteria": [
+        "Settings page shows local API base URL with default http://localhost:4173",
+        "User can edit the base URL in local UI state",
+        "Setting is used by the renderer API client during the session or documented as pending persistence",
+        "Settings style matches workspace visual tokens",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 38,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-039",
+      "title": "Adapt Style page to workspace visual system",
+      "description": "As a learner, I want the Economist Style page to visually fit the new command workspace even before full dock integration.",
+      "acceptanceCriteria": [
+        "Style page uses workspace visual tokens and shared status/result layout where appropriate",
+        "Existing style analysis behavior does not regress",
+        "Page remains navigable from the workspace",
+        "Text does not overflow at desktop app minimum width",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 39,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-040",
+      "title": "Adapt Coach page to workspace visual system",
+      "description": "As a learner, I want the TOEFL Coach page to visually fit the new command workspace while remaining a clear WIP workflow.",
+      "acceptanceCriteria": [
+        "Coach page uses workspace visual tokens and shared layout primitives where appropriate",
+        "Existing coach controls remain reachable",
+        "WIP or dry-run copy is concise and operational",
+        "Text does not overflow at desktop app minimum width",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 40,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-041",
+      "title": "Adapt Content page to workspace visual system",
+      "description": "As a learner, I want the Content Parser page to visually fit the new command workspace and artifact-first direction.",
+      "acceptanceCriteria": [
+        "Content page uses workspace visual tokens and shared layout primitives where appropriate",
+        "Existing content controls remain reachable",
+        "Artifact-first language is visible without long documentation copy",
+        "Text does not overflow at desktop app minimum width",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 41,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-042",
+      "title": "Refine navigation and sidebar for workspace",
+      "description": "As a learner, I want navigation to feel integrated with the workspace rather than bolted onto a gallery.",
+      "acceptanceCriteria": [
+        "Sidebar or navigation uses compact labels and stable dimensions",
+        "Navigation supports home/workspace plus Dictionary, Style, Coach, Content, Settings",
+        "Active state is visually clear but restrained",
+        "Navigation does not cover command dock or artifact rail",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 42,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-043",
+      "title": "Add ALET-inspired image rhythm panels",
+      "description": "As a learner, I want the GUI to retain visual energy through image-like panels without becoming a portfolio site.",
+      "acceptanceCriteria": [
+        "Workspace includes image or visual rhythm panels integrated into the horizontal layout",
+        "Panels support SPARK learning categories rather than generic portfolio labels",
+        "Panels do not obscure command input or results",
+        "Images/assets are existing project assets or generated project-owned assets",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 43,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-044",
+      "title": "Add controlled horizontal motion",
+      "description": "As a learner, I want subtle motion that communicates a horizontal workspace without making the app hard to use.",
+      "acceptanceCriteria": [
+        "Horizontal scroll or lane movement has smooth but restrained behavior",
+        "Motion does not prevent keyboard and pointer interaction",
+        "Reduced-motion preference is respected if practical in CSS",
+        "No layout shift occurs when hovering over key controls",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 44,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-045",
+      "title": "Make workspace responsive for laptop windows",
+      "description": "As a learner, I want the GUI to remain usable in the desktop app's minimum window size.",
+      "acceptanceCriteria": [
+        "Workspace layout is usable at 900x600 minimum window size",
+        "Command dock, timeline, and artifact rail remain reachable",
+        "Long labels wrap or truncate intentionally without overlap",
+        "No horizontal controls become inaccessible at minimum size",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 45,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-046",
+      "title": "Improve GUI focus and accessibility states",
+      "description": "As a keyboard user, I want visible focus and usable controls in the desktop workspace.",
+      "acceptanceCriteria": [
+        "Command dock input, buttons, selectors, and navigation have visible focus states",
+        "Icon-only controls have accessible labels",
+        "Interactive elements can be reached by keyboard in a logical order",
+        "Color is not the only indicator for error or active states",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 46,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-047",
+      "title": "Add browser verification notes for GUI",
+      "description": "As a maintainer, I want visual verification notes so Ralph can track what was checked in the browser.",
+      "acceptanceCriteria": [
+        "Add or update docs/frontend.md with browser verification expectations for GUI stories",
+        "Document local dev command npm run desktop:dev",
+        "Document that UI stories require visual verification and typecheck/build",
+        "No implementation behavior changes are required",
+        "Typecheck passes"
+      ],
+      "priority": 47,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-048",
+      "title": "Clean up obsolete gallery-first CSS",
+      "description": "As a maintainer, I want old gallery-first CSS reduced so the new workspace style is easier to maintain.",
+      "acceptanceCriteria": [
+        "Remove or isolate obsolete landing gallery CSS that no longer applies",
+        "Keep any still-used assets or classes functional",
+        "CSS remains organized by workspace shell, command dock, lanes, timeline, and artifacts where practical",
+        "Desktop build still succeeds",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 48,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-049",
+      "title": "Run desktop build QA and fix fallout",
+      "description": "As a maintainer, I want a dedicated QA pass so accumulated GUI changes still build cleanly.",
+      "acceptanceCriteria": [
+        "Run npm run test:ci",
+        "Run npm run desktop:typecheck",
+        "Run npm run desktop:build",
+        "Fix any errors introduced by prior GUI or CLI stories",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 49,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-050",
+      "title": "Finalize CLI and GUI documentation",
+      "description": "As a learner and maintainer, I want final documentation for the new spark workspace CLI and ALET-inspired GUI direction.",
+      "acceptanceCriteria": [
+        "README.md documents bare spark workspace, GUI development, and desktop build commands",
+        "README_zh-CN.md and README_zh-TW.md include equivalent high-level updates",
+        "docs/frontend.md links to frontend-interface-reference.md",
+        "scripts/ralph/progress.txt includes final learnings for the 50-task run",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 50,
       "passes": false,
       "notes": ""
     }

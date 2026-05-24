@@ -6,13 +6,22 @@ Build SPARK into a Claude Code / OpenClaw-inspired learning agent workspace with
 
 The goal is not to clone Claude Code, OpenClaw, or ALET. The goal is to translate their strongest product patterns into SPARK's English-learning domain: command input, session state, tool/status traces, artifact output, and a calm high-craft workspace.
 
+## Confirmed Direction
+
+- GUI structure: ALET-style horizontal canvas with left command dock, middle lanes, and right artifact rail.
+- CLI name: bare `spark` enters the agent workspace. Existing explicit subcommands such as `spark help`, `spark dict`, and `spark studio` remain supported.
+- Visual intensity: high. The desktop app should feel visually distinctive and interactive, while remaining usable as a study workspace.
+- Ralph distribution: 50 tasks total: 10 architecture, 10 CLI, 30 GUI.
+- CSS scope: broad visual rewrite is allowed.
+- Ralph failure policy: if a story fails, later iterations may continue repairing the same story.
+
 ## Goals
 
 - Create a shared product model for CLI and GUI: sessions, commands, tools, artifacts, and status.
 - Turn the desktop app into a visually distinctive learning workspace with command-first interaction.
 - Establish a CLI surface that feels like an agent loop, not isolated one-off commands.
 - Use local references responsibly: Claude Code source for terminal UI patterns, OpenClaw references for agent/plugin/workspace structure, and ALET/Godly for visual interaction direction.
-- Keep implementation incremental through Ralph stories that each fit one iteration.
+- Keep implementation incremental through 50 Ralph stories that each fit one iteration.
 
 ## User Stories
 
@@ -138,9 +147,22 @@ The goal is not to clone Claude Code, OpenClaw, or ALET. The goal is to translat
 - Future module integrations can reuse the same session/event/artifact model.
 - CI remains green across root tests and desktop typecheck/build.
 
+## Ralph Execution Plan
+
+The executable Ralph queue lives in `scripts/ralph/prd.json` and contains 50 stories:
+
+- US-001 through US-010: reference notes, shared workspace model, event/artifact helpers, parser, fixtures, API normalization, renderer state adapter, governance, and guard tests.
+- US-011 through US-020: bare `spark` workspace CLI, help, Dictionary/Style/Coach/Content commands, session timeline output, artifact summary, error wording, and README updates.
+- US-021 through US-050: high-intensity ALET-inspired GUI: visual tokens, horizontal canvas, command dock, mode selector, keyboard interactions, lanes, timeline, status chips, artifact rail, Dictionary integration, page alignment, settings, visual system adaptation, motion, responsive behavior, accessibility, CSS cleanup, QA, and final docs.
+
+The intended long run command is:
+
+```bash
+./scripts/ralph/ralph.sh --tool claude 50
+```
+
 ## Open Questions
 
-- Should the CLI command be named `spark workspace`, `spark agent`, or `spark learn`?
 - Should the desktop command dock default to Dictionary Pro or offer an explicit mode selector first?
 - Should visual assets remain the current generated SPARK gallery images or be replaced with interface-native panels?
 - Should session timeline persistence be added after the local-only phase?
