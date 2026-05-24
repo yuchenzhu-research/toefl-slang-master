@@ -797,6 +797,37 @@
       "priority": 50,
       "passes": true,
       "notes": "Implemented, typecheck+tests+build passed."
+    },
+    {
+      "id": "US-051",
+      "title": "Refactor GUI to remove childish elements and reach ALET high-craft aesthetics",
+      "description": "As a learner, I want a premium, high-fidelity UI that uses polished shadows, glassmorphism, proper spacing, and zero text/decoration overlaps, so the app feels like a professional product.",
+      "acceptanceCriteria": [
+        "Hero slogan, corner letters, category orbit, and line decorations must completely and smoothly fade out (opacity: 0, visibility: hidden) when Workspace lanes are scrolled or a subpage is opened",
+        "Fix any layout overlaps between components",
+        "Add frosted glass (backdrop-filter) and elegant card shadows to DictPage, StylePage, CoachPage, ContentPage, SettingsPage, and EvaluationPage",
+        "All fonts, margins, and borders follow the ALET aesthetic checklist",
+        "Typecheck passes",
+        "Desktop build succeeds"
+      ],
+      "priority": 51,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-052",
+      "title": "Verify and connect live backend API integration across all panels",
+      "description": "As a learner, I want every workspace panel (Dict, Style, Coach, Content) to successfully connect to spark web server when online, and handle offline graceful fallbacks.",
+      "acceptanceCriteria": [
+        "Ensure DictPage, StylePage, CoachPage, and ContentPage dynamically verify backend connection status",
+        "When backend is offline, display elegant StatusMessage pills (max 14px SVG icon size) advising dry-run fallback",
+        "Ensure all mock/dry-run requests fallback seamlessly and write to the Session Timeline correctly",
+        "All tests under tests/ pass",
+        "Typecheck and desktop build pass"
+      ],
+      "priority": 52,
+      "passes": false,
+      "notes": ""
     }
   ]
 }
