@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent, useEffect } from 'react'
+import { useState, KeyboardEvent, useEffect, useRef } from 'react'
 
 export type WorkspaceMode = 'dict' | 'style' | 'coach' | 'content'
 
@@ -20,10 +20,41 @@ export function CommandDock({
   const [mode, setMode] = useState<WorkspaceMode>('dict')
   const [text, setText] = useState(initialText)
   const [validationError, setValidationError] = useState<string | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     setText(initialText)
   }, [initialText])
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (e.key === '/') {
+        const activeEl = document.activeElement
+        const isEditing = activeEl && (
+          activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA' ||
+          (activeEl as HTMLElement).isContentEditable
+        )
+        if (!isEditing && textareaRef.current) {
+          e.preventDefault()
+          textareaRef.current.focus()
+        }
+      }
+
+      if (e.key === 'Escape') {
+        if (document.activeElement === textareaRef.current) {
+          e.preventDefault()
+          setText('')
+          setValidationError(null)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown)
+    }
+  }, [])
 
   const modeOptions: Array<{ value: WorkspaceMode; label: string; placeholder: string; prefix: string }> = [
     { value: 'dict', label: 'Dict', placeholder: 'Upgrade a word or phrase (e.g., piece of cake)', prefix: '/dict' },
@@ -76,6 +107,7 @@ export function CommandDock({
       <div className="input-container">
         <div className="input-prefix-label">{currentOption.prefix}</div>
         <textarea
+          ref={textareaRef}
           className="dock-textarea"
           value={text}
           onChange={(e) => {
@@ -97,7 +129,7 @@ export function CommandDock({
           {validationError ? (
             <span className="validation-error">{validationError}</span>
           ) : (
-            <span className="compact-hint">Press Enter to run, Shift+Enter for new line</span>
+            <span className="compact-hint">Press / to focus, Esc to clear. Enter to run.</span>
           )}
         </div>
         <button
