@@ -3,7 +3,7 @@ import assert from "node:assert";
 import fs from "fs";
 import path from "path";
 import { runTopLevelCli } from "../src/app-cli";
-import { printWorkspaceHelp } from "../src/platform/workspace-cli";
+import { printWorkspaceHelp, executeWorkspaceCliCommand } from "../src/platform/workspace-cli";
 
 async function captureConsoleLog(run: () => Promise<void>): Promise<string> {
   const originalConsoleLog = console.log;
@@ -111,5 +111,22 @@ test("workspace CLI help lists all supported commands and dict example", async (
   assert.ok(output.includes("/clear"));
   assert.ok(output.includes("/exit"));
   assert.ok(output.includes("/dict a big deal"));
+});
+
+test("workspace CLI executes /dict in dry-run mode and prints events and summary", async () => {
+  const output = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/dict piece of cake");
+  });
+
+  assert.ok(output.includes("[Event] [COMMAND-SUBMITTED]"));
+  assert.ok(output.includes("Submitted command: /dict piece of cake"));
+  assert.ok(output.includes("[Event] [TOOL-RUNNING]"));
+  assert.ok(output.includes("Running Dictionary Pro in dry-run mode..."));
+  assert.ok(output.includes("[Event] [ARTIFACT-CREATED]"));
+  assert.ok(output.includes("Created artifact 'Expression Card: piece of cake (Dry Run)'"));
+  assert.ok(output.includes("[Event] [COMPLETE]"));
+  assert.ok(output.includes("Generated Artifacts:"));
+  assert.ok(output.includes("- [MARKDOWN] ID: art-"));
+  assert.ok(output.includes("Title: Expression Card: piece of cake (Dry Run)"));
 });
 

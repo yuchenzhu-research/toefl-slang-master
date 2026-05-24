@@ -1,5 +1,13 @@
 import * as readline from "readline";
-import { parseWorkspaceCommand } from "./workspace-helpers";
+import {
+  parseWorkspaceCommand,
+  createCommandSubmittedEvent,
+  createToolRunningEvent,
+  createArtifactCreatedEvent,
+  createWorkspaceCompleteEvent,
+  normalizeDictionaryLookup
+} from "./workspace-helpers";
+import { WorkspaceCommandResult } from "./contracts";
 
 function createRl(): readline.Interface {
   return readline.createInterface({
@@ -27,6 +35,70 @@ export function printWorkspaceHelp(): void {
   console.log("  /exit            Exit session");
   console.log("\nExample:");
   console.log("  /dict a big deal\n");
+}
+
+/**
+ * Executes a parsed workspace command and prints terminal outputs.
+ */
+export async function executeWorkspaceCliCommand(
+  inputText: string
+): Promise<WorkspaceCommandResult> {
+  const parsed = parseWorkspaceCommand(inputText);
+  const commandId = parsed.id;
+
+  if (!parsed.parsed) {
+    throw new Error("Empty command");
+  }
+
+  const { command, args } = parsed.parsed;
+
+  if (command === "dict") {
+    // 1. Evt: submitted
+    const evt1 = createCommandSubmittedEvent(inputText);
+    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+
+    // 2. Evt: tool-running (dry-run)
+    const evt2 = createToolRunningEvent("dictionary_lookup", "Running Dictionary Pro in dry-run mode...");
+    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+
+    // 3. Normalization (dry-run mode)
+    const query = { id: commandId, text: args, dryRun: true };
+    const result = normalizeDictionaryLookup(null, query);
+
+    // 4. Evts: artifact created
+    for (const art of result.artifacts) {
+      const evtArt = createArtifactCreatedEvent(art.id, art.title);
+      console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+    }
+
+    // 5. Evt: complete
+    const evtComp = createWorkspaceCompleteEvent();
+    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+
+    // 6. Print Artifact Summary
+    console.log("\nGenerated Artifacts:");
+    for (const art of result.artifacts) {
+      console.log(`  - [${art.type.toUpperCase()}] ID: ${art.id} | Title: ${art.title}`);
+      if (art.type === "markdown") {
+        console.log("    Preview:");
+        console.log("    ----------------------------------------------------");
+        // Print first 5 lines of preview
+        const lines = art.content.split("\n").slice(0, 5).map(l => `    ${l}`);
+        console.log(lines.join("\n"));
+        console.log("    ----------------------------------------------------");
+      }
+    }
+    console.log();
+
+    return result;
+  }
+
+  // Fallback for non-dict commands
+  return {
+    commandId,
+    status: "success",
+    artifacts: []
+  };
 }
 
 /**
@@ -71,6 +143,11 @@ export async function runWorkspaceCli(): Promise<void> {
 
       if (command === "clear") {
         console.clear();
+        continue;
+      }
+
+      if (command === "dict") {
+        await executeWorkspaceCliCommand(input);
         continue;
       }
 

@@ -92,3 +92,11 @@ Started: 2026-05-23
 - Added CLI console output unit tests in tests/cli.test.ts.
 - Verified both frontend typecheck and backend test suite passes cleanly.
 ---
+
+## 2026-05-24 - US-013
+- Completed US-013: Add Dictionary command to workspace CLI.
+- Added executeWorkspaceCliCommand to process /dict in src/platform/workspace-cli.ts.
+- Configured /dict to run in dry-run mode by default, outputting events timeline (submitted, tool-running, artifact-created, complete) and generated artifact summaries with markdown preview.
+- Added CLI unit tests in tests/cli.test.ts capturing output for /dict dry-run.
+- Verified both frontend typecheck and backend test suite passes cleanly.
+---
