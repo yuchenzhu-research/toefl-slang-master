@@ -44,3 +44,11 @@ Started: 2026-05-23
 - Added unit test in tests/workspace.test.ts to verify the fixture shape.
 - Verified compilation and test suite passes.
 ---
+
+## 2026-05-24 - US-007
+- Completed US-007: Normalize Dictionary API response for workspace.
+- Added normalizeDictionaryLookup in src/platform/workspace-helpers.ts to convert Dictionary run results and errors into WorkspaceCommandResult and WorkspaceArtifact formats.
+- Handled dryRun flag to generate mock markdown artifacts and query metadata sidecar automatically.
+- Added unit tests in tests/workspace.test.ts verifying dry-run, error, and standard lookup conversion paths.
+- Verified compilation and test suite passes.
+---

@@ -18,7 +18,8 @@ import {
   parseWorkspaceCommand,
   createMarkdownArtifact,
   createJsonArtifact,
-  createErrorArtifact
+  createErrorArtifact,
+  normalizeDictionaryLookup
 } from "../src/platform/workspace-helpers";
 
 test("Workspace Model: should support complete session lifecycle and command result shape", () => {
@@ -220,4 +221,48 @@ test("Workspace Fixtures: should expose valid MOCK_WORKSPACE_SESSION", () => {
   assert.ok(MOCK_WORKSPACE_SESSION.events.length >= 3);
   assert.strictEqual(MOCK_WORKSPACE_SESSION.artifacts[0].type, "markdown");
   assert.strictEqual(MOCK_WORKSPACE_SESSION.artifacts[0].metadata?.headword, "a big deal");
+});
+
+test("Workspace Dictionary Normalization: should normalize dry-run and errors", () => {
+  // Test 1: Dry Run normalization
+  const queryDry = { id: "cmd-dry-99", text: "piece of cake", dryRun: true, mode: "conversion" };
+  const resultDry = normalizeDictionaryLookup(null, queryDry);
+  assert.strictEqual(resultDry.commandId, "cmd-dry-99");
+  assert.strictEqual(resultDry.status, "success");
+  assert.strictEqual(resultDry.artifacts.length, 2);
+  assert.strictEqual(resultDry.artifacts[0].type, "markdown");
+  assert.strictEqual(resultDry.artifacts[1].type, "json");
+  assert.ok(resultDry.artifacts[0].content.includes("piece of cake"));
+
+  // Test 2: Error normalization
+  const queryErr = { id: "cmd-err-88", text: "break a leg" };
+  const testError = new Error("Network timeout when contacting LLM");
+  const resultErr = normalizeDictionaryLookup(null, queryErr, testError);
+  assert.strictEqual(resultErr.commandId, "cmd-err-88");
+  assert.strictEqual(resultErr.status, "error");
+  assert.strictEqual(resultErr.artifacts.length, 1);
+  assert.strictEqual(resultErr.artifacts[0].type, "error");
+  assert.strictEqual(resultErr.artifacts[0].content, "Network timeout when contacting LLM");
+  assert.strictEqual(resultErr.error, "Network timeout when contacting LLM");
+
+  // Test 3: Normal lookup normalization
+  const queryNormal = { id: "cmd-normal-77", text: "hit the book" };
+  const mockResponse = {
+    markdown: "### hit the book\n\nTo study hard.",
+    structured: {
+      query: "hit the book",
+      kind: "word_phrase",
+      translation: ["读书"],
+      slang: { register: "informal", tone: "neutral", variants: [] },
+      alignment: [],
+      frequency: "high",
+      analysis: { sourceExample: "hit the book", sourceExplanation: "study", toeflExample: "study hard", toeflExplanation: "academic" }
+    }
+  };
+  const resultNormal = normalizeDictionaryLookup(mockResponse, queryNormal);
+  assert.strictEqual(resultNormal.commandId, "cmd-normal-77");
+  assert.strictEqual(resultNormal.status, "success");
+  assert.strictEqual(resultNormal.artifacts.length, 2);
+  assert.strictEqual(resultNormal.artifacts[0].type, "markdown");
+  assert.strictEqual(resultNormal.artifacts[1].type, "json");
 });

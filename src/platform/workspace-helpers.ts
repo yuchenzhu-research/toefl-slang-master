@@ -2,7 +2,8 @@ import {
   WorkspaceEvent,
   WorkspaceToolStatus,
   WorkspaceArtifact,
-  WorkspaceCommand
+  WorkspaceCommand,
+  WorkspaceCommandResult
 } from "./contracts";
 
 let eventIdCounter = 0;
@@ -222,5 +223,94 @@ export function createErrorArtifact(
     title,
     type: "error",
     content: errorMessage
+  };
+}
+
+/**
+ * Normalizes Dictionary API response/error into a WorkspaceCommandResult.
+ */
+export function normalizeDictionaryLookup(
+  response: any,
+  query: any,
+  error?: any
+): WorkspaceCommandResult {
+  const commandId = query?.id || "cmd-unknown";
+  const artifacts: WorkspaceArtifact[] = [];
+
+  // 1. Handle Error state
+  if (error) {
+    const errorMsg = error.message || String(error);
+    const errArtifact = createErrorArtifact("Dictionary Lookup Error", errorMsg);
+    return {
+      commandId,
+      status: "error",
+      artifacts: [errArtifact],
+      error: errorMsg
+    };
+  }
+
+  // 2. Handle Dry-Run state
+  if (query?.dryRun || response?.dryRun) {
+    const queryText = query?.text || "Unknown";
+    const markdownContent = `# ${queryText} (Dry Run Mock)
+
+> [!NOTE]
+> This lookup was run in dry-run mode. No provider API calls were performed.
+
+- **Query**: ${queryText}
+- **Mode**: ${query?.mode || "conversion"}
+- **Target**: ${query?.target || "toefl-writing"}
+`;
+    const mdArtifact = createMarkdownArtifact(
+      `Expression Card: ${queryText} (Dry Run)`,
+      markdownContent
+    );
+
+    const metadataArtifact = createJsonArtifact(
+      "Query Metadata",
+      {
+        text: queryText,
+        mode: query?.mode || "conversion",
+        target: query?.target || "toefl-writing",
+        dryRun: true,
+        timestamp: new Date().toISOString()
+      }
+    );
+
+    return {
+      commandId,
+      status: "success",
+      artifacts: [mdArtifact, metadataArtifact]
+    };
+  }
+
+  // 3. Handle Normal response state
+  if (response && response.structured) {
+    const queryText = query?.text || response.structured.query || "Unknown";
+    const mdArtifact = createMarkdownArtifact(
+      `Expression Card: ${queryText}`,
+      response.markdown || "No markdown content provided."
+    );
+
+    const jsonArtifact = createJsonArtifact(
+      "Expression Card Data",
+      response.structured
+    );
+
+    return {
+      commandId,
+      status: "success",
+      artifacts: [mdArtifact, jsonArtifact]
+    };
+  }
+
+  // Fallback error state
+  const fallbackError = "Invalid API response structure. Missing structured content.";
+  const fallbackArt = createErrorArtifact("Dictionary Lookup Error", fallbackError);
+  return {
+    commandId,
+    status: "error",
+    artifacts: [fallbackArt],
+    error: fallbackError
   };
 }
