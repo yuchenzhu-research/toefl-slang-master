@@ -459,70 +459,8 @@ button {
   overflow: hidden;
 }
 
-.skeleton-placeholder {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed var(--line-soft);
-  color: var(--muted);
-  font-size: 13px;
-  text-transform: uppercase;
-}
+/* [REMOVED US-048] .skeleton-placeholder, .edge-card, .edge-card-word, .edge-card-loop — no longer used */
 
-.edge-card {
-  position: absolute;
-  top: 34%;
-  left: -72px;
-  z-index: 4;
-  width: 170px;
-  height: 260px;
-  overflow: hidden;
-  background: #717954;
-  color: var(--paper-soft);
-  pointer-events: none;
-}
-
-.edge-card::before {
-  position: absolute;
-  top: 54px;
-  right: -56px;
-  width: 160px;
-  height: 160px;
-  border: 1px solid rgba(255, 250, 240, 0.75);
-  border-radius: 50%;
-  content: '';
-}
-
-.edge-card::after {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, transparent 0 52%, rgba(255, 250, 240, 0.2) 53% 54%, transparent 55%),
-    linear-gradient(180deg, rgba(16, 16, 16, 0.08), transparent 45%);
-  content: '';
-}
-
-.edge-card-word {
-  position: absolute;
-  top: 32px;
-  right: 14px;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 35px;
-  line-height: 0.9;
-  transform: rotate(90deg);
-  transform-origin: right top;
-}
-
-.edge-card-loop {
-  position: absolute;
-  top: 116px;
-  right: 18px;
-  font-size: 12px;
-  line-height: 1;
-  text-transform: uppercase;
-  writing-mode: vertical-rl;
-}
 
 .gallery-card {
   position: relative;
@@ -1902,31 +1840,8 @@ button {
   color: var(--ink-workspace);
 }
 
-/* Empty State */
-.timeline-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  text-align: center;
-  padding: 32px 16px;
-}
+/* [REMOVED US-048] .timeline-empty, .empty-text, .empty-hint — replaced by .workspace-empty-state */
 
-.timeline-empty .empty-text {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0 0 8px 0;
-}
-
-.timeline-empty .empty-hint {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: #717954;
-  background: rgba(113, 121, 84, 0.08);
-  padding: 4px 8px;
-  border-radius: 2px;
-}
 
 /* ToolStatusChip CSS */
 .tool-status-chip {
@@ -1981,28 +1896,8 @@ button {
   overflow: hidden;
 }
 
-.artifact-rail-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  text-align: center;
-  padding: 32px 16px;
-  color: var(--muted);
-}
+/* [REMOVED US-048] .artifact-rail-empty — replaced by .workspace-empty-state */
 
-.artifact-rail-empty .empty-text {
-  font-size: 13px;
-  font-weight: 500;
-  margin: 0 0 8px 0;
-}
-
-.artifact-rail-empty .empty-hint {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.4;
-}
 
 .artifact-rail-header {
   display: flex;
@@ -2254,5 +2149,73 @@ button {
 .ws-base-url-field {
   background: rgba(var(--accent-workspace-rgb), 0.04);
   border-color: rgba(var(--accent-workspace-rgb), 0.2) !important;
+}
+
+/* US-046: Focus and accessibility states */
+
+/* Unified visible focus ring for keyboard navigation */
+.nav-link:focus-visible,
+.brand-mark:focus-visible,
+.control-item:focus-visible,
+.run-button:focus-visible,
+.analyze-btn:focus-visible,
+.dict-btn:focus-visible,
+.ws-refresh-btn:focus-visible,
+.close-btn:focus-visible,
+.timeline-artifact-link:focus-visible,
+.gallery-control:focus-visible {
+  outline: 2px solid var(--accent-workspace);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Textarea / input focus ring */
+.dock-textarea:focus-visible,
+.dict-input:focus-visible,
+.editor:focus-visible,
+.form-input:focus-visible,
+.form-select:focus-visible {
+  outline: 2px solid rgba(var(--accent-workspace-rgb), 0.5);
+  outline-offset: -1px;
+}
+
+/* Error states use border-left + icon, not just color */
+.validation-error::before {
+  content: '⚠ ';
+}
+
+/* Active navigation uses underline + bold, not just color */
+.nav-link.active {
+  font-weight: 600;
+}
+
+/* ToolStatusChip: shape indicator in addition to color */
+.tool-status-chip[data-status="error"]::before {
+  content: '✗ ';
+}
+
+.tool-status-chip[data-status="complete"]::before {
+  content: '✓ ';
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .workspace-lane {
+    animation: none;
+  }
+
+  .spinner,
+  .spinner-mini,
+  .spinner-mini-inline {
+    animation: none;
+  }
 }
 

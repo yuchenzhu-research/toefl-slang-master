@@ -74,14 +74,22 @@ Current backend endpoints:
 
 ## 🖼️ Desktop App
 
-The Electron frontend lives in `apps/desktop` as an npm workspace. The root `package.json` remains the authoritative script and dependency entry point for the repository.
+The ALET-inspired desktop GUI lives in `apps/desktop` as an npm workspace. It provides a horizontal workspace shell with three lanes — **Command**, **Session Timeline**, and **Artifact Rail** — giving learners a visual companion to the Agent Workspace CLI.
 
 ```bash
+# Development (Electron + Vite HMR)
 npm run desktop:dev
+
+# Production build
 npm run desktop:build
+
+# Typecheck only
+npm run desktop:typecheck
 ```
 
-Frontend architecture and evolution rules are documented in `docs/frontend.md`.
+The GUI consumes the same local backend API (`spark web`) and shares the CLI's slash-command vocabulary (`/dict`, `/style`, `/coach`, `/content`).
+
+Frontend architecture, runtime boundaries, and browser verification expectations are documented in [`docs/frontend.md`](docs/frontend.md). The interface component reference is in [`docs/frontend-interface-reference.md`](docs/frontend-interface-reference.md).
 
 ## 🧠 Economist Style Analysis
 

@@ -26,7 +26,7 @@ export function ToolStatusChip({ status, label }: ToolStatusChipProps) {
   }
 
   return (
-    <span className={`tool-status-chip ${getStatusClass(status)}`}>
+    <span className={`tool-status-chip ${getStatusClass(status)}`} data-status={status} aria-label={`Status: ${displayLabel}`}>
       {status === 'running' && (
         <span className="spinner-mini-inline" style={{ marginRight: '6px', borderTopColor: 'currentColor' }} />
       )}

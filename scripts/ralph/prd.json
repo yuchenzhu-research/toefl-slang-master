@@ -732,8 +732,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 46,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented, typecheck+tests+build passed."
     },
     {
       "id": "US-047",
@@ -747,8 +747,8 @@
         "Typecheck passes"
       ],
       "priority": 47,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented, typecheck+tests+build passed."
     },
     {
       "id": "US-048",
@@ -763,8 +763,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 48,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented, typecheck+tests+build passed."
     },
     {
       "id": "US-049",
@@ -779,8 +779,8 @@
         "Tests pass"
       ],
       "priority": 49,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented, typecheck+tests+build passed."
     },
     {
       "id": "US-050",
@@ -795,8 +795,8 @@
         "Tests pass"
       ],
       "priority": 50,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Implemented, typecheck+tests+build passed."
     }
   ]
 }

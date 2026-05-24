@@ -74,14 +74,22 @@ spark web --port 4173
 
 ## 🖼️ 桌面端應用
 
-Electron 前端位於 `apps/desktop`，作為 npm workspace 管理。根 `package.json` 仍是倉庫 scripts 與依賴入口的權威來源。
+ALET 風格桌面 GUI 位於 `apps/desktop`（npm workspace）。它提供橫向工作台 Shell，包含三條 Lane——**Command**、**Session Timeline** 和 **Artifact Rail**——為學習者提供 Agent Workspace CLI 的可視化配套介面。
 
 ```bash
+# 開發模式（Electron + Vite HMR）
 npm run desktop:dev
+
+# 生產構建
 npm run desktop:build
+
+# 僅類型檢查
+npm run desktop:typecheck
 ```
 
-前端架構與演進規則見 `docs/frontend.md`。
+GUI 共享同一個本地後端 API（`spark web`）和 CLI 斜杠指令集（`/dict`、`/style`、`/coach`、`/content`）。
+
+前端架構、執行時邊界和瀏覽器驗證期望見 [`docs/frontend.md`](docs/frontend.md)。
 
 ## 🧠 Economist 風格分析
 

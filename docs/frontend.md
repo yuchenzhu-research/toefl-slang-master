@@ -2,6 +2,8 @@
 
 本文件记录 SPARK 桌面前端的收纳边界与演进顺序。最高原则仍以 `CONSTITUTION.md` 为准。
 
+> **See also**: [`frontend-interface-reference.md`](frontend-interface-reference.md) — component interface contracts and prop signatures for workspace GUI components.
+
 ---
 
 ## 1. Directory Boundary
@@ -112,3 +114,46 @@ CI 必须保留桌面端 typecheck 和 build 基线。前端可以继续快速�
 ### 7.3 Frontend Session Management
 - 渲染进程统一使用本地状态适配器 Hook `useWorkspace.ts` 对 WorkspaceSession 进行管理（包含事件追加、工件选中、状态更新与会话重置）。
 - 适配器只管理 React 状态与 DTO 模型，禁止复制任何后端的业务解析与评分编排逻辑。
+
+---
+
+## 8. Browser Verification Expectations
+
+GUI stories (US-021 onwards) require visual verification in addition to typecheck and build.
+
+### 8.1 Local Dev
+
+```bash
+# Start the Electron dev server (hot-reload)
+npm run desktop:dev
+```
+
+This launches the Electron window with Vite HMR. Changes to renderer components and CSS are reflected immediately.
+
+### 8.2 Verification Workflow
+
+For any GUI story, verification includes:
+
+1. **Typecheck passes**: `npm run desktop:typecheck`
+2. **Tests pass**: `npm run test:ci`
+3. **Visual inspection**: launch `npm run desktop:dev` and manually confirm:
+   - Layout renders without overflow at desktop minimum window size (~900×600)
+   - Interactive controls (buttons, inputs, selects) are reachable by keyboard
+   - Focus rings are visible when tabbing through controls
+   - Loading / error / empty states display correctly
+   - Horizontal scroll in workspace view is smooth
+   - Navigation between pages preserves state where expected
+
+### 8.3 GUI Story Checklist
+
+| Area | What to check |
+|------|--------------|
+| Command Dock | Mode selector, text input, Run button, backend status chip |
+| Session Timeline | Event list, loading skeleton, empty state, artifact links |
+| Artifact Rail | Markdown preview, JSON summary, empty state |
+| Dictionary Page | Lookup flow, error display, ToolStatusChip |
+| Style Page | Analyze flow, metric bars animation, panel open/close |
+| Coach / Content | WIP banner, CLI hint, workspace visual tokens |
+| Settings | Base URL field, save persistence, provider select |
+| Navigation | Active state, keyboard navigation, aria-current |
+| Responsive | Lanes shrink at 1280px / 980px, nav adapts at 900px |
