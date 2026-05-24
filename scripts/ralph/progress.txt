@@ -68,3 +68,10 @@ Started: 2026-05-23
 - Updated MANUAL.md to include workspace helpers, fixtures, hooks, and test descriptions.
 - Verified both frontend typecheck and backend test suite passes cleanly.
 ---
+
+## 2026-05-24 - US-010
+- Completed US-010: Add repository guard tests for workspace direction.
+- Extended tests/repository-structure.test.ts to verify the workspace branchName configuration in scripts/ralph/prd.json.
+- Added path existence guards for docs/frontend-interface-reference.md and contents checks for docs/frontend.md.
+- Verified both frontend typecheck and backend test suite passes cleanly.
+---

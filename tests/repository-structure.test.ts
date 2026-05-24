@@ -66,3 +66,22 @@ test("frontend CI baseline remains wired to desktop workspace scripts", () => {
   assert.ok(ci.includes("npm run desktop:typecheck"));
   assert.ok(ci.includes("npm run desktop:build"));
 });
+
+test("repository structure guards for workspace CLI+GUI direction", () => {
+  // 1. Verify scripts/ralph/prd.json has correct branchName
+  const prd = JSON.parse(readText("scripts/ralph/prd.json")) as {
+    branchName?: string;
+  };
+  assert.strictEqual(prd.branchName, "ralph/agent-workspace-cli-gui");
+
+  // 2. Verify docs/frontend-interface-reference.md exists
+  assert.ok(exists("docs/frontend-interface-reference.md"));
+
+  // 3. Verify docs/frontend.md contains CLI+GUI workspace descriptions
+  const frontendDoc = readText("docs/frontend.md");
+  assert.ok(frontendDoc.includes("Workspace CLI & GUI Integration"));
+  assert.ok(frontendDoc.includes("Bare CLI Interaction"));
+  assert.ok(frontendDoc.includes("Design Mode References"));
+  assert.ok(frontendDoc.includes("useWorkspace.ts"));
+});
+
