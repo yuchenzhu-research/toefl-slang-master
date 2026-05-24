@@ -21,3 +21,10 @@ Started: 2026-05-23
 - Added helper unit tests in tests/workspace.test.ts.
 - Verified compilation and test suite passes.
 ---
+
+## 2026-05-24 - US-004
+- Completed US-004: Add workspace command parser.
+- Implemented parseWorkspaceCommand in src/platform/workspace-helpers.ts to parse slash commands (/dict, /style, /coach, /content) and handle empty/unknown commands.
+- Added parser unit tests in tests/workspace.test.ts.
+- Verified compilation and test suite passes.
+---

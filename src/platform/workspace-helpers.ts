@@ -1,7 +1,8 @@
 import {
   WorkspaceEvent,
   WorkspaceToolStatus,
-  WorkspaceArtifact
+  WorkspaceArtifact,
+  WorkspaceCommand
 } from "./contracts";
 
 let eventIdCounter = 0;
@@ -104,5 +105,67 @@ export function createWorkspaceCompleteEvent(
     type: "complete",
     message: message || "Command execution completed successfully.",
     toolStatus: "complete"
+  };
+}
+
+let commandIdCounter = 0;
+function generateCommandId(): string {
+  commandIdCounter += 1;
+  return `cmd-${Date.now()}-${commandIdCounter}`;
+}
+
+/**
+ * Parses user input text into a WorkspaceCommand.
+ */
+export function parseWorkspaceCommand(
+  inputText: string,
+  injectedId?: string
+): WorkspaceCommand {
+  const id = injectedId || generateCommandId();
+  const trimmed = inputText.trim();
+
+  if (!trimmed) {
+    return {
+      id,
+      text: inputText
+    };
+  }
+
+  // Matches pattern: /command args
+  const match = trimmed.match(/^\/([a-zA-Z0-9_-]+)(?:\s+([\s\S]*))?$/);
+  if (!match) {
+    return {
+      id,
+      text: inputText,
+      parsed: {
+        command: "unknown",
+        args: trimmed
+      }
+    };
+  }
+
+  const cmd = match[1].toLowerCase();
+  const args = (match[2] || "").trim();
+
+  const validCommands = ["dict", "style", "coach", "content", "clear", "exit", "help"];
+
+  if (validCommands.includes(cmd)) {
+    return {
+      id,
+      text: inputText,
+      parsed: {
+        command: cmd,
+        args
+      }
+    };
+  }
+
+  return {
+    id,
+    text: inputText,
+    parsed: {
+      command: "unknown",
+      args: trimmed
+    }
   };
 }

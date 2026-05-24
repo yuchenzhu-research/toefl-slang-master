@@ -13,7 +13,8 @@ import {
   createToolRunningEvent,
   createArtifactCreatedEvent,
   createWorkspaceErrorEvent,
-  createWorkspaceCompleteEvent
+  createWorkspaceCompleteEvent,
+  parseWorkspaceCommand
 } from "../src/platform/workspace-helpers";
 
 test("Workspace Model: should support complete session lifecycle and command result shape", () => {
@@ -142,4 +143,40 @@ test("Workspace Event Helpers: should create correct WorkspaceEvent objects", ()
   assert.ok(e4.id.startsWith("evt-"));
   assert.strictEqual(e4.type, "complete");
   assert.strictEqual(e4.toolStatus, "complete");
+});
+
+test("Workspace Command Parser: should parse workspace inputs correctly", () => {
+  // Test dict
+  const c1 = parseWorkspaceCommand("/dict a big deal", "c-1");
+  assert.strictEqual(c1.id, "c-1");
+  assert.strictEqual(c1.parsed?.command, "dict");
+  assert.strictEqual(c1.parsed?.args, "a big deal");
+
+  // Test style
+  const c2 = parseWorkspaceCommand("/style analytical texts", "c-2");
+  assert.strictEqual(c2.id, "c-2");
+  assert.strictEqual(c2.parsed?.command, "style");
+  assert.strictEqual(c2.parsed?.args, "analytical texts");
+
+  // Test coach
+  const c3 = parseWorkspaceCommand("/coach rough writing draft", "c-3");
+  assert.strictEqual(c3.id, "c-3");
+  assert.strictEqual(c3.parsed?.command, "coach");
+  assert.strictEqual(c3.parsed?.args, "rough writing draft");
+
+  // Test content
+  const c4 = parseWorkspaceCommand("/content /path/to/notes.md", "c-4");
+  assert.strictEqual(c4.id, "c-4");
+  assert.strictEqual(c4.parsed?.command, "content");
+  assert.strictEqual(c4.parsed?.args, "/path/to/notes.md");
+
+  // Test empty input
+  const c5 = parseWorkspaceCommand("   ");
+  assert.ok(c5.id.startsWith("cmd-"));
+  assert.strictEqual(c5.parsed, undefined);
+
+  // Test unknown command
+  const c6 = parseWorkspaceCommand("/unknown test arg");
+  assert.strictEqual(c6.parsed?.command, "unknown");
+  assert.strictEqual(c6.parsed?.args, "/unknown test arg");
 });
