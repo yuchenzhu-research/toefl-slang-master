@@ -166,5 +166,48 @@ test("workspace CLI executes /coach in dry-run mode and prints events and summar
   assert.ok(output.includes("Title: TOEFL Coach Diagnosis (Dry Run)"));
 });
 
+test("workspace CLI executes /content in dry-run mode and prints events and summary", async () => {
+  const tempDir = fs.mkdtempSync(path.join(process.cwd(), "tmp-content-cli-"));
+  const inputPath = path.join(tempDir, "article.md");
+
+  try {
+    fs.writeFileSync(inputPath, "# Title\nContent text", "utf-8");
+
+    const output = await captureConsoleLog(async () => {
+      await executeWorkspaceCliCommand(`/content ${inputPath}`);
+    });
+
+    assert.ok(output.includes("[Event] [COMMAND-SUBMITTED]"));
+    assert.ok(output.includes(`Submitted command: /content ${inputPath}`));
+    assert.ok(output.includes("[Event] [TOOL-RUNNING]"));
+    assert.ok(output.includes("Running Content Parser in dry-run mode..."));
+    assert.ok(output.includes("[DRY RUN] /content"));
+    assert.ok(output.includes("planned: Content Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard"));
+    assert.ok(output.includes("[Event] [ARTIFACT-CREATED]"));
+    assert.ok(output.includes("Created artifact 'Content Digest (Dry Run)'"));
+    assert.ok(output.includes("[Event] [COMPLETE]"));
+    assert.ok(output.includes("Generated Artifacts:"));
+    assert.ok(output.includes("- [MARKDOWN] ID: art-"));
+    assert.ok(output.includes("Title: Content Digest (Dry Run)"));
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("workspace CLI executes /content with missing or empty path and returns error", async () => {
+  const outputEmpty = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/content");
+  });
+  assert.ok(outputEmpty.includes("[Event] [ERROR]"));
+  assert.ok(outputEmpty.includes("Error: File path is required"));
+
+  const outputNonexistent = await captureConsoleLog(async () => {
+    await executeWorkspaceCliCommand("/content nonexistent-file-xyz.md");
+  });
+  assert.ok(outputNonexistent.includes("[Event] [ERROR]"));
+  assert.ok(outputNonexistent.includes("Error: File not found: nonexistent-file-xyz.md"));
+});
+
+
 
 

@@ -1,4 +1,5 @@
 import * as readline from "readline";
+import * as fs from "fs";
 import {
   parseWorkspaceCommand,
   createCommandSubmittedEvent,
@@ -6,7 +7,9 @@ import {
   createArtifactCreatedEvent,
   createWorkspaceCompleteEvent,
   normalizeDictionaryLookup,
-  createMarkdownArtifact
+  createMarkdownArtifact,
+  createWorkspaceErrorEvent,
+  createErrorArtifact
 } from "./workspace-helpers";
 import { WorkspaceCommandResult } from "./contracts";
 import { analyzeEconomistStyle, renderStyleAnalysis } from "../style-engine/analyzer";
@@ -175,6 +178,80 @@ export async function executeWorkspaceCliCommand(
     };
   }
 
+  if (command === "content") {
+    // 1. Evt: submitted
+    const evt1 = createCommandSubmittedEvent(inputText);
+    console.log(`[Event] [${evt1.type.toUpperCase()}] ${evt1.message}`);
+
+    // 2. Validate path
+    if (!args) {
+      const errorMsg = "File path is required";
+      const evtErr = createWorkspaceErrorEvent(errorMsg);
+      console.log(`[Event] [${evtErr.type.toUpperCase()}] ${evtErr.message}`);
+
+      const art = createErrorArtifact("Content Parsing Error", errorMsg);
+      console.log(`\nGenerated Artifacts:`);
+      console.log(`  - [ERROR] ID: ${art.id} | Title: ${art.title}`);
+      console.log();
+
+      return {
+        commandId,
+        status: "error",
+        artifacts: [art],
+        error: errorMsg
+      };
+    }
+
+    if (!fs.existsSync(args)) {
+      const errorMsg = `File not found: ${args}`;
+      const evtErr = createWorkspaceErrorEvent(errorMsg);
+      console.log(`[Event] [${evtErr.type.toUpperCase()}] ${evtErr.message}`);
+
+      const art = createErrorArtifact("Content Parsing Error", errorMsg);
+      console.log(`\nGenerated Artifacts:`);
+      console.log(`  - [ERROR] ID: ${art.id} | Title: ${art.title}`);
+      console.log();
+
+      return {
+        commandId,
+        status: "error",
+        artifacts: [art],
+        error: errorMsg
+      };
+    }
+
+    // 3. Evt: tool-running
+    const evt2 = createToolRunningEvent("content_parser", "Running Content Parser in dry-run mode...");
+    console.log(`[Event] [${evt2.type.toUpperCase()}] ${evt2.message}`);
+
+    // 4. Dry-run planned workflow summary output
+    console.log("[DRY RUN] /content");
+    console.log("planned: Content Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard");
+
+    // 5. Create Artifact
+    const art = createMarkdownArtifact(
+      "Content Digest (Dry Run)",
+      `# Content Digest (Dry Run)\n\nFile parsed: "${args}"\n\nPlanned workflow:\nContent Parser -> ExpressionCandidates -> Dictionary Pro -> ExpressionCard`
+    );
+    const evtArt = createArtifactCreatedEvent(art.id, art.title);
+    console.log(`[Event] [${evtArt.type.toUpperCase()}] ${evtArt.message}`);
+
+    // 6. Evt: complete
+    const evtComp = createWorkspaceCompleteEvent();
+    console.log(`[Event] [${evtComp.type.toUpperCase()}] ${evtComp.message}`);
+
+    // 7. Print Artifact Summary
+    console.log("\nGenerated Artifacts:");
+    console.log(`  - [MARKDOWN] ID: ${art.id} | Title: ${art.title}`);
+    console.log();
+
+    return {
+      commandId,
+      status: "success",
+      artifacts: [art]
+    };
+  }
+
   // Fallback for non-dict commands
   return {
     commandId,
@@ -239,6 +316,11 @@ export async function runWorkspaceCli(): Promise<void> {
       }
 
       if (command === "coach") {
+        await executeWorkspaceCliCommand(input);
+        continue;
+      }
+
+      if (command === "content") {
         await executeWorkspaceCliCommand(input);
         continue;
       }
