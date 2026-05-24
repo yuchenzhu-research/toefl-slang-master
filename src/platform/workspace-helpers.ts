@@ -169,3 +169,58 @@ export function parseWorkspaceCommand(
     }
   };
 }
+
+let artifactIdCounter = 0;
+function generateArtifactId(): string {
+  artifactIdCounter += 1;
+  return `art-${Date.now()}-${artifactIdCounter}`;
+}
+
+/**
+ * Creates a markdown artifact.
+ */
+export function createMarkdownArtifact(
+  title: string,
+  markdownContent: string,
+  injectedId?: string
+): WorkspaceArtifact {
+  return {
+    id: injectedId || generateArtifactId(),
+    title,
+    type: "markdown",
+    content: markdownContent
+  };
+}
+
+/**
+ * Creates a JSON artifact.
+ */
+export function createJsonArtifact(
+  title: string,
+  data: Record<string, any>,
+  injectedId?: string
+): WorkspaceArtifact {
+  return {
+    id: injectedId || generateArtifactId(),
+    title,
+    type: "json",
+    content: JSON.stringify(data, null, 2),
+    metadata: data
+  };
+}
+
+/**
+ * Creates an error artifact.
+ */
+export function createErrorArtifact(
+  title: string,
+  errorMessage: string,
+  injectedId?: string
+): WorkspaceArtifact {
+  return {
+    id: injectedId || generateArtifactId(),
+    title,
+    type: "error",
+    content: errorMessage
+  };
+}

@@ -28,3 +28,11 @@ Started: 2026-05-23
 - Added parser unit tests in tests/workspace.test.ts.
 - Verified compilation and test suite passes.
 ---
+
+## 2026-05-24 - US-005
+- Completed US-005: Add workspace artifact model helpers.
+- Added createMarkdownArtifact, createJsonArtifact, and createErrorArtifact helper functions in src/platform/workspace-helpers.ts to format and standardize outputs.
+- Key-value serialization of JSON data uses non-localized (English) schema keys.
+- Added artifact helper unit tests in tests/workspace.test.ts.
+- Verified compilation and test suite passes.
+---

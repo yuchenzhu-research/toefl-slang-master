@@ -14,7 +14,10 @@ import {
   createArtifactCreatedEvent,
   createWorkspaceErrorEvent,
   createWorkspaceCompleteEvent,
-  parseWorkspaceCommand
+  parseWorkspaceCommand,
+  createMarkdownArtifact,
+  createJsonArtifact,
+  createErrorArtifact
 } from "../src/platform/workspace-helpers";
 
 test("Workspace Model: should support complete session lifecycle and command result shape", () => {
@@ -179,4 +182,33 @@ test("Workspace Command Parser: should parse workspace inputs correctly", () => 
   const c6 = parseWorkspaceCommand("/unknown test arg");
   assert.strictEqual(c6.parsed?.command, "unknown");
   assert.strictEqual(c6.parsed?.args, "/unknown test arg");
+});
+
+test("Workspace Artifact Helpers: should create correct WorkspaceArtifact objects", () => {
+  // Test markdown artifact
+  const a1 = createMarkdownArtifact("Doc", "# Hello", "a-1");
+  assert.strictEqual(a1.id, "a-1");
+  assert.strictEqual(a1.title, "Doc");
+  assert.strictEqual(a1.type, "markdown");
+  assert.strictEqual(a1.content, "# Hello");
+
+  // Test JSON artifact
+  const testData = { key: "value", numberVal: 42 };
+  const a2 = createJsonArtifact("Config", testData, "a-2");
+  assert.strictEqual(a2.id, "a-2");
+  assert.strictEqual(a2.title, "Config");
+  assert.strictEqual(a2.type, "json");
+  assert.strictEqual(a2.content, JSON.stringify(testData, null, 2));
+  assert.deepStrictEqual(a2.metadata, testData);
+
+  // Test error artifact
+  const a3 = createErrorArtifact("API Fail", "Timeout error", "a-3");
+  assert.strictEqual(a3.id, "a-3");
+  assert.strictEqual(a3.title, "API Fail");
+  assert.strictEqual(a3.type, "error");
+  assert.strictEqual(a3.content, "Timeout error");
+
+  // Test auto ID generation
+  const a4 = createMarkdownArtifact("Auto ID", "Text");
+  assert.ok(a4.id.startsWith("art-"));
 });
