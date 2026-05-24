@@ -9,6 +9,7 @@ import {
   useState
 } from 'react'
 import { Sidebar, PageId } from './components/Sidebar'
+import { CommandDock, WorkspaceMode } from './components/CommandDock'
 import { ToastProvider } from './components/ToastContext'
 import { ICON } from './components/icons'
 import { StylePage } from './pages/StylePage'
@@ -156,6 +157,10 @@ export default function App(): ReactElement {
     scrollLeft: 0
   })
   const clickWasDrag = useRef(false)
+
+  function handleCommandRun(mode: WorkspaceMode, text: string): void {
+    console.log(`CommandDock run: ${mode} with text "${text}"`)
+  }
 
   const visibleItems = useMemo(
     () => (randomMode ? randomItems : galleryItems),
@@ -340,7 +345,7 @@ export default function App(): ReactElement {
                   <span className="lane-title">Command</span>
                 </div>
                 <div className="lane-body">
-                  <div className="skeleton-placeholder">Command Dock Sandbox</div>
+                  <CommandDock onRun={handleCommandRun} />
                 </div>
               </div>
 
