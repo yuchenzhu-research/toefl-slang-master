@@ -7,6 +7,14 @@ import {
   WorkspaceArtifact,
   WorkspaceCommandResult
 } from "../src/platform/contracts";
+import {
+  createCommandSubmittedEvent,
+  createBackendCheckingEvent,
+  createToolRunningEvent,
+  createArtifactCreatedEvent,
+  createWorkspaceErrorEvent,
+  createWorkspaceCompleteEvent
+} from "../src/platform/workspace-helpers";
 
 test("Workspace Model: should support complete session lifecycle and command result shape", () => {
   // 1. Initialize an active workspace session
@@ -104,4 +112,34 @@ test("Workspace Model: should support complete session lifecycle and command res
   assert.strictEqual(commandResult.commandId, "cmd-001");
   assert.strictEqual(commandResult.status, "success");
   assert.strictEqual(commandResult.artifacts[0].id, "art-001");
+});
+
+test("Workspace Event Helpers: should create correct WorkspaceEvent objects", () => {
+  // Test command-submitted
+  const e1 = createCommandSubmittedEvent("/dict test", "e-1");
+  assert.strictEqual(e1.id, "e-1");
+  assert.strictEqual(e1.type, "command-submitted");
+  assert.strictEqual(e1.message, "Submitted command: /dict test");
+  assert.ok(e1.timestamp);
+
+  // Test tool-running
+  const e2 = createToolRunningEvent("translator", "Translating words...", "e-2");
+  assert.strictEqual(e2.id, "e-2");
+  assert.strictEqual(e2.type, "tool-running");
+  assert.strictEqual(e2.toolName, "translator");
+  assert.strictEqual(e2.toolStatus, "running");
+  assert.strictEqual(e2.message, "Translating words...");
+
+  // Test error
+  const e3 = createWorkspaceErrorEvent("Failed to reach LLM API", "e-3");
+  assert.strictEqual(e3.id, "e-3");
+  assert.strictEqual(e3.type, "error");
+  assert.strictEqual(e3.message, "Error: Failed to reach LLM API");
+  assert.strictEqual(e3.toolStatus, "error");
+
+  // Test auto-generated ID
+  const e4 = createWorkspaceCompleteEvent();
+  assert.ok(e4.id.startsWith("evt-"));
+  assert.strictEqual(e4.type, "complete");
+  assert.strictEqual(e4.toolStatus, "complete");
 });
