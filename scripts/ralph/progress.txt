@@ -52,3 +52,12 @@ Started: 2026-05-23
 - Added unit tests in tests/workspace.test.ts verifying dry-run, error, and standard lookup conversion paths.
 - Verified compilation and test suite passes.
 ---
+
+## 2026-05-24 - US-008
+- Completed US-008: Add frontend workspace state adapter.
+- Added React Hook state adapter useWorkspace under apps/desktop/src/renderer/src/hooks/useWorkspace.ts.
+- Adapter supports initSession, appendEvent, addCommand, addArtifact, setActiveArtifact, setSessionStatus, and resetSession callbacks.
+- Resolved workspace compiler boundary check by declaring local compatible DTO types mirroring the backend contracts.
+- Fixed prior TSX syntax error with raw '<' character in apps/desktop/src/renderer/src/pages/EvaluationPage.tsx.
+- Verified both frontend typecheck and backend test suite passes cleanly.
+---
