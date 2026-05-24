@@ -147,3 +147,63 @@ export interface ExpressionCardSeed {
     severity?: WeakExpressionSeverity;
   };
 }
+
+// ---------------------------------------------------------
+// 5. Workspace Session & Agent Interactions
+// ---------------------------------------------------------
+
+export type WorkspaceToolStatus = "idle" | "checking" | "running" | "complete" | "error";
+
+export type WorkspaceEventType =
+  | "command-submitted"
+  | "backend-checking"
+  | "tool-running"
+  | "artifact-created"
+  | "error"
+  | "complete";
+
+export interface WorkspaceArtifact {
+  id: string;
+  title: string;
+  type: "markdown" | "json" | "error";
+  content: string;
+  metadata?: Record<string, any>;
+}
+
+export interface WorkspaceEvent {
+  id: string;
+  timestamp: string;
+  type: WorkspaceEventType;
+  message: string;
+  details?: any;
+  toolName?: string;
+  toolStatus?: WorkspaceToolStatus;
+  artifactId?: string;
+}
+
+export interface WorkspaceCommand {
+  id: string;
+  text: string;
+  parsed?: {
+    command: string;
+    args: string;
+  };
+}
+
+export interface WorkspaceCommandResult {
+  commandId: string;
+  status: "success" | "error";
+  artifacts: WorkspaceArtifact[];
+  error?: string;
+}
+
+export interface WorkspaceSession {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  status: "active" | "completed" | "error";
+  commands: WorkspaceCommand[];
+  events: WorkspaceEvent[];
+  artifacts: WorkspaceArtifact[];
+}
+
