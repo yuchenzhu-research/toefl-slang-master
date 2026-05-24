@@ -3,6 +3,7 @@ import assert from "node:assert";
 import fs from "fs";
 import path from "path";
 import { runTopLevelCli } from "../src/app-cli";
+import { printWorkspaceHelp } from "../src/platform/workspace-cli";
 
 async function captureConsoleLog(run: () => Promise<void>): Promise<string> {
   const originalConsoleLog = console.log;
@@ -98,5 +99,17 @@ test("bare spark CLI with no arguments enters workspace CLI mode", async () => {
   } finally {
     delete process.env.SPARK_TEST_MODE;
   }
+});
+
+test("workspace CLI help lists all supported commands and dict example", async () => {
+  const output = await captureConsoleLog(async () => printWorkspaceHelp());
+
+  assert.ok(output.includes("/dict <phrase>"));
+  assert.ok(output.includes("/style <text>"));
+  assert.ok(output.includes("/coach <text>"));
+  assert.ok(output.includes("/content <file>"));
+  assert.ok(output.includes("/clear"));
+  assert.ok(output.includes("/exit"));
+  assert.ok(output.includes("/dict a big deal"));
 });
 

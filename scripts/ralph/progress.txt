@@ -84,3 +84,11 @@ Started: 2026-05-23
 - Added new test suite in tests/cli.test.ts to assert the empty argument routing behavior.
 - Verified both frontend typecheck and backend test suite passes cleanly.
 ---
+
+## 2026-05-24 - US-012
+- Completed US-012: Add workspace CLI help screen.
+- Extracted printWorkspaceHelp in src/platform/workspace-cli.ts using a compact Claude Code-style layout.
+- Help lists /dict, /style, /coach, /content, /clear, /exit, and features a Dictionary Pro usage example (/dict a big deal).
+- Added CLI console output unit tests in tests/cli.test.ts.
+- Verified both frontend typecheck and backend test suite passes cleanly.
+---

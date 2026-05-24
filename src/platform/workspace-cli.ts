@@ -15,6 +15,21 @@ function ask(rl: readline.Interface, question: string): Promise<string> {
 }
 
 /**
+ * Prints compact Claude Code-style help screen for workspace CLI.
+ */
+export function printWorkspaceHelp(): void {
+  console.log("\nCommands:");
+  console.log("  /dict <phrase>   Upgrade informal English to academic equivalent");
+  console.log("  /style <text>    Analyze text for Economist-style features");
+  console.log("  /coach <text>    Diagnose writing and get ETS-compatible score");
+  console.log("  /content <file>  Parse reading material for vocabulary candidates");
+  console.log("  /clear           Clear screen");
+  console.log("  /exit            Exit session");
+  console.log("\nExample:");
+  console.log("  /dict a big deal\n");
+}
+
+/**
  * Runs the interactive workspace CLI loop.
  * Invoked when spark is run with no arguments.
  */
@@ -50,13 +65,7 @@ export async function runWorkspaceCli(): Promise<void> {
       }
 
       if (command === "help") {
-        console.log("\n  Supported Workspace Commands:");
-        console.log("    /dict <phrase>    - Look up slang/informal English and convert to academic equivalents");
-        console.log("    /style <text>     - Analyze text prose and Economist style features");
-        console.log("    /coach <essay>    - Diagnose writing quality and ETS-compatible scoring");
-        console.log("    /content <path>   - Extract reading materials and vocabulary candidates");
-        console.log("    /clear            - Clear the terminal screen");
-        console.log("    /exit             - Quit the workspace session\n");
+        printWorkspaceHelp();
         continue;
       }
 
