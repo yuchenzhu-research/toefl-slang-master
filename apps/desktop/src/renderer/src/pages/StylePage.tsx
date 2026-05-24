@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { ICON } from '../components/icons'
 import { useToast } from '../components/ToastContext'
+import { ToolStatusChip } from '../components/ToolStatusChip'
 
 const DEFAULT_TEXT =
   "The university's draconian policies regarding dormitory curfews have sparked widespread backlash among the student body, many of whom argue that such archaic rules are incompatible with modern academic life. Therefore, the administration must reconsider its stance because a strict approach may ultimately suppress student engagement."
@@ -76,11 +77,19 @@ export function StylePage() {
 
   return (
     <>
-      <main className="main">
+      <main className="main ws-page">
         <div className="main-inner">
-          <div className="badge">
-            <span dangerouslySetInnerHTML={{ __html: ICON.sparkle }} />
-            The Economist Style Engine
+          <div className="ws-page-header">
+            <div className="ws-page-breadcrumb">
+              <span className="badge">
+                <span dangerouslySetInnerHTML={{ __html: ICON.sparkle }} />
+                The Economist Style Engine
+              </span>
+              <ToolStatusChip
+                status={isAnalyzing ? 'running' : 'idle'}
+                label={isAnalyzing ? 'Analyzing…' : 'Ready'}
+              />
+            </div>
           </div>
           <h1 className="headline">
             Evaluate Your
@@ -94,7 +103,7 @@ export function StylePage() {
           </p>
           <div className="editor-wrapper">
             <textarea
-              className="editor"
+              className="editor ws-input"
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Start typing or paste your English text here..."

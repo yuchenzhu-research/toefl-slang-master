@@ -1,4 +1,5 @@
 import { useState, KeyboardEvent, useEffect, useRef } from 'react'
+import { ToolStatusChip } from './ToolStatusChip'
 
 export type WorkspaceMode = 'dict' | 'style' | 'coach' | 'content'
 
@@ -8,6 +9,7 @@ interface CommandDockProps {
   disabled?: boolean
   initialText?: string
   backendStatus?: 'checking' | 'online' | 'offline'
+  onRefreshBackend?: () => void
 }
 
 export function CommandDock({
@@ -15,7 +17,8 @@ export function CommandDock({
   isLoading = false,
   disabled = false,
   initialText = '',
-  backendStatus = 'online'
+  backendStatus = 'online',
+  onRefreshBackend
 }: CommandDockProps) {
   const [mode, setMode] = useState<WorkspaceMode>('dict')
   const [text, setText] = useState(initialText)
@@ -82,8 +85,30 @@ export function CommandDock({
     }
   }
 
+  const chipStatus = backendStatus === 'online' ? 'complete' : backendStatus === 'offline' ? 'error' : 'checking'
+  const chipLabel = backendStatus === 'online' ? 'Online' : backendStatus === 'offline' ? 'Offline' : 'Checking'
+
   return (
     <div className="command-dock">
+      {/* 0. Backend Status Row */}
+      <div className="dock-backend-row">
+        <ToolStatusChip status={chipStatus} label={chipLabel} />
+        {backendStatus === 'offline' && (
+          <span className="dock-offline-hint">Backend unavailable — dict runs in dry-run mode</span>
+        )}
+        {onRefreshBackend && (
+          <button
+            type="button"
+            className="ws-refresh-btn"
+            onClick={onRefreshBackend}
+            aria-label="Refresh backend status"
+            title="Refresh backend status"
+          >
+            ↺
+          </button>
+        )}
+      </div>
+
       {/* 1. Mode Selector (Segmented Control) */}
       <div className="segmented-control" role="radiogroup" aria-label="Workspace Mode">
         {modeOptions.map((opt) => (
@@ -128,6 +153,8 @@ export function CommandDock({
         <div className="footer-left">
           {validationError ? (
             <span className="validation-error">{validationError}</span>
+          ) : backendStatus === 'offline' ? (
+            <span className="compact-hint offline-hint">Offline — commands run in dry-run mode</span>
           ) : (
             <span className="compact-hint">Press / to focus, Esc to clear. Enter to run.</span>
           )}
@@ -136,7 +163,7 @@ export function CommandDock({
           type="button"
           className={`run-button ${isLoading ? 'loading' : ''}`}
           onClick={handleRun}
-          disabled={disabled || isLoading || (backendStatus === 'offline' && mode !== 'dict')}
+          disabled={disabled || isLoading}
         >
           {isLoading ? (
             <span className="spinner-mini" />

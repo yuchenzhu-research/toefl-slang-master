@@ -2,25 +2,34 @@ import { ICON } from '../components/icons'
 
 export function ContentPage() {
   return (
-    <main className="main">
+    <main className="main ws-page">
       <div className="main-inner">
-        <div className="badge">
-          <span dangerouslySetInnerHTML={{ __html: ICON.fileText }} />
-          Content Parser
+        <div className="ws-page-header">
+          <div className="ws-page-breadcrumb">
+            <span className="badge">
+              <span dangerouslySetInnerHTML={{ __html: ICON.fileText }} />
+              Content Parser
+            </span>
+          </div>
         </div>
+
+        <div className="ws-wip-banner">
+          <span className="ws-wip-badge">WIP</span>
+          Artifact-first parsing pipeline. CLI support available now.
+        </div>
+
         <h1 className="headline">
           Deep Material
           <br />
-          Analysis Coming Soon
+          <span style={{ opacity: 0.5, fontSize: '0.7em', fontStyle: 'italic' }}>Analysis Coming Soon</span>
         </h1>
         <p className="subtitle">
           This module will break down high-quality foreign publications (PDF/MD/TXT) to extract
-          reusable sentence templates and cultural contexts.
+          reusable sentence templates and cultural contexts. Outputs land as Markdown artifacts and
+          JSON sidecars.
         </p>
         <div className="placeholder-card">
-          <p>
-            The GUI for Content Parser is currently under development. Please use the CLI for now:
-          </p>
+          <p className="ws-section-label">CLI Usage</p>
           <pre>
             <code>spark content --file article.pdf</code>
           </pre>

@@ -7,19 +7,24 @@ interface SidebarProps {
 }
 
 const navItems: Array<{ id: PageId; label: string }> = [
-  { id: 'style', label: 'Style' },
   { id: 'dict', label: 'Dict' },
+  { id: 'style', label: 'Style' },
   { id: 'coach', label: 'Coach' },
   { id: 'content', label: 'Content' },
-  { id: 'eval', label: 'Eval' },
-  { id: 'settings', label: 'Settings' }
+  { id: 'settings', label: 'Settings' },
+  { id: 'eval', label: 'Eval' }
 ]
 
 export function Sidebar({ currentPage, onNavigate, onHome }: SidebarProps) {
   return (
-    <nav className="site-nav" aria-label="SPARK modules">
-      <button className="nav-link nav-home" type="button" onClick={onHome}>
-        Study Flow
+    <nav className="site-nav" aria-label="SPARK workspace navigation">
+      <button
+        className={`nav-link nav-home ${!currentPage ? 'active' : ''}`}
+        type="button"
+        onClick={onHome}
+        aria-current={!currentPage ? 'page' : undefined}
+      >
+        Workspace
       </button>
 
       <button className="brand-mark" type="button" onClick={onHome} aria-label="SPARK home">
@@ -30,13 +35,14 @@ export function Sidebar({ currentPage, onNavigate, onHome }: SidebarProps) {
         <span>K</span>
       </button>
 
-      <div className="nav-links" aria-label="Primary">
+      <div className="nav-links" aria-label="Module navigation">
         {navItems.map((item) => (
           <button
             key={item.id}
             className={`nav-link ${currentPage === item.id ? 'active' : ''}`}
             type="button"
             onClick={() => onNavigate(item.id)}
+            aria-current={currentPage === item.id ? 'page' : undefined}
           >
             {item.label}
           </button>

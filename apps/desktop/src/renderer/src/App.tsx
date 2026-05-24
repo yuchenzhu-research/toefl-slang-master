@@ -4,6 +4,7 @@ import {
   ReactElement,
   UIEvent,
   WheelEvent as ReactWheelEvent,
+  useEffect,
   useMemo,
   useRef,
   useState
@@ -14,7 +15,7 @@ import { WorkspaceLane } from './components/WorkspaceLane'
 import { SessionTimeline } from './components/SessionTimeline'
 import { ArtifactRail } from './components/ArtifactRail'
 import { useWorkspace, WorkspaceEvent, WorkspaceArtifact } from './hooks/useWorkspace'
-import { lookupDictionary } from './api/client'
+import { lookupDictionary, checkHealth } from './api/client'
 import { ToastProvider } from './components/ToastContext'
 import { ICON } from './components/icons'
 import { StylePage } from './pages/StylePage'
@@ -195,6 +196,7 @@ export default function App(): ReactElement {
   const { session, activeArtifact, setActiveArtifact, initSession, appendEvent, addArtifact } = useWorkspace()
   const [page, setPage] = useState<PageId | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking')
   const [randomMode, setRandomMode] = useState(false)
   const [randomItems, setRandomItems] = useState(() => shuffleGallery())
   const [activeCategory, setActiveCategory] = useState(categories[0])
@@ -207,6 +209,16 @@ export default function App(): ReactElement {
     scrollLeft: 0
   })
   const clickWasDrag = useRef(false)
+
+  const refreshBackendStatus = async () => {
+    setBackendStatus('checking')
+    const res = await checkHealth()
+    setBackendStatus(res.ok && res.data?.ok ? 'online' : 'offline')
+  }
+
+  useEffect(() => {
+    refreshBackendStatus()
+  }, [])
 
   async function handleCommandRun(mode: WorkspaceMode, text: string): Promise<void> {
     setIsLoading(true)
@@ -563,13 +575,19 @@ export default function App(): ReactElement {
             >
               {/* Lane 1: Command Panel */}
               <WorkspaceLane title="Command" className="lane-command">
-                <CommandDock onRun={handleCommandRun} isLoading={isLoading} />
+                <CommandDock
+                  onRun={handleCommandRun}
+                  isLoading={isLoading}
+                  backendStatus={backendStatus}
+                  onRefreshBackend={refreshBackendStatus}
+                />
               </WorkspaceLane>
 
               {/* Lane 2: Session Timeline Panel */}
               <WorkspaceLane title="Session" className="lane-session">
                 <SessionTimeline
                   events={session?.events || MOCK_EVENTS}
+                  isLoading={isLoading}
                   onArtifactClick={(artifactId) => {
                     if (artifactId === 'art-demo-001') {
                       setActiveArtifact(MOCK_ARTIFACT)

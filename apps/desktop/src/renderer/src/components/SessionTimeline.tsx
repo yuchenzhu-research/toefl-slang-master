@@ -4,14 +4,30 @@ import { ToolStatusChip } from './ToolStatusChip'
 interface SessionTimelineProps {
   events: WorkspaceEvent[]
   onArtifactClick?: (artifactId: string) => void
+  isLoading?: boolean
 }
 
-export function SessionTimeline({ events, onArtifactClick }: SessionTimelineProps) {
+export function SessionTimeline({ events, onArtifactClick, isLoading }: SessionTimelineProps) {
+  if (isLoading && events.length === 0) {
+    return (
+      <div className="workspace-empty-state">
+        <div className="skeleton-line" style={{ width: '70%' }} />
+        <div className="skeleton-line" />
+        <div className="skeleton-line" style={{ width: '40%' }} />
+      </div>
+    )
+  }
+
   if (events.length === 0) {
     return (
-      <div className="timeline-empty">
-        <p className="empty-text">No events in this session.</p>
-        <span className="empty-hint">Try: /dict a big deal</span>
+      <div className="workspace-empty-state">
+        <div className="workspace-empty-icon">⌘</div>
+        <p className="workspace-empty-title">Session empty</p>
+        <p className="workspace-empty-sub">
+          Run a command from the Command lane.
+          <br />
+          Try: <code>/dict a big deal</code>
+        </p>
       </div>
     )
   }

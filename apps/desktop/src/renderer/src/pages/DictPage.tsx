@@ -3,18 +3,14 @@ import { ICON } from '../components/icons'
 import { useToast } from '../components/ToastContext'
 import { checkHealth, lookupDictionary, DictLookupResponse } from '../api/client'
 import { ActionButton, ResultSection, StatusMessage, StatusType } from '../components/Workspace'
+import { ToolStatusChip } from '../components/ToolStatusChip'
 
 export function DictPage() {
-  // Explicit State Model (US-003)
   const [query, setQuery] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<DictLookupResponse | null>(null)
-
-  // Backend Status (US-004)
-  const [backendStatus, setBackendStatus] = useState<'checking' | 'reachable' | 'unavailable'>(
-    'checking'
-  )
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'reachable' | 'unavailable'>('checking')
   const { showToast } = useToast()
 
   const checkBackendHealth = async () => {
@@ -27,25 +23,20 @@ export function DictPage() {
     }
   }
 
-  // Check health on mount (US-004)
   useEffect(() => {
     checkBackendHealth()
   }, [])
 
   const handleLookup = async () => {
-    // Empty input cannot trigger a lookup (US-003)
     if (!query.trim()) return
-
     setIsLoading(true)
-    setError(null) // Clear stale errors (US-003)
+    setError(null)
 
-    // Set up local credentials from localStorage
     const provider = localStorage.getItem('spark_provider') || undefined
     const apiKey = localStorage.getItem('spark_api_key') || undefined
     const model = localStorage.getItem('spark_model') || undefined
     const baseUrl = localStorage.getItem('spark_base_url') || undefined
 
-    // Timeout logic (15s)
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error('Lookup timed out. Backend may be slow.')), 15000)
     )
@@ -68,13 +59,11 @@ export function DictPage() {
         const errorMsg = res.error || 'Failed to get analysis from backend.'
         setError(errorMsg)
         showToast(errorMsg, 'error')
-        // Failed lookup preserves user's input (US-003)
       }
     } catch (e: any) {
       const errorMsg = e.message || 'Failed to connect to the backend API.'
       setError(errorMsg)
       showToast(errorMsg, 'error')
-      // Failed lookup preserves user's input (US-003)
     } finally {
       setIsLoading(false)
     }
@@ -87,7 +76,6 @@ export function DictPage() {
     }
   }
 
-  // Convert backendStatus to StatusMessage type
   const getStatusType = (): StatusType => {
     if (backendStatus === 'reachable') return 'reachable'
     if (backendStatus === 'unavailable') return 'unavailable'
@@ -96,27 +84,36 @@ export function DictPage() {
 
   const getStatusMessageText = () => {
     if (backendStatus === 'reachable') return 'Local server connected'
-    if (backendStatus === 'unavailable')
-      return 'Local server disconnected. Check status or launch backend.'
+    if (backendStatus === 'unavailable') return 'Local server disconnected. Check status or launch backend.'
     return 'Checking local server connectivity...'
   }
 
-  return (
-    <main className="main">
-      <div className="main-inner">
-        <div className="badge">
-          <span dangerouslySetInnerHTML={{ __html: ICON.search }} />
-          Dictionary Pro
-        </div>
+  const chipStatus = backendStatus === 'reachable' ? 'complete' : backendStatus === 'unavailable' ? 'error' : 'checking'
 
-        {/* Backend Status Feedback Indicator (US-004) */}
-        <div className="backend-status-container" style={{ margin: '1rem 0' }}>
-          <StatusMessage
-            type={getStatusType()}
-            message={getStatusMessageText()}
-            onClick={checkBackendHealth}
-            style={{ cursor: 'pointer' }}
-          />
+  return (
+    <main className="main ws-page">
+      <div className="main-inner">
+        {/* Workspace-aligned page header */}
+        <div className="ws-page-header">
+          <div className="ws-page-breadcrumb">
+            <span className="badge">
+              <span dangerouslySetInnerHTML={{ __html: ICON.search }} />
+              Dictionary Pro
+            </span>
+            <ToolStatusChip
+              status={chipStatus}
+              label={backendStatus === 'reachable' ? 'Online' : backendStatus === 'unavailable' ? 'Offline' : 'Checking'}
+            />
+            <button
+              type="button"
+              className="ws-refresh-btn"
+              onClick={checkBackendHealth}
+              aria-label="Refresh backend status"
+              title="Refresh backend status"
+            >
+              ↺
+            </button>
+          </div>
         </div>
 
         <h1 className="headline">
@@ -129,17 +126,15 @@ export function DictPage() {
           TOEFL-appropriate alternatives, and explain the academic upgrade path.
         </p>
 
-        {/* Dictionary lookup controls remain visible (US-004) */}
         <div className="dict-input-row">
           <input
-            className="dict-input"
+            className="dict-input ws-input"
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder='Try "a big deal", "gonna", "lowkey"...'
           />
-          {/* ActionButton (US-002, US-005) */}
           <ActionButton
             isLoading={isLoading}
             disabled={!query.trim()}
@@ -158,7 +153,18 @@ export function DictPage() {
           </div>
         )}
 
-        {/* ResultSection (US-002, US-005) */}
+        {/* Show legacy status bar only if backend is problematic */}
+        {backendStatus === 'unavailable' && (
+          <div className="backend-status-container" style={{ margin: '1rem 0' }}>
+            <StatusMessage
+              type={getStatusType()}
+              message={getStatusMessageText()}
+              onClick={checkBackendHealth}
+              style={{ cursor: 'pointer' }}
+            />
+          </div>
+        )}
+
         {result && (
           <div className="dict-result">
             {result.dryRun ? (

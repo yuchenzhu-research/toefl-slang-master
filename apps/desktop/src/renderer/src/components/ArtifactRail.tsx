@@ -7,12 +7,18 @@ interface ArtifactRailProps {
 export function ArtifactRail({ activeArtifact }: ArtifactRailProps) {
   if (!activeArtifact) {
     return (
-      <div className="artifact-rail-empty">
-        <p className="empty-text">No active artifact</p>
-        <span className="empty-hint">Select an artifact from the timeline or run a command to view details.</span>
+      <div className="workspace-empty-state">
+        <div className="workspace-empty-icon">❖</div>
+        <p className="workspace-empty-title">No artifact selected</p>
+        <p className="workspace-empty-sub">
+          Run a command or click "View Artifact"
+          <br />
+          from the session timeline.
+        </p>
       </div>
     )
   }
+
 
   // 简易 Markdown 解析器，用于安全展示 headings, bold 还有 lists
   const renderMarkdownContent = (content: string) => {
